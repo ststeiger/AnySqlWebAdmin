@@ -1,0 +1,230 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta charset="utf-8" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+    <meta http-equiv="cache-control" content="max-age=0" />
+    <meta http-equiv="cache-control" content="no-cache" />
+    <meta http-equiv="expires" content="0" />
+    <meta http-equiv="expires" content="Tue, 01 Jan 1980 1:00:00 GMT" />
+    <meta http-equiv="pragma" content="no-cache" />
+
+
+    <title>Maps</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.00, minimum-scale=1.00, maximum-scale=1.00" />
+
+    <style type="text/css">
+        * {
+            cursor: default !important;
+        }
+
+        html, body {
+            margin: 0px;
+            padding: 0px;
+            width: 100%;
+            height: 100%;
+        }
+
+        #swissMap {
+            position: absolute;
+            top: 55px;
+            left: 0px;
+            right: 0px;
+            bottom: 0px;
+        }
+
+
+        #zoom-level {
+            display: none;
+            position: absolute;
+            margin: 0px;
+            padding: 10px;
+            top: 0;
+            left: 0;
+            z-index: 1000;
+            background: white;
+            opacity: 0.85;
+            width: 3cm;
+        }
+
+
+        .leaflet-tooltip-top {
+            margin-top: -19px !important;
+        }
+
+        .leaflet-control-attribution {
+            display: none;
+            #transform: scale(0.9, 0.9) translate(5%, 10%);
+            transform: scale(0.5, 0.5) translate(50%, 50%);
+            position: absolute;
+            right: 0px;
+            bottom: 0px;
+        }
+
+        .leaflet-interactive {
+            cursor: pointer !important;
+        }
+
+        .leg {
+            width: 0.5cm;
+            height: 0.5cm;
+            opacity: 1;
+            border: 1px solid #E0E0E0;
+        }
+
+        .legende {
+            position: absolute;
+            display: block;
+            top: 85px;
+            right: 30px;
+            z-index: 999;
+            padding: 0.25cm;
+            font: 12px/1.5 "Helvetica Neue", Arial, Helvetica, sans-serif;
+            background-color: white;
+            opacity: 0.85;
+            border-radius: 3mm;
+        }
+
+        .cont {
+            padding-left: 0.25cm;
+            font: 12px/1.5 "Helvetica Neue", Arial, Helvetica, sans-serif;
+        }
+
+        .zoomControl {
+            position: absolute;
+            display: block;
+            top: 85px;
+            left: 30px;
+            z-index: 9999;
+            background-color: white;
+            opacity: 0.85;
+            border: 1px solid gray;
+            border-radius: 5mm;
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            -khtml-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+
+        .zoomControl .mp {
+            display: table-cell;
+            width: 1cm;
+            height: 1cm;
+            text-align: center;
+            vertical-align: middle;
+            #font: 5mm/1.5 Arial, Helvetica, sans-serif;
+            font-family: "Lucida Console", Monaco, monospace;
+            font-size: 5mm;
+            color: gray;
+        }
+
+        .zoomControl .mp:hover {
+            background-color: #F0F0F0;
+        }
+    </style>
+
+    <!--<link rel="shortcut icon" type="image/png" href="../favicon.png" />-->
+    <link rel="shortcut icon" type="image/x-icon" href="../favicon.ico" />
+    <!--
+    <link href="Layout.ashx?Single=leaflet.leaflet.css" rel="stylesheet" type="text/css" />
+    -->
+    <link href="leaflet/leaflet.css" rel="stylesheet" type="text/css" />
+    
+    <!--
+    <script type="text/javascript" src="ts/leaflet/EasyAjax.js" charset="utf-8"></script>
+    -->
+    
+</head>
+<body>
+    <div id="zoom-level">Zoom Level: 18</div>
+
+    <!--
+    <div class="zoomControl">
+        <div class="mp" style="border-top-left-radius: 5mm; border-top-right-radius: 5mm;" onclick="map.zoomHome()">&#x2606;</div><div style="clear: both;"></div>
+        <div class="mp" onclick="map.zoomIn()">+</div><div style="clear: both;"></div>
+        <div class="mp" style="border-bottom-left-radius: 5mm; border-bottom-right-radius: 5mm;" onclick="map.zoomOut()">-</div><div style="clear: both;"></div>
+    </div>
+    -->
+
+    <div class="legende">
+        <table id="gk_legend">
+            <tr>
+                <td class="leg" style="background-color: #FF0000;"></td>
+                <td class="cont">Hauptsitz</td>
+            </tr>
+            <tr>
+                <td class="leg" style="background-color: #FF7F00;"></td>
+                <td class="cont">Generalagentur</td>
+            </tr>
+            <tr>
+                <td class="leg" style="background-color: #007FFF;"></td>
+                <td class="cont">Hauptagentur</td>
+            </tr>
+            <tr>
+                <td class="leg" style="background-color: #00FF00;"></td>
+                <td class="cont">Agentur</td>
+            </tr>
+            <tr>
+                <td class="leg" style="background-color: #00FFFF;"></td>
+                <td class="cont">Hubs</td>
+            </tr>
+            <tr>
+                <td class="leg" style="background-color: #FFFF00;"></td>
+                <td class="cont">Spezial</td>
+            </tr>
+        </table>
+    </div>
+
+    <div id="swissMap"></div>
+
+
+    
+    
+    <a onclick="handleContextOption(action, arguments);" 
+       data-action="" 
+       data-position="lat lng" 
+       data-uuid="">Text</a>
+    
+    
+    <div class="leaflet-popup-content" style="width: 168px;">
+        <span style="font-weight: bold;">Hier können Sie</span><br>
+        <a onclick="handleContextOption('werbetafel', this.getAttribute('data-position'));" 
+           data-action="werbetafel"
+           data-position="48.20271028869975 8.031005859375002"
+           data-uuid="">eine Leuchtreklame hinzufügen</a>
+    </div>
+    
+    <div class="leaflet-popup-content" style="width: 160px;">
+        <span style="font-weight: bold;">Hier können Sie</span><br>
+        <a onclick="handleContextOption('deleteWerbetafel', 
+        this.getAttribute('data-position'), 'b06c5eb8-d15c-4205-bef8-c3cc1c021b0d');" 
+           data-position="49.05227025601607 7.921142578125001" 
+           data-uuid="b06c5eb8-d15c-4205-bef8-c3cc1c021b0d">eine Leuchtreklame entfernen</a>
+    </div>
+    
+    
+    
+    
+    
+    <!--
+    https://jakearchibald.com/2017/es-modules-in-browsers/
+    -->
+
+    <script src="dump/polyfills/object-setprototypeof-ie9.js?v=1"></script>
+    <script src="dump/polyfills/es6-promise-2.0.0.min.js?v=1"></script>
+    <script src="dump/polyfills/fetch.js?v=1"></script>
+    <script type="text/javascript" src="leaflet/leaflet.js" charset="utf-8"></script>
+    <script type="text/javascript" src="ts/Leaflet/portalJunk.js" charset="utf-8"></script>
+    <!-- <script src="ts/Leaflet/leaflet.js" charset="utf-8" type="module" ></script> -->
+    <script type="text/javascript" src="ts/Leaflet/map.js?v=2" charset="utf-8" ></script>
+
+    <script type="text/javascript">
+
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,395 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta charset="utf-8" />
+
+    <meta http-equiv="cache-control" content="max-age=0" />
+    <meta http-equiv="cache-control" content="no-cache" />
+    <meta http-equiv="expires" content="0" />
+    <meta http-equiv="expires" content="Tue, 01 Jan 1980 1:00:00 GMT" />
+    <meta http-equiv="pragma" content="no-cache" />
+
+    <title>DataList Polyfill</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.00, minimum-scale=1.00, maximum-scale=1.00" />
+
+    <style type="text/css">
+
+        html, body
+        {
+            margin: 0px;
+            padding: 0px;
+            width: 100%;
+            height: 100%;
+        }
+
+    </style>
+
+
+    <link rel="stylesheet" type="text/css" href="css/datalist_polyfill.css" />
+    <script src="ts/DataList/DataListPolyFill.js"></script>
+</head>
+<body>
+<p>
+    <a href="https://github.com/w3c/html/issues/932#issuecomment-315647887" target="_315647887">What this is for</a>
+</p>
+
+<p>
+    <a href="https://codepen.io/jpdevries/pen/MoROzK" target="_315647887">CodePen Original</a>
+</p>
+
+
+
+
+<div hidden>
+    <img src="http://j4p.us/0C0O04383n1N/Screen%20Shot%202017-07-17%20at%2012.52.48%20AM.png" alt="">
+</div>
+
+
+<div class="demo-wrapper">
+    <!--
+    
+        
+        <div>
+            <label for="input-a">Standard Datalist</label>
+            <input type="text" id="input-a" placeholder="volvo" list="cars-a" />
+            <datalist id="cars-a">
+                <select>
+                    <optgroup label="Integral Numbers">
+                        <option value="volvo">Volvo</option>
+                        <option value="saab">Saab</option>
+                    </optgroup>
+                    <optgroup label="Real Numbers">
+                        <option value="mercedes">Mercedes</option>
+                        <option value="audi">Audi</option>
+                    </optgroup>
+                </select>
+            </datalist>
+        </div>
+    -->
+
+    <div>
+        <label for="input-tb2">Test Datalist w/ optgroup</label>
+        <input autofocus type="text" placeholder="name of datatype" id="input-tb2" data-optgroup-list="cars-tb2" />
+        <div class="list-options" hidden>
+            <ul>
+                <li>
+                    <details open>
+                        <summary>Countries</summary>
+                        <ul>
+                            <li class="option" data-value="Switzerland">
+                                <span class="value">Switzerland</span>
+                                <span class="label">Switzerland</span>
+                            </li>
+                        </ul>
+                    </details>
+                </li>
+                <li>
+                    <details open>
+                        <summary>Towns</summary>
+                        <ul>
+                            <li class="option" data-value="AAA">
+                                <span class="value">AAAA</span>
+                                <span class="label">BBB</span>
+                            </li>
+                        </ul>
+                    </details>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+
+
+    <div>
+        <!---->
+        <div class="optgroup-list-wrapper" style="display: inline-block">
+            <label for="input-b">Polyfilled Datalist w/ optgroup</label>
+            <input autofocus type="text" placeholder="name of datatype" id="input-b" data-optgroup-list="cars-b" />
+
+
+            <!--      
+             <datalist id="cars-b">
+
+                     <select>
+                         <optgroup label="Integral Numbers">
+                             <option value="volvo">Volvo</option>
+                             <option value="saab">Saab</option>
+                         </optgroup>
+                         <optgroup label="Real Numbers">
+                             <option value="mercedes">Mercedes</option>
+                             <option value="audi">Audi</option>
+                         </optgroup>
+                     </select>
+
+             </datalist>
+            -->
+
+            <div class="list-options" hidden>
+                <ul>
+                    <li>
+                        <details open>
+                            <summary>Integral Numbers</summary>
+                            <ul>
+                                <li class="option" data-value="int8">
+                                    <span class="value">tinyint</span>
+                                    <span class="label">8 Bit from 0 to 255</span>
+                                </li>
+                                <li class="option" data-value="int16">
+                                    <span class="value">smallint</span>
+                                    <span class="label">16 Bit from -32'768 to 32'767</span>
+                                </li>
+                                <li class="option" data-value="int32">
+                                    <span class="value">integer</span>
+                                    <span class="label">32 Bit from -2'147'483'648 to 2'147'483'647</span>
+                                </li>
+                                <li class="option" data-value="int64">
+                                    <span class="value">bigint</span>
+                                    <span class="label">64 Bit from appx. -9×10<sup>18</sup> to 9×10<sup>18</sup></span>
+                                </li>
+                            </ul>
+                        </details>
+                    </li>
+
+
+                    <li>
+                        <details open>
+                            <summary>Real Numbers</summary>
+                            <ul>
+                                <li title="exact number
+format: (precision, scale)
+precision: sum of number of digits to the left and right of the decimal point, range[1,38], default 18
+scale: digits to the right of the decimal point, range [0, p], default 0
+" class="option" data-value="decimal(18,0)">
+                                    <span class="value">decimal(18,0)</span>
+                                    <span class="label">
+                                                depending on precision: -10<sup>38</sup>&nbsp;+1 to 10<sup>38</sup>&nbsp;-1
+                                            </span>
+                                </li>
+
+
+                                <li style="background-color: deeppink;" title="smallmoney, aka decimal(10,4)
+
+WARNING: Never ever should you use smallmoney.
+It is not precise and it is pure garbage.
+Always use decimal/numeric" class="option" data-value="smallmoney">
+                                    <span class="value">smallmoney</span>
+                                    <span class="label">
+                                                -214'748.3648 to 214'748.3647
+                                            </span>
+                                </li>
+
+                                <li style="background-color: deeppink;" title="money, aka decimal(19,4)
+
+WARNING: Never ever should you use money.
+It is not precise and it is pure garbage.
+Always use decimal/numeric" class="option" data-value="money">
+                                    <span class="value">money</span>
+                                    <span class="label">
+                                                -922'337'203'685'477.5808 to 922'337'203'685'477.5807
+                                            </span>
+                                </li>
+
+                                <li style="background-color: darkorange;" title="float [ (n) ]
+n is optional - the default value of n is 53.
+IEEE 754 double-precision (64-Bit) binary floating-point format
+
+WARNING: rounding ERRORS - use only if decimal is NOT sufficient.
+Do NOT use for money or area or distance or any other bookkeeping quanity." class="option" data-value="float">
+                                    <span class="value">float</span>
+                                    <span class="label">
+                                                -1.79E+308 to -2.23E-308, 0, and 2.23E-308 to 1.79E+308 <!-- at n=53 -->
+                                            </span>
+                                </li>
+                                <li style="background-color: darkorange;" title="real: same as float[7]
+IEEE 754 single-precision (32-Bit) binary floating-point format
+
+WARNING: rounding ERRORS - use only if decimal is NOT sufficient.
+Do NOT use for money or area or distance or any other bookkeeping quanity" class="option" data-value="real">
+                                    <span class="value">real</span>
+                                    <span class="label">-3.40E+38 to -1.18E-38, 0, and 1.18E-38 to 3.40E+38</span>
+                                </li>
+
+                            </ul>
+                        </details>
+                    </li>
+
+
+
+                    <li>
+                        <details open>
+                            <summary>Geography</summary>
+                            <ul>
+
+
+                                <li title="WGS84-Latitudes range from -90° to +90°, so you need DECIMAL(10, 8).
+8 decimals is equal to 1.1132 mm at the equator;
+Because the earth is not flat, the precision of the longitude part of the coordinates increases the further from the equator you get.
+The precision of the latitude part does not increase so much." class="option" data-value="decimal(10,8)">
+                                    <span class="value">Latitude</span>
+                                    <span class="label">
+                                                <!-- https://stackoverflow.com/questions/12504208/what-mysql-data-type-should-be-used-for-latitude-longitude-with-8-decimal-places -->
+                                                <a target="_blank" href="https://en.wikipedia.org/wiki/Decimal_degrees">Precision Reference</a>
+                                            </span>
+                                </li>
+
+                                <li title="WGS84-Longitudes range from -180° to +180°, so you need DECIMAL(11, 8).
+8 decimals is equal to 1.1132 mm at the equator;
+Because the earth is not flat, the precision of the longitude part of the coordinates increases the further from the equator you get.
+The precision of the latitude part does not increase so much." class="option" data-value="decimal(11,8)">
+                                    <span class="value">Longitude</span>
+                                    <span class="label">
+                                                <!-- https://stackoverflow.com/questions/12504208/what-mysql-data-type-should-be-used-for-latitude-longitude-with-8-decimal-places -->
+                                                <a target="_blank" href="https://en.wikipedia.org/wiki/Decimal_degrees">Precision Reference</a>
+                                            </span>
+                                </li>
+
+
+                                <li title="geography" class="option" data-value="geography">
+                                    <span class="value">geography</span>
+                                    <span class="label">unknown</span>
+                                </li>
+                                <li title="geometry" class="option" data-value="geometry">
+                                    <span class="value">geometry</span>
+                                    <span class="label">unknown</span>
+                                </li>
+                                <li title="xml
+Tools &gt; Options &gt; Query Results &gt; SQL Server &gt; Results to Text &gt; Maximum number of characters displayed in each column
+Tools &gt; Options &gt; Query Results &gt; SQL Server &gt; Results to Grid &gt; Maximum Characters Retrieved" class="option" data-value="xml">
+                                    <span class="value">xml</span>
+                                    <span class="label">Cannot exceed 2 gigabytes (GB) in size.</span>
+                                </li>
+                                <li title="uniqueidentifier
+
+WARNING:
+Comparison operators can be used with uniqueidentifier values.
+Uniqueidentifier not supported by polybase and dwloader loading tool for Parallel Data Warehouse" class="option" data-value="uniqueidentifier">
+                                    <span class="value">uniqueidentifier</span>
+                                    <span class="label">unknown</span>
+                                </li>
+                            </ul>
+                        </details>
+                    </li>
+
+
+
+
+
+                    <li>
+                        <details open>
+                            <summary>Binary</summary>
+                            <ul>
+                                <li title="varbinary [ ( n | max) ]
+Variable-length binary data.
+n can be a value from 1 through 8'000.
+max indicates that the maximum storage size is 2^31-1 bytes.
+The storage size is the actual length of the data entered + 2 bytes.
+The data that is entered can be 0 bytes in length.
+The ANSI SQL synonym for varbinary is binary varying.
+                                        " class="option" data-value="varbinary(MAX)">
+                                    <span class="value">varbinary(MAX)</span>
+                                    <span class="label">up to 2<sup>31</sup>-1 bytes (2GB)</span>
+                                </li>
+                            </ul>
+                            <ul>
+                                <li style="background-color: red;" title="image
+Variable-length binary data from 0 through 2^31-1 (2,147,483,647) bytes.
+
+IMPORTANT! ntext, text, and image data types will be removed in a future version of SQL Server.
+Avoid using these data types in new development work, and plan to modify applications that currently use them.
+Use nvarchar(max), varchar(max), and varbinary(max) instead." class="option" data-value="image">
+                                    <span class="value">image</span>
+                                    <span class="label">deprecated - use varbinary(MAX) instead</span>
+                                </li>
+                            </ul>
+                        </details>
+                    </li>
+
+
+                    <li>
+                        <details open>
+                            <summary>Text</summary>
+                            <ul>
+                                <li title="nvarchar [ ( n | max ) ]
+Variable-length, Unicode (UTF-16) string data.
+n defines the string length and can be a value from 1 through 4'000.
+max indicates that the maximum storage size is 2^31-1 bytes (2 GB).
+The storage size, in bytes, is two times the actual length of data entered + 2 bytes.
+The ISO synonyms for nvarchar is &quot;national character varying&quot;." class="option" data-value="nvarchar(255)">
+                                    <span class="value">nvarchar(255)</span>
+                                    <span class="label">up to 4'000 UNICODE (UTF-16) characters</span>
+                                </li>
+
+
+
+                                <li title="nvarchar(max)
+Variable-length, Unicode (UTF-16) string data.
+max indicates that the maximum storage size is 2^31-1 bytes (2 GB).
+The storage size, in bytes, is two times the actual length of data entered + 2 bytes.
+The ISO synonyms for nvarchar is &quot;national character varying&quot;." class="option" data-value="nvarchar(MAX)">
+                                    <span class="value">nvarchar(MAX)</span>
+                                    <span class="label">2 GB (or appx. 1'073'741'821 characters)</span>
+                                </li>
+
+
+                                <li style="background-color: darkorange;" title="varchar [ ( n | max ) ]
+Variable-length, non-Unicode string data.
+n defines the string length and can be a value from 1 through 8'000.
+max indicates that the maximum storage size is 2^31-1 bytes (2 GB).
+The storage size is the actual length of the data entered + 2 bytes.
+The ISO synonyms for varchar is &quot;character varying&quot;.
+
+WARNING: won't work for all languages&#013;&#010;use nvarchar instead" class="option" data-value="varchar(255)">
+                                    <span class="value">varchar(255)</span>
+                                    <span class="label">up to 8'000 ASCII/ANSI characters</span>
+                                </li>
+
+
+                                <li style="background-color: darkorange;" title="varchar(MAX)
+Variable-length, non-Unicode string data.
+max indicates that the maximum storage size is 2^31-1 bytes (2 GB).
+The storage size is the actual length of the data entered + 2 bytes.
+The ISO synonyms for varchar is &quot;character varying&quot;.
+
+WARNING: won't work for all languages&#013;&#010;use nvarchar(MAX) instead" class="option" data-value="varchar(MAX)">
+                                    <span class="value">varchar(MAX)</span>
+                                    <span class="label">2 GB (or appx. 2'147'483'645 characters)</span>
+                                </li>
+
+                                <li style="background-color: red;" title="WARNING: won't work for all languages - use ntext instead&#013;&#010;also: deprecated - use (n)varchar(MAX) instead
+WARNING: cannot be used with some aggregate functions
+
+IMPORTANT! ntext, text, and image data types will be removed in a future version of SQL Server.
+Avoid using these data types in new development work, and plan to modify applications that currently use them.
+Use nvarchar(max), varchar(max), and varbinary(max) instead." class="option" data-value="text">
+                                    <span class="value">text</span>
+                                    <span class="label">deprecated - use varchar(MAX)</span>
+                                </li>
+
+
+                                <li style="background-color: red;" title="deprecated - use nvarchar(MAX) instead
+WARNING: cannot be used with some aggregate functions
+
+IMPORTANT! ntext, text, and image data types will be removed in a future version of SQL Server.
+Avoid using these data types in new development work, and plan to modify applications that currently use them.
+Use nvarchar(max), varchar(max), and varbinary(max) instead." class="option" data-value="ntext">
+                                    <span class="value">ntext</span>
+                                    <span class="label">deprecated - use nvarchar(MAX)</span>
+                                </li>
+
+                            </ul>
+                        </details>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script type="text/javascript">
+
+</script>
+
+</body>
+</html>

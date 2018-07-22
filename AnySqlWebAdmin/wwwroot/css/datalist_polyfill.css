@@ -1,0 +1,64 @@
+﻿body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif; }
+
+label {
+  display: block; }
+
+.demo-wrapper {
+  display: flex; }
+  .demo-wrapper > * {
+    flex: 1 0 auto; }
+
+.optgroup-list-wrapper {
+  position: relative;
+  width: 11cm; }
+
+/*
+input[data-optgroup-list] + datalist
+{
+
+}
+
+input[data-optgroup-list] + datalist + .list-options
+*/
+input[data-optgroup-list] + .list-options {
+  font-size: smaller;
+  outline: 1px solid #72acea;
+  padding: .5rem 0;
+  line-height: 1.75;
+  position: absolute;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none; }
+  input[data-optgroup-list] + .list-options summary {
+    color: #777784;
+    line-height: 1;
+    display: block;
+    width: 100%; }
+  input[data-optgroup-list] + .list-options summary::-webkit-details-marker {
+    fill: #777784; }
+  input[data-optgroup-list] + .list-options ul {
+    margin: 0;
+    padding: 0; }
+  input[data-optgroup-list] + .list-options > ul > li:not(:last-child) {
+    padding-bottom: .5rem; }
+  input[data-optgroup-list] + .list-options > ul .option {
+    padding: 0 .5rem; }
+    input[data-optgroup-list] + .list-options > ul .option:hover {
+      background: #b8d6fe !important; }
+  input[data-optgroup-list] + .list-options > ul ul li {
+    padding-left: 1rem; }
+    input[data-optgroup-list] + .list-options > ul ul li:not([hidden]) {
+      display: flex; }
+    input[data-optgroup-list] + .list-options > ul ul li span:first-child {
+      margin-right: 3ch;
+      font-weight: bolder; }
+    input[data-optgroup-list] + .list-options > ul ul li span:last-child {
+      text-align: right;
+      margin-left: auto;
+      color: #777784;
+      font-weight: lighter; }
+  input[data-optgroup-list] + .list-options ul {
+    list-style-type: none; }
+

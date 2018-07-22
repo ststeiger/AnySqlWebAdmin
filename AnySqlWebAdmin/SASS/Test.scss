@@ -1,0 +1,19 @@
+
+$pad : 2em;
+$color-primary : rgb(40,40,40);
+$color-secondary : rgb(40,170,220);
+
+body 
+{
+  background-color: $color-primary;
+}
+
+h1 
+{
+  color: $color-secondary;
+}
+
+.container
+{
+  padding: $pad;
+}
