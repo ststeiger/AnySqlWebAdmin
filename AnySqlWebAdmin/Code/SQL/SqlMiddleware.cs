@@ -11,10 +11,11 @@ using Microsoft.AspNetCore.Builder;
 // https://en.wikipedia.org/wiki/List_of_HTTP_status_codes
 namespace AnySqlWebAdmin
 {
-    
-    
+
+
     public class SqlMiddleware
     {
+
         protected readonly Microsoft.AspNetCore.Http.RequestDelegate _next;
         
         
@@ -77,105 +78,32 @@ namespace AnySqlWebAdmin
 
                 context.Response.ContentType = "text/plain";
 
-                await context.Response.WriteAsync(ex.Message);
-                await context.Response.WriteAsync(System.Environment.NewLine);
-                await context.Response.WriteAsync(System.Environment.NewLine);
-                await context.Response.WriteAsync(ex.StackTrace);
-                await context.Response.WriteAsync(System.Environment.NewLine);
-                await context.Response.WriteAsync(System.Environment.NewLine);
-                await context.Response.WriteAsync(sql);
-                await context.Response.WriteAsync(System.Environment.NewLine);
-                await context.Response.WriteAsync(System.Environment.NewLine);
-                await context.Response.WriteAsync(System.Convert.ToString(pars));
+                SqlException se = new SqlException(ex.Message, sql, pars, context, ex);
+                se.ToJSON(context.Response.Body);
+                
+                //await context.Response.WriteAsync(ex.Message);
+                //await context.Response.WriteAsync(System.Environment.NewLine);
+                //await context.Response.WriteAsync(System.Environment.NewLine);
+                //await context.Response.WriteAsync(ex.StackTrace);
+                //await context.Response.WriteAsync(System.Environment.NewLine);
+                //await context.Response.WriteAsync(System.Environment.NewLine);
+                //await context.Response.WriteAsync(sql);
+                //await context.Response.WriteAsync(System.Environment.NewLine);
+                //await context.Response.WriteAsync(System.Environment.NewLine);
+                //await context.Response.WriteAsync(System.Convert.ToString(pars));
                 System.Console.WriteLine();
             } // End Catch 
-        }
+
+        } // End Async Invoke 
 
 
     } // End Class SqlMiddleware 
+    
 
-
-    // https://stackoverflow.com/questions/38630076/asp-net-core-web-api-exception-handling
-    public class ErrorHandlingMiddleware
+    public static class SqlMiddlewareExtensions
     {
-        private readonly Microsoft.AspNetCore.Http.RequestDelegate next;
 
-
-        public ErrorHandlingMiddleware(Microsoft.AspNetCore.Http.RequestDelegate next)
-        {
-            this.next = next;
-        }
-
-
-        public async System.Threading.Tasks.Task Invoke(Microsoft.AspNetCore.Http.HttpContext context /* other dependencies */)
-        {
-            try
-            {
-                await next(context);
-            }
-            catch (System.Exception ex)
-            {
-                await HandleExceptionAsync(context, ex);
-            }
-
-            //if (context.Response.StatusCode != 200 && context.Response.StatusCode != 500)
-            if (context.Response.StatusCode >= 400 && context.Response.StatusCode < 500)
-                await HandleUnsuccessfullStatusAsync(context);
-        }
-
-
-        // https://stackoverflow.com/questions/35599050/correct-way-to-notify-http-client-of-error-after-partial-response-has-been-sent
-        private static System.Threading.Tasks.Task HandleUnsuccessfullStatusAsync(Microsoft.AspNetCore.Http.HttpContext context)
-        {
-            int code = context.Response.StatusCode;
-            System.Net.HttpStatusCode hc = (System.Net.HttpStatusCode)code;
-
-            // if (exception is MyNotFoundException) code = System.Net.HttpStatusCode.NotFound;
-            // else if (exception is MyUnauthorizedException) code = System.Net.HttpStatusCode.Unauthorized;
-            // else if (exception is MyException) code = System.Net.HttpStatusCode.BadRequest;
-
-            string result = Newtonsoft.Json.JsonConvert.SerializeObject(new { error = hc.ToString() });
-
-            context.Response.Headers.Clear();
-            context.Response.Clear();
-            
-            context.Response.StatusCode = (int)code;
-            context.Response.ContentType = "application/json";
-            
-            return context.Response.WriteAsync(result);
-        }
-
-
-        private static System.Threading.Tasks.Task HandleExceptionAsync(Microsoft.AspNetCore.Http.HttpContext context, System.Exception exception)
-        {
-            System.Net.HttpStatusCode code = System.Net.HttpStatusCode.InternalServerError; // 500 if unexpected
-
-            // if (exception is MyNotFoundException) code = System.Net.HttpStatusCode.NotFound;
-            // else if (exception is MyUnauthorizedException) code = System.Net.HttpStatusCode.Unauthorized;
-            // else if (exception is MyException) code = System.Net.HttpStatusCode.BadRequest;
-
-            string result = Newtonsoft.Json.JsonConvert.SerializeObject(new { error = exception.Message });
-            context.Response.ContentType = "application/json";
-            context.Response.StatusCode = (int)code;
-
-            return context.Response.WriteAsync(result);
-        }
-
-    } // End Class ErrorHandlingMiddleware 
-
-
-
-    public static class MyMiddlewareExtensions
-    {
-        public static Microsoft.AspNetCore.Builder.IApplicationBuilder UseErrorHandlingMiddleware(
-            this Microsoft.AspNetCore.Builder.IApplicationBuilder app)
-        {
-            app.UseMiddleware<ErrorHandlingMiddleware>();
-            return app;
-        }
-
-
-            public static Microsoft.AspNetCore.Builder.IApplicationBuilder UseSqlMiddleware(
+        public static Microsoft.AspNetCore.Builder.IApplicationBuilder UseSqlMiddleware(
             this Microsoft.AspNetCore.Builder.IApplicationBuilder app)
         {
             // return app.UseMiddleware<SqlMiddleware>();
@@ -198,10 +126,10 @@ namespace AnySqlWebAdmin
             );
 
             return app;
-        }
-
-    } // End Class MyMiddlewareExtensions 
+        } // End Function UseSqlMiddleware 
 
 
-}
+    } // End Class SqlMiddlewareExtensions 
 
+
+} // End Namespace AnySqlWebAdmin 

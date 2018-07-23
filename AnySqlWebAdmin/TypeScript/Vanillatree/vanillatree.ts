@@ -475,16 +475,19 @@ namespace Tree
             return this.dispatchEvent('open', id);
         } // End Function open
 
+
         public async close(id: string): Promise<VanillaTree>
         {
             this.getLeaf(id).classList.add('closed');
             return this.dispatchEvent('close', id);
         } // End Function close 
 
+
         public async toggle(id: string): Promise<VanillaTree>
         {
             return this[this.getLeaf(id).classList.contains('closed') ? 'open' : 'close'](id);
         } // End Function toggle 
+
 
         public select(id: string): Promise<VanillaTree>
         {

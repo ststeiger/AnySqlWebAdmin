@@ -142,13 +142,6 @@
 <body>
     <div id="zoom-level">Zoom Level: 18</div>
 
-    <!--
-    <div class="zoomControl">
-        <div class="mp" style="border-top-left-radius: 5mm; border-top-right-radius: 5mm;" onclick="map.zoomHome()">&#x2606;</div><div style="clear: both;"></div>
-        <div class="mp" onclick="map.zoomIn()">+</div><div style="clear: both;"></div>
-        <div class="mp" style="border-bottom-left-radius: 5mm; border-bottom-right-radius: 5mm;" onclick="map.zoomOut()">-</div><div style="clear: both;"></div>
-    </div>
-    -->
 
     <div class="legende">
         <table id="gk_legend">
@@ -181,34 +174,6 @@
 
     <div id="swissMap"></div>
 
-
-    
-    
-    <a onclick="handleContextOption(action, arguments);" 
-       data-action="" 
-       data-position="lat lng" 
-       data-uuid="">Text</a>
-    
-    
-    <div class="leaflet-popup-content" style="width: 168px;">
-        <span style="font-weight: bold;">Hier können Sie</span><br>
-        <a onclick="handleContextOption('werbetafel', this.getAttribute('data-position'));" 
-           data-action="werbetafel"
-           data-position="48.20271028869975 8.031005859375002"
-           data-uuid="">eine Leuchtreklame hinzufügen</a>
-    </div>
-    
-    <div class="leaflet-popup-content" style="width: 160px;">
-        <span style="font-weight: bold;">Hier können Sie</span><br>
-        <a onclick="handleContextOption('deleteWerbetafel', 
-        this.getAttribute('data-position'), 'b06c5eb8-d15c-4205-bef8-c3cc1c021b0d');" 
-           data-position="49.05227025601607 7.921142578125001" 
-           data-uuid="b06c5eb8-d15c-4205-bef8-c3cc1c021b0d">eine Leuchtreklame entfernen</a>
-    </div>
-    
-    
-    
-    
     
     <!--
     https://jakearchibald.com/2017/es-modules-in-browsers/
