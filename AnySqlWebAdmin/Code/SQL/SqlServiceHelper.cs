@@ -182,13 +182,13 @@ namespace AnySqlWebAdmin
 
                 if (jsonData != null)
                 {
-                    
+
                     if (jsonData.Type == Newtonsoft.Json.Linq.JTokenType.Object)
                     {
                         //lss = new System.Collections.Generic.List<System.Collections.Generic.Dictionary<string, object>>();
                         // lss.Add(ProcessObject(jsonData));
 
-                        Newtonsoft.Json.Linq.JObject jo = (Newtonsoft.Json.Linq.JObject) jsonData;
+                        Newtonsoft.Json.Linq.JObject jo = (Newtonsoft.Json.Linq.JObject)jsonData;
 
                         foreach (System.Collections.Generic.KeyValuePair<string, Newtonsoft.Json.Linq.JToken> kvp in jo)
                         {
@@ -210,9 +210,9 @@ namespace AnySqlWebAdmin
                         throw new System.InvalidOperationException(
                             "Cannot perform this operation on anything other than JSON-object, or JSON-array of JSON-object.");
                     }
-                    
+
                 } // End if (jsonData == null)
-                
+
             } // End if (string.Equals(context.Request.ContentType, "application/json", 
 
 
@@ -225,12 +225,12 @@ namespace AnySqlWebAdmin
                 } // Next kvp 
 
             } // End if (context.Request.QueryString.HasValue) 
-            
+
             return dict;
         } // End Function GetParameters 
-        
-        
+
+
     } // End Class 
-    
-    
+
+
 } // End Namespace 

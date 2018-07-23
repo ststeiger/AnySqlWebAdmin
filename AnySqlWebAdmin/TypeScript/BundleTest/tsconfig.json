@@ -9,21 +9,21 @@
     // "target": "es2017",
     // "target": "es2018",
     // "target": "esnext",
-    //"module": "amd", // define, export, like playground
+    "module": "amd", // define, export, like playground
     // "module": "commonjs", // require
-    "module": "es2015", // just like typescript
+    // "module": "es2015", // just like typescript
     // "module": "system", // System.register
     //  "module": "umd", // factory, require, exports
     // "module": "esnext", // like typescript
     // "module": "none", // Object.defineProperty, require
     // "module": "commonjs",
     "lib": [
-      "dom", 
-      // "webworker", 
-      // "scripthost", 
+      "dom",
+      // "webworker",
+      // "scripthost",
       "es5",
       //"es6",
-      "es2015.promise" 
+      "es2015.promise"
       // "es2015.core",
       // "es2015.proxy",
       // "es2015.iterable"
@@ -39,7 +39,9 @@
     "noEmitOnError": true,
     "removeComments": true,
     "sourceMap": false,
-    "outDir": "../../wwwroot/ts/BundleTest",
+    //"outDir": "../../wwwroot/ts/BundleTest",
+    // Note: When using outFile, module must be systemjs or amd 
+    "outFile": "../../wwwroot/ts/BundleTest/main.js",
     "rootDir": "./",
     "allowUnreachableCode": true
     //,"alwaysStrict ": true,
@@ -51,6 +53,12 @@
 
   "include": [
     "**/*"
-  ]
+  ],
 
+  // order: as specified in files, then comes rest of rootDir in "alphabetical" order...
+  "files": [
+    "xyz.ts",
+    "abc.ts",
+    "klm.ts"
+  ]
 }

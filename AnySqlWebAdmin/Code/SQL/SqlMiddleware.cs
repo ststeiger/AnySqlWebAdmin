@@ -1,17 +1,14 @@
 ﻿
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Builder;
 
 
+// https://docs.microsoft.com/en-us/aspnet/core/fundamentals/middleware/?view=aspnetcore-2.1&tabs=aspnetcore2x
 // https://www.thomaslevesque.com/2018/03/27/understanding-the-asp-net-core-middleware-pipeline/
-
-
+// https://stackoverflow.com/questions/38630076/asp-net-core-web-api-exception-handling
+// https://dusted.codes/error-handling-in-aspnet-core
+// https://blog.dudak.me/2017/error-handling-in-asp-net-core-applications/
+// https://en.wikipedia.org/wiki/List_of_HTTP_status_codes
 namespace AnySqlWebAdmin
 {
     
@@ -27,7 +24,7 @@ namespace AnySqlWebAdmin
         }
         
         
-        public async Task Invoke(Microsoft.AspNetCore.Http.HttpContext context)
+        public async System.Threading.Tasks.Task Invoke(Microsoft.AspNetCore.Http.HttpContext context)
         {
             // Do some request logic here.
             await this._next.Invoke(context).ConfigureAwait(false);
@@ -101,22 +98,22 @@ namespace AnySqlWebAdmin
     // https://stackoverflow.com/questions/38630076/asp-net-core-web-api-exception-handling
     public class ErrorHandlingMiddleware
     {
-        private readonly RequestDelegate next;
+        private readonly Microsoft.AspNetCore.Http.RequestDelegate next;
 
 
-        public ErrorHandlingMiddleware(RequestDelegate next)
+        public ErrorHandlingMiddleware(Microsoft.AspNetCore.Http.RequestDelegate next)
         {
             this.next = next;
         }
 
 
-        public async Task Invoke(HttpContext context /* other dependencies */)
+        public async System.Threading.Tasks.Task Invoke(Microsoft.AspNetCore.Http.HttpContext context /* other dependencies */)
         {
             try
             {
                 await next(context);
             }
-            catch (Exception ex)
+            catch (System.Exception ex)
             {
                 await HandleExceptionAsync(context, ex);
             }
@@ -128,7 +125,7 @@ namespace AnySqlWebAdmin
 
 
         // https://stackoverflow.com/questions/35599050/correct-way-to-notify-http-client-of-error-after-partial-response-has-been-sent
-        private static Task HandleUnsuccessfullStatusAsync(HttpContext context)
+        private static System.Threading.Tasks.Task HandleUnsuccessfullStatusAsync(Microsoft.AspNetCore.Http.HttpContext context)
         {
             int code = context.Response.StatusCode;
             System.Net.HttpStatusCode hc = (System.Net.HttpStatusCode)code;
@@ -141,7 +138,7 @@ namespace AnySqlWebAdmin
 
             context.Response.Headers.Clear();
             context.Response.Clear();
-
+            
             context.Response.StatusCode = (int)code;
             context.Response.ContentType = "application/json";
             
@@ -149,7 +146,7 @@ namespace AnySqlWebAdmin
         }
 
 
-        private static Task HandleExceptionAsync(HttpContext context, Exception exception)
+        private static System.Threading.Tasks.Task HandleExceptionAsync(Microsoft.AspNetCore.Http.HttpContext context, System.Exception exception)
         {
             System.Net.HttpStatusCode code = System.Net.HttpStatusCode.InternalServerError; // 500 if unexpected
 
@@ -187,12 +184,12 @@ namespace AnySqlWebAdmin
 
             // https://www.devtrends.co.uk/blog/conditional-middleware-based-on-request-in-asp.net-core
             app.UseWhen(
-                delegate(HttpContext context) 
+                delegate(Microsoft.AspNetCore.Http.HttpContext context) 
                 {
                     return context.Request.Path.StartsWithSegments("/sql")
                     || context.Request.Path.StartsWithSegments("/ajax/AnySelect.ashx");
                 }
-                , delegate(IApplicationBuilder appBuilder )
+                , delegate(Microsoft.AspNetCore.Builder.IApplicationBuilder appBuilder )
                 {
                     // appBuilder.UseStatusCodePagesWithReExecute("/apierror/{0}");
                     appBuilder.UseMiddleware<SqlMiddleware>();

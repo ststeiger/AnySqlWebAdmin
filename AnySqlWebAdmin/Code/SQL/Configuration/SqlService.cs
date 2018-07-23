@@ -14,10 +14,10 @@ namespace AnySqlWebAdmin
         {
             var csb = new System.Data.SqlClient.SqlConnectionStringBuilder();
 
-            if (string.Equals("COR", System.Environment.UserDomainName, System.StringComparison.InvariantCultureIgnoreCase))
-                csb.DataSource = System.Environment.MachineName + @"\SQLEXPRESS";
-            else
+            if (System.Environment.OSVersion.Platform == System.PlatformID.Unix)
                 csb.DataSource = System.Environment.MachineName;
+            else
+                csb.DataSource = System.Environment.MachineName + @"\SQLEXPRESS";
 
             csb.InitialCatalog = "COR_Basic_Demo_V4";
             csb.IntegratedSecurity = System.Environment.OSVersion.Platform != System.PlatformID.Unix;
