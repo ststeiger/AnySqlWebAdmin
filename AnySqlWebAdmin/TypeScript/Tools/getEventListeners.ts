@@ -8,8 +8,8 @@ interface Element
     _addEventListener: (type: string, listener: EventListenerOrEventListenerObject, useCapture?: boolean) => void;
     _removeEventListener: (type: string, listener?: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions) => void;
 
-    getEventListeners: (type: string) => any; 
-    clearEventListeners: (type: string) =>void;
+    getEventListeners: (type?: string) => any; 
+    clearEventListeners: (type?: string) =>void;
 }
 
 
@@ -32,21 +32,21 @@ interface Element
     {
         if (useCapture == undefined)
             useCapture = false;
-
+        
         this._addEventListener(type, listener, useCapture);
-
+        
         if (!this.eventListenerList)
             this.eventListenerList = {};
-
+        
         if (!this.eventListenerList[type])
             this.eventListenerList[type] = [];
-
-        //this.removeEventListener(type, listener, useCapture); // TODO - handle duplicates..
+        
+        // this.removeEventListener(type, listener, useCapture); // TODO - handle duplicates..
         this.eventListenerList[type].push({ "listener": listener, "useCapture": useCapture });
     };
-
-
-    Element.prototype.getEventListeners = function (type: string):any 
+    
+    
+    Element.prototype.getEventListeners = function (type?: string):any 
     {
         if (!this.eventListenerList)
             this.eventListenerList = {};
@@ -56,18 +56,23 @@ interface Element
 
         return this.eventListenerList[type];
     };
-
-
-    Element.prototype.clearEventListeners = function (type: string) :void 
+    
+    
+    Element.prototype.clearEventListeners = function (type?: string) :void 
     {
         if (!this.eventListenerList)
             this.eventListenerList = {};
 
         if (type == undefined)
         {
-            for (let thisType in (this.getEventListeners()))
+            let els = this.getEventListeners();
+            for (let thisType in els)
+            {
+                if (!els.hasOwnProperty(thisType)) 
+                    continue;
+                
                 this.clearEventListeners(thisType);
-
+            }
             return;
         } // End if (type == undefined) 
 
@@ -100,13 +105,18 @@ interface Element
         // Find the event in the list
         for (let i = 0; i < this.eventListenerList[type].length; i++)
         {
-            if (this.eventListenerList[type][i].listener == listener, this.eventListenerList[type][i].useCapture == options)
+            
+            // Comma expression ? returns last value in list... 
+            // The comma operator evaluates each of its operands (from left to right) 
+            // and returns the value of the last operand.
+            if (this.eventListenerList[type][i].listener == listener && 
+                this.eventListenerList[type][i].useCapture == options)
             {
                 // Hmm..
                 this.eventListenerList[type].splice(i, 1);
                 break;
             }
-
+            
         } // Next i 
 
         if (this.eventListenerList[type].length == 0)

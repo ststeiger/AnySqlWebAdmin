@@ -21,8 +21,12 @@
         if (!this.eventListenerList)
             this.eventListenerList = {};
         if (type == undefined) {
-            for (var thisType in (this.getEventListeners()))
+            var els = this.getEventListeners();
+            for (var thisType in els) {
+                if (!els.hasOwnProperty(thisType))
+                    continue;
                 this.clearEventListeners(thisType);
+            }
             return;
         }
         var el = this.getEventListeners(type);
@@ -43,7 +47,8 @@
         if (!this.eventListenerList[type])
             this.eventListenerList[type] = [];
         for (var i = 0; i < this.eventListenerList[type].length; i++) {
-            if (this.eventListenerList[type][i].listener == listener, this.eventListenerList[type][i].useCapture == options) {
+            if (this.eventListenerList[type][i].listener == listener &&
+                this.eventListenerList[type][i].useCapture == options) {
                 this.eventListenerList[type].splice(i, 1);
                 break;
             }
