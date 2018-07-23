@@ -1,4 +1,5 @@
-﻿using System;
+﻿
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -8,6 +9,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+
 
 namespace AnySqlWebAdmin
 {
@@ -22,26 +24,24 @@ namespace AnySqlWebAdmin
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
-            
-        }
+        } // End Constructor 
 
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddSingleton<SqlService>(new SqlService());
+            services.AddSingleton(new SqlService());
             services.AddMvc();
             
-
             services.AddMvc(mvcOptions =>
             {
                 mvcOptions.ValueProviderFactories.Add(new JsonValueProviderFactory());
                 mvcOptions.ValueProviderFactories.Add(new AnywhereValueProviderFactory());
             });
 
-        }
-        
-        
+        } // End Sub ConfigureServices 
+
+
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
@@ -64,10 +64,10 @@ namespace AnySqlWebAdmin
             app.UseSqlMiddleware();
 
             app.UseMvc();
-        }
-        
-        
-    }
-    
-    
-}
+        } // End Sub Configure 
+
+
+    } // End Class Startup 
+
+
+} // End Namespace AnySqlWebAdmin 

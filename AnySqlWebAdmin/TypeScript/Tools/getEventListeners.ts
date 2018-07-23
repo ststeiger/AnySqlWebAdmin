@@ -72,7 +72,8 @@ interface Element
                     continue;
                 
                 this.clearEventListeners(thisType);
-            }
+            } // Next thisType 
+
             return;
         } // End if (type == undefined) 
 
