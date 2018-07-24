@@ -18,13 +18,13 @@ var TableWrapper = (function () {
             var propName = columns[i];
             Object.defineProperty(this_1.m_accessor, propName, {
                 get: function () {
-                    var aa = that.rows[that.m_i];
-                    return aa == null ? aa : aa[i];
+                    var myrow = that.rows[that.m_i];
+                    return myrow == null ? myrow : myrow[i];
                 },
                 set: function (value) {
-                    var aa = that.rows[that.m_i];
-                    if (aa != null)
-                        aa[i] = value;
+                    var myrow = that.rows[that.m_i];
+                    if (myrow != null)
+                        myrow[i] = value;
                 },
                 enumerable: true,
                 configurable: true
