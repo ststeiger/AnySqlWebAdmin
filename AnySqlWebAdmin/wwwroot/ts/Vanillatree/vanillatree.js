@@ -237,6 +237,32 @@ var Tree;
             return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
                 s4() + '-' + s4() + s4() + s4();
         };
+        VanillaTree.prototype.getTable = function (url, data) {
+            return __awaiter(this, void 0, void 0, function () {
+                var sendData, a, json, obj, tab;
+                return __generator(this, function (_a) {
+                    switch (_a.label) {
+                        case 0:
+                            sendData = {
+                                "method": 'POST',
+                                "headers": new Headers({ 'content-type': 'application/json' }),
+                                "body": null
+                            };
+                            if (data != null)
+                                sendData["body"] = JSON.stringify(data);
+                            return [4, fetch(url, sendData)];
+                        case 1:
+                            a = _a.sent();
+                            return [4, a.text()];
+                        case 2:
+                            json = _a.sent();
+                            obj = JSON.parse(json);
+                            tab = obj.tables[0];
+                            return [2, tab];
+                    }
+                });
+            });
+        };
         VanillaTree.prototype.addBranch = function (id) {
             return __awaiter(this, void 0, void 0, function () {
                 var data, i, e_1;
@@ -247,14 +273,9 @@ var Tree;
                             _a.label = 1;
                         case 1:
                             _a.trys.push([1, 3, , 4]);
-                            return [4, fetch("sql", {
-                                    "method": 'POST',
-                                    "headers": new Headers({ 'content-type': 'application/json' }),
-                                    "body": JSON.stringify({ "id": id, })
-                                })
-                                    .then(function (response) { return response.json(); })];
+                            return [4, this.getTable("sql?sql=Tree.Navigation.sql&format=3", { "__in_parent": id })];
                         case 2:
-                            data = (_a.sent());
+                            data = _a.sent();
                             for (i = 0; i < data.length; ++i) {
                                 data[i].parent = id;
                                 this.add(data[i]);

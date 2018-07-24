@@ -63,7 +63,7 @@ text
                     new System.Data.SqlClient.SqlParameter("__in_parent", parent)
                 );
 
-                SerializeDataTableAsAssociativeJsonArray(cmd, context.Response.Body, true, System.Text.Encoding.UTF8);
+                SerializeDataTableAsAssociativeJsonArray(cmd, context, true, System.Text.Encoding.UTF8);
             }
 
 
@@ -71,101 +71,89 @@ text
 
 
 
-        public static void SerializeDataTableAsAssociativeJsonArray(System.Data.Common.DbCommand cmd, System.IO.Stream output, bool pretty, System.Text.Encoding enc)
+        public static void SerializeDataTableAsAssociativeJsonArray(
+              System.Data.Common.DbCommand cmd 
+            , Microsoft.AspNetCore.Http.HttpContext context 
+            , bool pretty 
+            , System.Text.Encoding enc) 
         {
-            Newtonsoft.Json.JsonSerializer ser = new Newtonsoft.Json.JsonSerializer();
-
-            using (System.IO.TextWriter sw = new System.IO.StreamWriter(output, enc))
+            SqlService service = (SqlService) context.RequestServices.GetService(typeof(SqlService));
+            
+            using (System.IO.TextWriter sw = new System.IO.StreamWriter(context.Response.Body, enc))
             {
-
+                
                 using (Newtonsoft.Json.JsonTextWriter jsonWriter = new Newtonsoft.Json.JsonTextWriter(sw))
                 {
                     if (pretty)
                         jsonWriter.Formatting = Newtonsoft.Json.Formatting.Indented;
-
+                    
                     // jsonWriter.WriteStartObject();
-
                     // jsonWriter.WritePropertyName("tables");
                     // jsonWriter.WriteStartArray();
-
-                    var csb = new System.Data.SqlClient.SqlConnectionStringBuilder();
-
-                    csb.DataSource = System.Environment.MachineName + @"\SQLEXPRESS";
-                    csb.InitialCatalog = "COR_Basic_Demo_V4";
-                    csb.IntegratedSecurity = true;
-                    if (!csb.IntegratedSecurity)
-                    {
-                        csb.UserID = "";
-                        csb.Password = "";
-                    }
-
-                    using (System.Data.Common.DbConnection con = new System.Data.SqlClient.SqlConnection(csb.ConnectionString))
+                    
+                    using (System.Data.Common.DbConnection con = service.Connection)
                     {
                         cmd.Connection = con;
-
+                        
                         if (con.State != System.Data.ConnectionState.Open)
                             con.Open();
-
+                        
                         try
                         {
-
+                            
                             using (System.Data.Common.DbDataReader dr = cmd.ExecuteReader(System.Data.CommandBehavior.SequentialAccess
                                  | System.Data.CommandBehavior.CloseConnection
                                 ))
                             {
-
+                                
                                 do
                                 {
                                     // jsonWriter.WriteStartObject(); // tbl = new Table();
-
+                                    
                                     //jsonWriter.WritePropertyName("columns");
-
+                                    
                                     //// WriteArray(jsonWriter, dr);
                                     //WriteAssociativeArray(jsonWriter, dr);
-
-
+                                    
                                     //jsonWriter.WritePropertyName("rows");
                                     jsonWriter.WriteStartArray();
-
+                                    
                                     if (dr.HasRows)
                                     {
-
                                         string[] columns = new string[dr.FieldCount];
-
+                                        
                                         for (int i = 0; i < dr.FieldCount; i++)
                                         {
                                             columns[i] = dr.GetName(i);
                                         } // Next i 
-
+                                        
                                         while (dr.Read())
-                                        {
-                                            object[] thisRow = new object[dr.FieldCount];
-
+                                        {                                            
                                             // jsonWriter.WriteStartArray(); // object[] thisRow = new object[dr.FieldCount];
                                             jsonWriter.WriteStartObject(); // tbl = new Table();
-
+                                            
                                             for (int i = 0; i < dr.FieldCount; ++i)
                                             {
-
                                                 jsonWriter.WritePropertyName(columns[i]);
-
+                                                
                                                 object obj = dr.GetValue(i);
-                                                if (obj == System.DBNull.Value) obj = null;
-
+                                                if (obj == System.DBNull.Value) 
+                                                    obj = null;
+                                                
                                                 jsonWriter.WriteValue(obj);
                                             } // Next i
-
+                                            
                                             // jsonWriter.WriteEndArray(); // tbl.Rows.Add(thisRow);
                                             jsonWriter.WriteEndObject();
                                         } // Whend 
-
+                                        
                                     } // End if (dr.HasRows) 
-
+                                    
                                     jsonWriter.WriteEndArray();
-
+                                    
                                     // jsonWriter.WriteEndObject(); // ser.Tables.Add(tbl);
                                 } while (dr.NextResult());
-
+                                
                             } // End using dr 
                         }
                         catch (System.Exception ex)
@@ -173,38 +161,38 @@ text
                             System.Console.WriteLine(ex.Message);
                             throw;
                         }
-
+                        
                         if (con.State != System.Data.ConnectionState.Closed)
                             con.Close();
                     } // End using con 
-
+                    
                     // jsonWriter.WriteEndArray();
-
+                    
                     // jsonWriter.WriteEndObject();
                     jsonWriter.Flush();
                 } // End Using jsonWriter 
-
+                
             } // End Using sw 
-
+            
         } // End Sub SerializeDataTableAsAssociativeJsonArray 
         
-
+        
         public void Test(Microsoft.AspNetCore.Http.HttpContext context)
         {
             object parent = context.Request.Query["id"].ToString();
-
+            
             if (context.Request.HasFormContentType)
             {
                 if (context.Request.Form != null)
                     parent = context.Request.Form["id"].ToString();
             } // End if (context.Request.HasFormContentType) 
-
+            
             if ("null".Equals((string)parent, System.StringComparison.OrdinalIgnoreCase) || string.IsNullOrWhiteSpace((string)parent))
                 parent = System.DBNull.Value;
         } // End Sub Test 
-
-
+        
+        
     } // End Class TreeHelper 
-
-
+    
+    
 } // End Namespace AnySqlWebAdmin 

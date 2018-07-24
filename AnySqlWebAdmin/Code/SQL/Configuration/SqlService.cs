@@ -171,10 +171,16 @@ namespace AnySqlWebAdmin
             foreach (System.Collections.Generic.KeyValuePair<string, object> kvp in pars)
             {
                 string key = kvp.Key;
+                object value = kvp.Value;
+                
                 if (!key.StartsWith("@"))
                     key = "@" + key;
 
-                var p = new System.Data.SqlClient.SqlParameter(key, kvp.Value);
+
+                if (value == null)
+                    value = System.DBNull.Value;
+                
+                var p = new System.Data.SqlClient.SqlParameter(key, value);
                 // cmd.Parameters.Add(new System.Data.SqlClient.SqlParameter(key, kvp.Value));
                 cmd.Parameters.Add(p);
             }

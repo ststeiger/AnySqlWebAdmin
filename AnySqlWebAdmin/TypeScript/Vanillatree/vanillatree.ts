@@ -396,39 +396,62 @@ namespace Tree
             return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
                 s4() + '-' + s4() + s4() + s4();
         }
-
-
+        
+        
+        public async getTable<T>(url:string, data?: object):Promise<T>
+        {
+            let sendData = 
+            {
+                "method": 'POST',
+                // "headers": { 'auth': '1234','content-type': 'application/json'},
+                // https://stackoverflow.com/questions/38156239/how-to-set-the-content-type-of-request-header-when-using-fetch-api
+                "headers": new Headers({ 'content-type': 'application/json' }),
+                "body":  <any>null
+            };
+            
+            if (data != null) 
+                sendData["body"] = JSON.stringify( data );
+            
+            let a:Response = await fetch(url, sendData);
+            
+            let json = await a.text();
+            let obj = JSON.parse(json);
+            
+            let tab = obj.tables[0];
+            return <T>tab;
+        }
+        
+        
         public async addBranch(id: string): Promise<IOptions[]>
         {
             let data: IOptions[] = null;
-
+            
             try
             {
-                // Http.URL.Parameters["uid"];
-
-                //data = <IOptions[]><any>await fetch("api/treedata", {
-                data = <IOptions[]><any>await fetch("sql", {
+                /*
+                data = <IOptions[]><any>await fetch("sql?sql=Tree.Navigation.sql&format=3", {
                     "method": 'POST',
                     // "headers": { 'auth': '1234','content-type': 'application/json'},
-
+                    
                     // https://stackoverflow.com/questions/38156239/how-to-set-the-content-type-of-request-header-when-using-fetch-api
                     "headers": new Headers({ 'content-type': 'application/json' }),
-
+                    
                     "body": JSON.stringify(
-                        { "id": id, }
+                        { "__in_parent": id, }
                     )
                 })
                 .then(function (response) { return response.json(); })
+                .then(function (dat) { return dat.tables[0]; })
                 ;
-
-                // window["foo"] = data;
-
+                */
+                data = await this.getTable<IOptions[]>("sql?sql=Tree.Navigation.sql&format=3", { "__in_parent": id });
+                
                 for (let i = 0; i < data.length; ++i)
                 {
                     data[i].parent = id;
                     this.add(data[i]);
                 } // Next i
-
+                
             }
             catch (e)
             {
