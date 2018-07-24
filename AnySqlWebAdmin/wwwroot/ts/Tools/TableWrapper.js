@@ -74,28 +74,11 @@ var TableWrapper = (function () {
     };
     TableWrapper.prototype.addRow = function (dat) {
         this.rows.push(dat);
+        return this;
     };
     TableWrapper.prototype.removeRow = function (i) {
         this.rows.splice(i, 1);
+        return this;
     };
     return TableWrapper;
 }());
-export { TableWrapper };
-var tab = new TableWrapper(["col1", "col2"], [[1, 2], [3, 4]]);
-var hi = new TableWrapper(["a", "b", "c"], [[1, 2, 3], [4, 5, 6]]);
-console.log(tab.row(0).col1);
-console.log(hi.row(0).a);
-console.log(hi.row(1).b);
-console.log(hi.row(0).c);
-hi.row(0).a = 123;
-for (var i = 0; i < hi.rowCount; ++i) {
-    for (var j = 0; j < hi.columnCount; ++j) {
-        console.log(hi.rows[i][j]);
-        console.log(hi.row(i).a);
-        console.log(hi.row(i).b);
-        console.log(hi.row(i).c);
-        console.log(hi.row(i)[hi.columns[j]]);
-        console.log(hi.row(i)[hi.columns[j]]);
-        console.log(hi.row(i)[hi.columns[j]]);
-    }
-}

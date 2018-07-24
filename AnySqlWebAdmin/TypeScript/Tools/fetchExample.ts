@@ -2,9 +2,9 @@
 namespace TestFetchAsync 
 {
 
-    export async function get(url):Promise<Response>
+    export async function get(url:string):Promise<Response>
     {
-        return await fetch('/some/url', {
+        return await fetch(url, {
             method: 'GET'
         });
     }
@@ -15,12 +15,14 @@ namespace TestFetchAsync
 namespace TestFetch
 {
 
+
     // https://deanhume.com/a-basic-guide-to-the-fetch-api/
     // https://github.com/mdn/fetch-examples
-    export function basicExample(url)
+    export function basicExample(url:string)
     {
         let myImage = document.querySelector('img');
-        let myRequest = new Request('flowers.jpg');
+        //let myRequest = new Request('flowers.jpg');
+        let myRequest = new Request(url);
 
         fetch(myRequest)
             .then(function (response:Response)
@@ -46,11 +48,53 @@ namespace TestFetch
     }
 
 
-    export function getImage(url)
+    interface IOptions
+    {
+        propA: string;
+        propB: number;
+        propC: Date;
+        procD: boolean;
+    }
+
+
+    export async function getSomeTableExample(id: string) // : Promise<IOptions[]>
+    {
+        let data: IOptions[] = null;
+            
+        try
+        {
+            data = <IOptions[]><any>await fetch("sql?sql=Tree.Navigation.sql&format=3", {
+                "method": 'POST',
+                // "headers": { 'auth': '1234','content-type': 'application/json'},
+                    
+                // https://stackoverflow.com/questions/38156239/how-to-set-the-content-type-of-request-header-when-using-fetch-api
+                "headers": new Headers({ 'content-type': 'application/json' }),
+                    
+                "body": JSON.stringify(
+                    { "__in_parent": id, }
+                )
+            })
+            .then(function (response) { return response.json(); })
+            .then(function (dat) { return dat.tables[0]; })
+            ;
+                
+        }
+        catch (e)
+        {
+            console.log(e);
+            alert("error fetching branch data\n" + e);
+        }
+
+        return data;
+    }
+
+
+    export function getImage(url:string)
     {
         let myImage: HTMLImageElement = <HTMLImageElement> document.querySelector('.my-image');
 
-        fetch('flowers.jpg')
+        //fetch('flowers.jpg')
+        fetch(url)
             .then(function (response:Response)
             {
                 if (!response.ok) return new Error(<any>response);
@@ -67,12 +111,14 @@ namespace TestFetch
             });
 
     }
-    
+
+
     export function getAudio()
     {
         // define variables
         let audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        let source;
+        let source:any;
+
 
         let pre = document.querySelector('pre');
         let myScript = document.querySelector('script');
@@ -90,7 +136,7 @@ namespace TestFetch
                 .then(function (response) { return response.arrayBuffer(); })
                 .then(function (buffer)
                 {
-                    audioCtx.decodeAudioData(buffer, function (decodedData)
+                    audioCtx.decodeAudioData(buffer, function (decodedData:any)
                     {
                         source.buffer = decodedData;
                         source.connect(audioCtx.destination);
@@ -116,6 +162,7 @@ namespace TestFetch
         pre.innerHTML = myScript.innerHTML;
     }
 
+
     export function fetchJSON()
     {
         let myList = document.querySelector('ul');
@@ -135,6 +182,7 @@ namespace TestFetch
             });
     }
 
+
     export function fetchText()
     {
         let myArticle = document.querySelector('article');
@@ -149,7 +197,7 @@ namespace TestFetch
             }
         };
 
-        function getData(pageId)
+        function getData(pageId:string)
         {
             console.log(pageId);
             let myRequest = new Request(pageId + '.txt');
@@ -165,7 +213,7 @@ namespace TestFetch
     }
 
 
-    export function post(url)
+    export function post(url:string)
     {
         fetch(url, {
             method: 'POST',
@@ -188,9 +236,9 @@ namespace TestFetch
     }
 
 
-    export function get(url)
+    export function get(url:string)
     {
-        fetch('/some/url', {
+        fetch(url, {
             method: 'GET'
         })
         .then(function (response)

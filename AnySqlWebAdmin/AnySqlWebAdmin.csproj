@@ -8,6 +8,7 @@
     <Compile Remove="Code\SqlServiceJsonHelperAssociative.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Remove="TypeScript\fetch.ts" />
     <None Remove="TypeScript\Tools\test.ts" />
     <None Remove="TypeScript\urlModifier.ts" />
   </ItemGroup>

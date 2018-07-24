@@ -4,87 +4,77 @@ namespace Tree
 {
     "use strict";
 
-    interface TreeClickEvent extends MouseEvent 
-    {
-        target: HTMLElement;
-    }
-
-
     export interface ITreeEventDetailData 
     {
         id: string;
     }
+
 
     export interface ITreeEvent extends CustomEvent
     {
         detail: ITreeEventDetailData;
     }
 
-    /*
-      event = new CustomEvent('vtree-' + name, {
-                    bubbles: true,
-                    cancelable: true,
-                    detail: {
-                        id: id
-                    }
-                });
-    */
+
+    interface TreeClickEvent extends MouseEvent 
+    {
+        target: HTMLElement;
+    }
+
 
     interface IOptions
     {
-        url:string,
-        id: string,
-        parent: string, // id
-        text: string,
-        opened: boolean,
-        hasChildren:boolean,
-        
+        url: string;
+        id: string;
+        parent: string; // id
+        text: string;
+        opened: boolean;
+        hasChildren: boolean;
+
         // TODO: 
-        selected(id: string):any,
-        
-        placeholder: string,
-        contextmenu: IContextMenuEntry[]
+        selected(id: string): any;
+
+        placeholder: string;
+        contextmenu: IContextMenuEntry[];
     }
 
 
     interface ITreeData
     {
-
-        Rows:IOptions[]
+        Rows: IOptions[];
     }
-
 
 
     interface IVanillaTreeOptions
     {
-        url: string,
-        id: string,
-        e: Element,
-        options: IOptions
-
+        url: string;
+        id: string;
+        e: Element;
+        options: IOptions;
     }
 
 
     interface IContextMenuEntry
     {
-        label: string,
+        label: string;
         // TODO: 
-        action(id: string):any 
+        action(id: string): any;
     }
 
 
     export class VanillaTree
     {
-        private m_container: HTMLElement;
-        private m_tree: HTMLUListElement;
-        private m_placeholder: string;
-        private m_leafs: { [id: string]: IOptions; };
-        private m_url: string;
-        private m_refetch:boolean = false;
+        protected m_container: HTMLElement;
+        protected m_tree: HTMLUListElement;
+        protected m_placeholder: string;
+        protected m_leafs: { [id: string]: IOptions; };
+        protected m_url: string;
+        protected m_refetch: boolean = false;
+
 
         // https://ponyfoo.com/articles/binding-methods-to-class-instance-objects
         // https://github.com/sindresorhus/auto-bind/blob/master/index.js
-        private autoBind(self: any)
+        protected autoBind(self: any)
         {
             for (const key of Object.getOwnPropertyNames(self.constructor.prototype))
             {
@@ -94,7 +84,8 @@ namespace Tree
                 {
                     // console.log(key);
                     self[key] = val.bind(self);
-                }
+                } // End if (key !== 'constructor' && typeof val === 'function') 
+
             } // Next key 
 
             return self;
@@ -115,9 +106,9 @@ namespace Tree
             }));
 
             this.m_placeholder = options && options.placeholder;
-            this._placeholder();
+            this.placeholder();
             this.m_leafs = {};
-            this.m_tree.addEventListener('click', function (evt:TreeClickEvent)
+            this.m_tree.addEventListener('click', function (evt: TreeClickEvent)
             {
                 if (evt.target.classList.contains("vtree-leaf-label"))
                 {
@@ -178,18 +169,18 @@ namespace Tree
                                 })
                             )
                                 .addEventListener('click'
-                                    , item.action.bind(
-                                        item
-                                        , (<HTMLElement>evt.target).parentElement.getAttribute('data-vtree-id')
-                                    )
+                                , item.action.bind(
+                                    item
+                                    , (<HTMLElement>evt.target).parentElement.getAttribute('data-vtree-id')
+                                )
                                 );
                         }.bind(this));
 
                         (<HTMLElement>evt.target).parentElement.appendChild(menu);
-                    }
+                    } // End if ((<HTMLElement>evt.target).classList.contains("vtree-leaf-label")) 
                 }.bind(this));
 
-                document.addEventListener('click', function (evt:MouseEvent)
+                document.addEventListener('click', function (evt: MouseEvent)
                 {
                     let contextMenus: NodeListOf<Element> = this.m_tree.querySelectorAll('.vtree-contextmenu');
 
@@ -202,22 +193,24 @@ namespace Tree
 
             } // End if (options && options.contextmenu) 
 
-        } // End Constructor
-        
+        } // End Constructor 
+
         // TODO:
-        private setProperties(obj: any // HTMLElement
+        protected setProperties(obj: any // HTMLElement
             , props: object & { [propertyName: string]: string }): HTMLElement
         {
             if (props)
             {
+
                 for (let i = 0, keys = Object.keys(props); i < keys.length; i++)
                 {
                     obj[keys[i]] = props[keys[i]];
-                }
-            }
+                } // Next i 
+
+            } // End if (props) 
 
             return obj;
-        } // End Function setProperties
+        } // End Function setProperties 
 
 
         public create(tagName: string, props: { [propertyName: string]: string }): HTMLElement
@@ -226,7 +219,7 @@ namespace Tree
         } // End Function create 
 
 
-        private async dispatchEvent(name: string, id: string): Promise<VanillaTree>
+        protected async dispatchEvent(name: string, id: string): Promise<VanillaTree>
         {
             let event: CustomEvent;
 
@@ -235,22 +228,20 @@ namespace Tree
                 event = new CustomEvent('vtree-' + name, {
                     bubbles: true,
                     cancelable: true,
-                    detail: {
-                        id: id
-                    }
+                    detail: { id: id }
                 });
             } catch (e)
             {
                 event = document.createEvent('CustomEvent');
-                event.initCustomEvent('vtree-' + name, true, true, {id: id});
+                event.initCustomEvent('vtree-' + name, true, true, { id: id });
             }
 
             (this.getLeaf(id, true) || this.m_tree)
                 .dispatchEvent(event);
-            
+
             return new Promise<VanillaTree>(
-                function (  resolve:(value?:PromiseLike<VanillaTree> | VanillaTree) => void
-                          //, reject: (reason?:any)=> void  
+                function (resolve: (value?: PromiseLike<VanillaTree> | VanillaTree) => void
+                    //, reject: (reason?:any)=> void  
                 )
                 {
                     resolve(this);
@@ -259,7 +250,7 @@ namespace Tree
         } // End Function dispatchEvent 
 
 
-        private _placeholder(): VanillaTree
+        protected placeholder(): VanillaTree
         {
             let p: Element;
             // if no children & placeholder
@@ -273,11 +264,11 @@ namespace Tree
             }
 
             return this;
-        } // End Function _placeholder 
+        } // End Function placeholder 
 
 
         // notThrow: optional...
-        private getLeaf(id: string, notThrow?: boolean): Element
+        protected getLeaf(id: string, notThrow?: boolean): Element
         {
             let leaf: Element = this.m_tree.querySelector('[data-vtree-id="' + id + '"]');
 
@@ -288,7 +279,7 @@ namespace Tree
         } // End Function getLeaf 
 
 
-        private getChildList(id: string): HTMLUListElement
+        protected getChildList(id: string): HTMLUListElement
         {
             let list: HTMLUListElement, parent: Element;
 
@@ -351,8 +342,8 @@ namespace Tree
                 this.select(id);
             }
 
-            return this._placeholder().dispatchEvent('add', id);
-        } // End Function add
+            return this.placeholder().dispatchEvent('add', id);
+        } // End Function add 
 
 
         public async move(id: string, parentId: string): Promise<VanillaTree>
@@ -381,11 +372,11 @@ namespace Tree
             oldParent.removeChild(leaf);
             oldParent.parentElement.classList.toggle('vtree-has-children', !!oldParent.children.length);
 
-            return this._placeholder().dispatchEvent('remove', id);
-        } // End Function remove
+            return this.placeholder().dispatchEvent('remove', id);
+        } // End Function remove 
 
 
-        private newId():string
+        protected newId(): string
         {
             function s4()
             {
@@ -393,65 +384,49 @@ namespace Tree
                     .toString(16)
                     .substring(1);
             }
+
             return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
                 s4() + '-' + s4() + s4() + s4();
-        }
-        
-        
-        public async getTable<T>(url:string, data?: object):Promise<T>
+        } // End Function newId 
+
+
+        protected async getTable<T>(url: string, data?: object): Promise<T>
         {
-            let sendData = 
-            {
-                "method": 'POST',
-                // "headers": { 'auth': '1234','content-type': 'application/json'},
-                // https://stackoverflow.com/questions/38156239/how-to-set-the-content-type-of-request-header-when-using-fetch-api
-                "headers": new Headers({ 'content-type': 'application/json' }),
-                "body":  <any>null
-            };
-            
-            if (data != null) 
-                sendData["body"] = JSON.stringify( data );
-            
-            let a:Response = await fetch(url, sendData);
-            
-            let json = await a.text();
+            let sendData =
+                {
+                    "method": 'POST',
+                    // "headers": { 'auth': '1234','content-type': 'application/json'},
+                    // https://stackoverflow.com/questions/38156239/how-to-set-the-content-type-of-request-header-when-using-fetch-api
+                    "headers": new Headers({ 'content-type': 'application/json' }),
+                    "body": <any>null
+                };
+
+            if (data != null)
+                sendData["body"] = JSON.stringify(data);
+
+            let resp: Response = await fetch(url, sendData);
+            let json = await resp.text();
             let obj = JSON.parse(json);
-            
+
             let tab = obj.tables[0];
             return <T>tab;
-        }
-        
-        
+        } // End Function getTable 
+
+
         public async addBranch(id: string): Promise<IOptions[]>
         {
             let data: IOptions[] = null;
-            
+
             try
             {
-                /*
-                data = <IOptions[]><any>await fetch("sql?sql=Tree.Navigation.sql&format=3", {
-                    "method": 'POST',
-                    // "headers": { 'auth': '1234','content-type': 'application/json'},
-                    
-                    // https://stackoverflow.com/questions/38156239/how-to-set-the-content-type-of-request-header-when-using-fetch-api
-                    "headers": new Headers({ 'content-type': 'application/json' }),
-                    
-                    "body": JSON.stringify(
-                        { "__in_parent": id, }
-                    )
-                })
-                .then(function (response) { return response.json(); })
-                .then(function (dat) { return dat.tables[0]; })
-                ;
-                */
                 data = await this.getTable<IOptions[]>("sql?sql=Tree.Navigation.sql&format=3", { "__in_parent": id });
-                
+
                 for (let i = 0; i < data.length; ++i)
                 {
                     data[i].parent = id;
                     this.add(data[i]);
                 } // Next i
-                
+
             }
             catch (e)
             {
@@ -460,24 +435,21 @@ namespace Tree
             }
 
             return data;
-        }
+        } // End Function addBranch 
 
 
         public async open(id: string): Promise<VanillaTree>
         {
             let leaf = this.getLeaf(id);
-            let children= Array.prototype.slice.call(leaf.getElementsByTagName("ul")) || [];
-            
-            
-            /*
-            TODO:
-            let children :NodeListOf<HTMLUListElement> =<NodeListOf<HTMLUListElement>><any> 
-                leaf.getElementsByTagName("ul") || [];
-            */
+            let children = Array.prototype.slice.call(leaf.getElementsByTagName("ul")) || [];
+
+            // TODO:
+            // let children :NodeListOf<HTMLUListElement> =<NodeListOf<HTMLUListElement>><any>
+            //     leaf.getElementsByTagName("ul") || [];
+
             leaf.classList.remove('closed');
 
-            // wenn kinder & refetch entfernen 
-
+            // if children & refetch entfernen 
             if (children.length == 0)
             {
                 await this.addBranch(id);
@@ -486,7 +458,7 @@ namespace Tree
             {
                 if (this.m_refetch)
                 {
-                    for (let i = 0; i < children.length;++i)
+                    for (let i = 0; i < children.length; ++i)
                     {
                         leaf.removeChild(children[i]);
                     }
@@ -496,7 +468,7 @@ namespace Tree
             }
 
             return this.dispatchEvent('open', id);
-        } // End Function open
+        } // End Function open 
 
 
         public async close(id: string): Promise<VanillaTree>
@@ -529,19 +501,19 @@ namespace Tree
                 leaf.classList.add('vtree-selected');
                 return this.dispatchEvent('select', id);
             } // End if (!leaf.classList.contains('vtree-selected'))
-            
+
             return new Promise<VanillaTree>(
-                function (  resolve:(value?:PromiseLike<VanillaTree> | VanillaTree) => void
+                function (resolve: (value?: PromiseLike<VanillaTree> | VanillaTree) => void
                     //, reject: (reason?:any)=> void  
                 )
                 {
                     resolve(this);
                 }.bind(this)
             );
-        } // End Function select
+        } // End Function select 
 
 
-    } // End Class 
+    } // End Class VanillaTree 
 
 
 } // End Namespace 

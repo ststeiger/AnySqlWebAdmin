@@ -9,26 +9,28 @@ async function main()
             id: "main",
             parent: null,
             text: "",
-            opened: false, 
+            opened: false,
             hasChildren: true,
             selected: null,
             placeholder: null,
             url: "jsonp",
-            contextmenu: [{
-                label: 'Hey',
-                action: function (id)
+            contextmenu: [
                 {
-                    alert('Hey ' + id);
+                    label: 'Hey',
+                    action: function (id: string)
+                    {
+                        alert('Hey ' + id);
+                    }
+                },
+                {
+                    label: 'Blah',
+                    action: function (id: string)
+                    {
+                        alert('Blah ' + id);
+                    }
                 }
-            },
-            {
-            label: 'Blah',
-            action: function (id)
-            {
-                alert('Blah ' + id);
-            }
-        }]
-    });
+            ]
+        });
 
 
     tree.addBranch(null);

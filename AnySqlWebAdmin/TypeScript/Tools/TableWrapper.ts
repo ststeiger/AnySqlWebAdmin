@@ -1,25 +1,5 @@
 
-// https://stackoverflow.com/questions/11955298/use-sudo-with-password-as-parameter
-// let setScriptSudo:string = "sudo chmod +s myscript";
-
-
-interface ITestTable1
-{
-    col1:number;
-    col2:number;
-}
-
-
-interface ITestTable2
-{
-    a:number;
-    b:number;
-    c:number;
-}
-
-
-
-export class TableWrapper<T>
+class TableWrapper<T>
 {
     public rows:any[][];
     protected m_accessor:object;
@@ -61,7 +41,7 @@ export class TableWrapper<T>
         }
         
         this.m_columns = cols;
-    }
+    } // End Sub setColumns 
 
 
     public row(i:number):T
@@ -80,12 +60,14 @@ export class TableWrapper<T>
     public addRow(dat:any[])
     {
         this.rows.push(dat);
+        return this;
     }
     
     
     public removeRow(i:number)
     {
-        this.rows.splice(i,  1);
+        this.rows.splice(i, 1);
+        return this;
     }
     
     
@@ -97,7 +79,7 @@ export class TableWrapper<T>
         for (let i = 0; i< columns.length; ++i)
         {
             columns[i] = columns[i].toLowerCase();
-        }
+        } // Next i 
         
         
         let that = this;
@@ -117,13 +99,15 @@ export class TableWrapper<T>
             let propName = columns[i];
             
             Object.defineProperty(this.m_accessor, propName, {
-                // Using shorthand method names (ES2015 feature).
-                // get() { },
-                // set(value) { },
-                // This is equivalent to:
-                // get: function() { return bValue; },
-                // get: getter,
-                // set: setter,
+                // Using shorthand method names (ES2015 feature). 
+                // get() { return bValue;}, 
+                // set(value) { bValue = value;}, 
+                // This is equivalent to: 
+                // get: function() { return bValue; }, 
+                // set: function(value) { bValue = value; }, 
+                // And could be written as (getter = getter.bind(this)) 
+                // get: getter, 
+                // set: setter, 
                 get: function ()
                 { 
                     let currentRow =  <any> that.rows[that.m_i];
@@ -138,10 +122,27 @@ export class TableWrapper<T>
                 enumerable: true,
                 configurable: true
             });
-        }
+        } // Next i 
         
-    }
+    } // End Constructor 
     
+}
+
+
+/*
+
+interface ITestTable1
+{
+    col1:number;
+    col2:number;
+}
+
+
+interface ITestTable2
+{
+    a:number;
+    b:number;
+    c:number;
 }
 
 
@@ -176,7 +177,11 @@ for (let i = 0; i< hi.rowCount; ++i)
     
 }
 
+*/
 
+
+// https://stackoverflow.com/questions/11955298/use-sudo-with-password-as-parameter
+// let setScriptSudo:string = "sudo chmod +s myscript";
 
 // http://fiyazhasan.me/npm-bower-nuget-gulp-the-four-horsemen-of-asp-net-core-apps/
 // https://github.com/Microsoft/TypeScript/issues/17332

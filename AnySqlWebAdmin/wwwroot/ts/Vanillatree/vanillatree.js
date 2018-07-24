@@ -48,7 +48,7 @@ var Tree;
                 className: 'vtree'
             }));
             this.m_placeholder = options && options.placeholder;
-            this._placeholder();
+            this.placeholder();
             this.m_leafs = {};
             this.m_tree.addEventListener('click', function (evt) {
                 if (evt.target.classList.contains("vtree-leaf-label")) {
@@ -125,9 +125,7 @@ var Tree;
                         event = new CustomEvent('vtree-' + name, {
                             bubbles: true,
                             cancelable: true,
-                            detail: {
-                                id: id
-                            }
+                            detail: { id: id }
                         });
                     }
                     catch (e) {
@@ -142,7 +140,7 @@ var Tree;
                 });
             });
         };
-        VanillaTree.prototype._placeholder = function () {
+        VanillaTree.prototype.placeholder = function () {
             var p;
             if (!this.m_tree.children.length && this.m_placeholder) {
                 this.m_tree.innerHTML = '<li class="vtree-placeholder">' + this.m_placeholder + '</li>';
@@ -199,7 +197,7 @@ var Tree;
                     if (options.selected) {
                         this.select(id);
                     }
-                    return [2, this._placeholder().dispatchEvent('add', id)];
+                    return [2, this.placeholder().dispatchEvent('add', id)];
                 });
             });
         };
@@ -224,7 +222,7 @@ var Tree;
                     leaf = this.getLeaf(id), oldParent = leaf.parentElement;
                     oldParent.removeChild(leaf);
                     oldParent.parentElement.classList.toggle('vtree-has-children', !!oldParent.children.length);
-                    return [2, this._placeholder().dispatchEvent('remove', id)];
+                    return [2, this.placeholder().dispatchEvent('remove', id)];
                 });
             });
         };
@@ -239,7 +237,7 @@ var Tree;
         };
         VanillaTree.prototype.getTable = function (url, data) {
             return __awaiter(this, void 0, void 0, function () {
-                var sendData, a, json, obj, tab;
+                var sendData, resp, json, obj, tab;
                 return __generator(this, function (_a) {
                     switch (_a.label) {
                         case 0:
@@ -252,8 +250,8 @@ var Tree;
                                 sendData["body"] = JSON.stringify(data);
                             return [4, fetch(url, sendData)];
                         case 1:
-                            a = _a.sent();
-                            return [4, a.text()];
+                            resp = _a.sent();
+                            return [4, resp.text()];
                         case 2:
                             json = _a.sent();
                             obj = JSON.parse(json);

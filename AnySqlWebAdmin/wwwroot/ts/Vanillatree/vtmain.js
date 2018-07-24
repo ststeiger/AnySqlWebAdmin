@@ -48,7 +48,8 @@ function main() {
                 selected: null,
                 placeholder: null,
                 url: "jsonp",
-                contextmenu: [{
+                contextmenu: [
+                    {
                         label: 'Hey',
                         action: function (id) {
                             alert('Hey ' + id);
@@ -59,7 +60,8 @@ function main() {
                         action: function (id) {
                             alert('Blah ' + id);
                         }
-                    }]
+                    }
+                ]
             });
             tree.addBranch(null);
             main.addEventListener('vtree-open', function (evt) {
