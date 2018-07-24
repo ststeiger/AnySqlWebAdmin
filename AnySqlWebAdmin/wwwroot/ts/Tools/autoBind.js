@@ -15,8 +15,8 @@ export var autoBind;
                     isFunction = false;
                 }
                 if (isFunction && typeof (self[key]) === 'function') {
-                    var val = self[key];
-                    self[key] = val.bind(self);
+                    var val_1 = self[key];
+                    self[key] = val_1.bind(self);
                 }
             }
         }
@@ -26,9 +26,9 @@ export var autoBind;
     function autoBind_old(self) {
         for (var _i = 0, _a = Object.getOwnPropertyNames(self.constructor.prototype); _i < _a.length; _i++) {
             var key = _a[_i];
-            var val = self[key];
-            if (key !== 'constructor' && typeof val === 'function') {
-                self[key] = val.bind(self);
+            var val_2 = self[key];
+            if (key !== 'constructor' && typeof val_2 === 'function') {
+                self[key] = val_2.bind(self);
             }
         }
         return self;

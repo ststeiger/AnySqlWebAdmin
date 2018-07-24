@@ -186,3 +186,36 @@ for (let i = 0; i< hi.rowCount; ++i)
 // http://fiyazhasan.me/npm-bower-nuget-gulp-the-four-horsemen-of-asp-net-core-apps/
 // https://github.com/Microsoft/TypeScript/issues/17332
 // https://github.com/Microsoft/TypeScript/issues/5134
+
+
+
+// https://stackoverflow.com/questions/9329446/for-each-over-an-array-in-javascript
+
+var a = ["a", "b", "c"];
+for (let val of a)
+{
+    console.log(val);
+}
+
+
+
+//let it = a.values();
+//var entry;
+//while (!(entry = it.next()).done)
+//{
+//    console.log(entry.value);
+//}
+
+// var divs = Array.from(document.querySelectorAll("div"));
+
+
+// https://stackoverflow.com/questions/5101948/javascript-checking-for-null-vs-undefined-and-difference-between-and/5101991#5101991
+// https://stackoverflow.com/questions/13341698/javascript-plus-sign-in-front-of-function-name/13341710#13341710
+// https://stackoverflow.com/questions/5786851/define-global-variable-in-a-javascript-function/5786899#5786899
+// https://stackoverflow.com/users/157247/t-j-crowder
+
+
+// https://hashnode.com/post/the-one-thing-that-no-one-properly-explains-about-react-why-virtual-dom-cisczhfj41bmssp53mvfwmgrq
+// https://medium.com/@hayavuk/why-virtual-dom-is-slower-2d9b964b4c9e
+
+

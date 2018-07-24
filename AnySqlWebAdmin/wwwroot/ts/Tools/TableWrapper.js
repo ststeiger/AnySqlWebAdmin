@@ -82,3 +82,8 @@ var TableWrapper = (function () {
     };
     return TableWrapper;
 }());
+var a = ["a", "b", "c"];
+for (var _i = 0, a_1 = a; _i < a_1.length; _i++) {
+    var val = a_1[_i];
+    console.log(val);
+}
