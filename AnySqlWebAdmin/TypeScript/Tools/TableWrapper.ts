@@ -126,14 +126,14 @@ export class TableWrapper<T>
                 // set: setter,
                 get: function ()
                 { 
-                    let myrow =  <any> that.rows[that.m_i];
-                    return myrow == null ? myrow : myrow[i]; 
+                    let currentRow =  <any> that.rows[that.m_i];
+                    return currentRow == null ? currentRow : currentRow[i]; 
                 },
                 set: function(value:any) 
                 { 
-                    let myrow =  <any> that.rows[that.m_i];
-                    if (myrow!= null )
-                        myrow[i] = value; 
+                    let currentRow =  <any> that.rows[that.m_i];
+                    if (currentRow!= null )
+                        currentRow[i] = value; 
                 },
                 enumerable: true,
                 configurable: true
