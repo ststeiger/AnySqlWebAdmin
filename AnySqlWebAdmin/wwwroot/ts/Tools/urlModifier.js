@@ -57,8 +57,8 @@ var Tools;
                         isFunction = false;
                     }
                     if (isFunction && typeof (self[key]) === 'function') {
-                        var val_1 = self[key];
-                        self[key] = val_1.bind(self);
+                        var val = self[key];
+                        self[key] = val.bind(self);
                     }
                 }
             }
