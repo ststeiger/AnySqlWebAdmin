@@ -497,7 +497,7 @@ namespace Tree
                 {
                     selectedLeaf.classList.remove('vtree-selected');
                 });
-
+                
                 leaf.classList.add('vtree-selected');
                 return this.dispatchEvent('select', id);
             } // End if (!leaf.classList.contains('vtree-selected'))
