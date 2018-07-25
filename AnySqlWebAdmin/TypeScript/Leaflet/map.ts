@@ -157,7 +157,7 @@ class ApplicationOfflineError extends Error
 // distinct: console.log([...new Set([1, 2, 3, 4, 5, 1, 3, 2, 7])])
 // [...document.querySelectorAll("span")] // not in iCrap or IE
 // Array.from(document.querySelectorAll('div')) // more browser-support 
-
+// https://execsqlformat.herokuapp.com/
 
 
 function checkData()
