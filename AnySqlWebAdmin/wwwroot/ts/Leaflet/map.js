@@ -697,6 +697,7 @@ function loadMarkers() {
                     for (i = 0; i < table.rows.length; ++i) {
                         _loop_1(i);
                     }
+                    initialBounds = null;
                     initialBounds = L.latLngBounds(allCoords);
                     map.zoomHome = function (homeView) {
                         map.fitBounds(homeView);

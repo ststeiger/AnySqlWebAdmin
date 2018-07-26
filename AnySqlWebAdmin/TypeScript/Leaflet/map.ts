@@ -1230,8 +1230,16 @@ async function loadMarkers()
         polygons[uid] = marker;
     } // next i
         
-    let initialBounds = L.latLngBounds(allCoords);
-        
+    let initialBounds: L.LatLngBounds = null;
+
+    if (allCoords && allCoords.length > 0)
+        initialBounds = L.latLngBounds(allCoords);
+    else
+    { 
+        // Be neutral - assume Switzerland ;) 
+        initialBounds = L.latLngBounds(new L.LatLng(45.77694774030000246512, 6.02260949058999983663), new L.LatLng(47.83082754170000328031, 10.44270145019999951330]));
+    }
+    
     map.zoomHome = function (homeView?: L.LatLngBoundsExpression)
     {
         map.fitBounds(homeView);
