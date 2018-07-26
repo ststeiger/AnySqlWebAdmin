@@ -22,7 +22,7 @@ namespace Tree
     }
 
 
-    interface IOptions
+    export interface IOptions
     {
         url: string;
         id: string;
@@ -362,8 +362,18 @@ namespace Tree
 
             return this.dispatchEvent('move', id);
         } // End Function move 
-
-
+        
+        
+        // Tree.le
+        //                         
+        
+        
+        public getLeafData(id:string): IOptions
+        {
+            return this.m_leafs[id];
+        }
+        
+        
         public async remove(id: string): Promise<VanillaTree>
         {
             let leaf: Element = this.getLeaf(id),
@@ -374,8 +384,8 @@ namespace Tree
 
             return this.placeholder().dispatchEvent('remove', id);
         } // End Function remove 
-
-
+        
+        
         protected newId(): string
         {
             function s4()
@@ -388,8 +398,8 @@ namespace Tree
             return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
                 s4() + '-' + s4() + s4() + s4();
         } // End Function newId 
-
-
+        
+        
         protected async getTable<T>(url: string, data?: object): Promise<T>
         {
             let sendData =
@@ -419,6 +429,8 @@ namespace Tree
 
             try
             {
+                let leafData = this.getLeafData(id);
+                // TODO: use the actual id...
                 data = await this.getTable<IOptions[]>("sql?sql=Tree.Navigation.sql&format=3", { "__in_parent": id });
 
                 for (let i = 0; i < data.length; ++i)
@@ -488,11 +500,11 @@ namespace Tree
         {
             let selectedLeafs: NodeListOf<Element>
                 , leaf: Element = this.getLeaf(id);
-
+            
             if (!leaf.classList.contains('vtree-selected'))
             {
                 selectedLeafs = this.m_tree.querySelectorAll('li.vtree-leaf');
-
+                
                 [].forEach.call(selectedLeafs, function (selectedLeaf: Element)
                 {
                     selectedLeaf.classList.remove('vtree-selected');
@@ -501,7 +513,7 @@ namespace Tree
                 leaf.classList.add('vtree-selected');
                 return this.dispatchEvent('select', id);
             } // End if (!leaf.classList.contains('vtree-selected'))
-
+            
             return new Promise<VanillaTree>(
                 function (resolve: (value?: PromiseLike<VanillaTree> | VanillaTree) => void
                     //, reject: (reason?:any)=> void  

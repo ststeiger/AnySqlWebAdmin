@@ -215,6 +215,9 @@ var Tree;
                 });
             });
         };
+        VanillaTree.prototype.getLeafData = function (id) {
+            return this.m_leafs[id];
+        };
         VanillaTree.prototype.remove = function (id) {
             return __awaiter(this, void 0, void 0, function () {
                 var leaf, oldParent;
@@ -263,7 +266,7 @@ var Tree;
         };
         VanillaTree.prototype.addBranch = function (id) {
             return __awaiter(this, void 0, void 0, function () {
-                var data, i, e_1;
+                var data, leafData, i, e_1;
                 return __generator(this, function (_a) {
                     switch (_a.label) {
                         case 0:
@@ -271,6 +274,7 @@ var Tree;
                             _a.label = 1;
                         case 1:
                             _a.trys.push([1, 3, , 4]);
+                            leafData = this.getLeafData(id);
                             return [4, this.getTable("sql?sql=Tree.Navigation.sql&format=3", { "__in_parent": id })];
                         case 2:
                             data = _a.sent();

@@ -50,15 +50,25 @@ function main() {
                 url: "jsonp",
                 contextmenu: [
                     {
-                        label: 'Hey',
+                        label: 'Additional data',
                         action: function (id) {
-                            alert('Hey ' + id);
+                            var leafData = tree.getLeafData(id);
+                            alert('Data: ' + JSON.stringify(leafData, null, 2));
                         }
                     },
                     {
-                        label: 'Blah',
+                        label: 'Remove node',
                         action: function (id) {
-                            alert('Blah ' + id);
+                            return __awaiter(this, void 0, void 0, function () {
+                                return __generator(this, function (_a) {
+                                    switch (_a.label) {
+                                        case 0: return [4, tree.remove(id)];
+                                        case 1:
+                                            _a.sent();
+                                            return [2];
+                                    }
+                                });
+                            });
                         }
                     }
                 ]

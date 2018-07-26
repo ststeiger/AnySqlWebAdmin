@@ -16,17 +16,20 @@ async function main()
             url: "jsonp",
             contextmenu: [
                 {
-                    label: 'Hey',
+                    label: 'Additional data',
                     action: function (id: string)
                     {
-                        alert('Hey ' + id);
+                        let leafData :Tree.IOptions = tree.getLeafData(id);
+                        alert('Data: ' + JSON.stringify(leafData, null, 2));
                     }
                 },
                 {
-                    label: 'Blah',
-                    action: function (id: string)
+                    label: 'Remove node',
+                    action: async function (id: string)
                     {
-                        alert('Blah ' + id);
+                        // alert('Blah ' + id);
+                        await tree.remove(id);
+                        
                     }
                 }
             ]
