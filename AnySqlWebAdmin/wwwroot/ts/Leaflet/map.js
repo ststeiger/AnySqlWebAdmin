@@ -93,7 +93,7 @@ function checkData() {
 }
 function getData(url, data) {
     return __awaiter(this, void 0, void 0, function () {
-        var prettyDataTable, prettyBadDataTable, badDataTable, req, json, obj, ex1, ex2, ex3, options, ex_1, ex_2;
+        var prettyDataTable, prettyBadDataTable, badDataTable, req, json, obj, ex1, ex2, ex3, myHeaders, options, ex_1, ex_2;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
@@ -118,9 +118,13 @@ function getData(url, data) {
                     ex1 = null;
                     ex2 = null;
                     ex3 = null;
+                    myHeaders = new Headers();
+                    myHeaders.append("Accept", "application/json");
+                    myHeaders.append("Content-Type", "application/json");
                     options = {
-                        "method": 'POST',
-                        "headers": new Headers({ 'content-type': 'application/json' })
+                        "method": "POST",
+                        "headers": myHeaders,
+                        "body": null
                     };
                     if (data != null) {
                         if (typeof data === 'string' || data instanceof String)
@@ -131,7 +135,7 @@ function getData(url, data) {
                     _a.label = 1;
                 case 1:
                     _a.trys.push([1, 3, , 4]);
-                    return [4, fetch(url)];
+                    return [4, fetch(url, options)];
                 case 2:
                     req = _a.sent();
                     return [3, 4];
@@ -698,7 +702,11 @@ function loadMarkers() {
                         _loop_1(i);
                     }
                     initialBounds = null;
-                    initialBounds = L.latLngBounds(allCoords);
+                    if (allCoords && allCoords.length > 0)
+                        initialBounds = L.latLngBounds(allCoords);
+                    else {
+                        initialBounds = L.latLngBounds(new L.LatLng(45.77694774030000246512, 6.02260949058999983663), new L.LatLng(47.83082754170000328031, 10.44270145019999951330));
+                    }
                     map.zoomHome = function (homeView) {
                         map.fitBounds(homeView);
                     }.bind(this, initialBounds);

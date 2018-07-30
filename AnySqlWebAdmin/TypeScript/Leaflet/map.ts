@@ -262,25 +262,41 @@ async function getData(url:string, data?: any)
     let ex2: any = null;
     let ex3: any = null;
 
+    // https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch#Headers
+    let myHeaders = new Headers();
+    myHeaders.append("Accept", "application/json");
+    myHeaders.append("Content-Type", "application/json");
+    
+
+    // https://stackoverflow.com/questions/37668282/unable-to-fetch-post-without-no-cors-in-header
+
     let options: any = {
-        "method": 'POST',
+        "method": "POST", 
         // "headers": { 'auth': '1234','content-type': 'application/json'},
         // https://stackoverflow.com/questions/38156239/how-to-set-the-content-type-of-request-header-when-using-fetch-api
-        "headers": new Headers({ 'content-type': 'application/json' })
+        // "headers": new Headers({ 'content-type': 'application/json' })
+        // "headers": { "Content-Type": "application/json" } 
+        // "headers": new Headers({ 'Content-Type': 'application/json' }) 
+        // "headers": { 'Accept': 'application/json', 'Content-Type': 'application/json' },
+        // "headers": new Headers({ 'Accept': 'application/json', 'Content-Type': 'application/json' }), 
+         "headers": myHeaders 
+        // ,"mode": "no-cors" 
+        ,"body": <any>null
     };
+
 
     if (data != null)
     {
         if (typeof data === 'string' || data instanceof String)
             options["body"] = data;
         else
-            options["body"] = JSON.stringify({ "id": 123 });
+            options["body"] = JSON.stringify( { "id": 123 } );
     }
     
     try
     {
         // let result = <any>await fetch(url, options).then(function (response) { return response.json(); });
-        req = await fetch(url);
+        req = await fetch(url, options);
     }
     catch (ex)
     {
@@ -1237,7 +1253,7 @@ async function loadMarkers()
     else
     { 
         // Be neutral - assume Switzerland ;) 
-        initialBounds = L.latLngBounds(new L.LatLng(45.77694774030000246512, 6.02260949058999983663), new L.LatLng(47.83082754170000328031, 10.44270145019999951330]));
+        initialBounds = L.latLngBounds(new L.LatLng(45.77694774030000246512, 6.02260949058999983663), new L.LatLng(47.83082754170000328031, 10.44270145019999951330));
     }
     
     map.zoomHome = function (homeView?: L.LatLngBoundsExpression)

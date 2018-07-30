@@ -139,81 +139,78 @@ namespace AnySqlWebAdmin
                 } // Next kvp 
             } // End if (context.Request.HasFormContentType) 
 
-            if (string.Equals(context.Request.ContentType, "application/json", System.StringComparison.InvariantCultureIgnoreCase))
+            //if (string.Equals(context.Request.ContentType, "application/json", System.StringComparison.InvariantCultureIgnoreCase))
+            //{
+            Newtonsoft.Json.Linq.JToken jsonData = null;
+            
+            // bool hasContent = true;
+            // if (context.Request.Headers.ContainsKey(Microsoft.Net.Http.Headers.HeaderNames.ContentLength))
+            // {
+            //     if ("0" == context.Request.Headers[Microsoft.Net.Http.Headers.HeaderNames.ContentLength])
+            //         hasContent = false;
+            // } // End if (context.Request.Headers.ContainsKey(Microsoft.Net.Http.Headers.HeaderNames.ContentLength)) 
+
+
+            // if (hasContent)
+            // {
+
+
+
+            // Can only be read ONCE ! 
+            using (System.IO.StreamReader reader = new System.IO.StreamReader(context.Request.Body, System.Text.Encoding.UTF8, false, 4096, true))
             {
-                Newtonsoft.Json.Linq.JToken jsonData = null;
 
-
-                bool hasContent = true;
-
-                if (context.Request.Headers.ContainsKey(Microsoft.Net.Http.Headers.HeaderNames.ContentLength))
-                {
-                    if ("0" == context.Request.Headers[Microsoft.Net.Http.Headers.HeaderNames.ContentLength])
-                        hasContent = false;
-                } // End if (context.Request.Headers.ContainsKey(Microsoft.Net.Http.Headers.HeaderNames.ContentLength)) 
-
-
-
-                hasContent = true;
-                if (hasContent)
-                {
-                    // Can only be read ONCE ! 
-                    using (System.IO.StreamReader reader = new System.IO.StreamReader(context.Request.Body, System.Text.Encoding.UTF8, false, 4096, true))
-                    {
-                        using (Newtonsoft.Json.JsonTextReader jsonReader = new Newtonsoft.Json.JsonTextReader(reader))
-                        {
-                            try
-                            {
-                                jsonData = Newtonsoft.Json.Linq.JToken.Load(jsonReader);
-                            }
-                            catch (Newtonsoft.Json.JsonReaderException emptyStream)
-                            {
-                                if (emptyStream.LineNumber != 0 || emptyStream.LinePosition != 0)
-                                    throw;
-
-                                // ASP.NET-Core couldn't suck any more than it already does... 
-                            } // End Catch 
-
-                        } // End Using jsonReader 
-
-                    } // End Using reader 
-
-                } // End if (hasContent) 
-
-                if (jsonData != null)
+                using (Newtonsoft.Json.JsonTextReader jsonReader = new Newtonsoft.Json.JsonTextReader(reader))
                 {
 
-                    if (jsonData.Type == Newtonsoft.Json.Linq.JTokenType.Object)
+                    // https://github.com/JamesNK/Newtonsoft.Json/issues/1773
+                    if (jsonReader.Read())
                     {
-                        //lss = new System.Collections.Generic.List<System.Collections.Generic.Dictionary<string, object>>();
-                        // lss.Add(ProcessObject(jsonData));
+                        jsonData = Newtonsoft.Json.Linq.JToken.Load(jsonReader);
+                    } // End if (jsonReader.Read()) 
 
-                        Newtonsoft.Json.Linq.JObject jo = (Newtonsoft.Json.Linq.JObject)jsonData;
+                } // End Using jsonReader 
 
-                        foreach (System.Collections.Generic.KeyValuePair<string, Newtonsoft.Json.Linq.JToken> kvp in jo)
-                        {
-                            string name = kvp.Key;
-                            object value = GetValue(kvp.Value);
-                            System.Console.WriteLine(value);
-                            // ls.Add(new Parameter(name, value));
-                            dict[name] = value;
-                        } // Next kvp 
+            } // End Using reader 
 
-                    }
-                    else if (jsonData.Type == Newtonsoft.Json.Linq.JTokenType.Array)
+
+
+            // } // End if (hasContent) 
+
+            if (jsonData != null)
+            {
+
+                if (jsonData.Type == Newtonsoft.Json.Linq.JTokenType.Object)
+                {
+                    //lss = new System.Collections.Generic.List<System.Collections.Generic.Dictionary<string, object>>();
+                    // lss.Add(ProcessObject(jsonData));
+
+                    Newtonsoft.Json.Linq.JObject jo = (Newtonsoft.Json.Linq.JObject)jsonData;
+
+                    foreach (System.Collections.Generic.KeyValuePair<string, Newtonsoft.Json.Linq.JToken> kvp in jo)
                     {
-                        // lss = ProcessArray(jsonData);
-                        throw new System.NotImplementedException("JTokenType.Array");
-                    }
-                    else
-                    {
-                        throw new System.InvalidOperationException(
-                            "Cannot perform this operation on anything other than JSON-object, or JSON-array of JSON-object.");
-                    }
+                        string name = kvp.Key;
+                        object value = GetValue(kvp.Value);
+                        System.Console.WriteLine(value);
+                        // ls.Add(new Parameter(name, value));
+                        dict[name] = value;
+                    } // Next kvp 
 
-                } // End if (jsonData == null)
+                }
+                else if (jsonData.Type == Newtonsoft.Json.Linq.JTokenType.Array)
+                {
+                    // lss = ProcessArray(jsonData);
+                    throw new System.NotImplementedException("JTokenType.Array");
+                }
+                else
+                {
+                    throw new System.InvalidOperationException(
+                        "Cannot perform this operation on anything other than JSON-object, or JSON-array of JSON-object.");
+                }
 
-            } // End if (string.Equals(context.Request.ContentType, "application/json", 
+            } // End if (jsonData == null)
+
+            // } // End if (string.Equals(context.Request.ContentType, "application/json", 
 
 
             if (context.Request.QueryString.HasValue)
