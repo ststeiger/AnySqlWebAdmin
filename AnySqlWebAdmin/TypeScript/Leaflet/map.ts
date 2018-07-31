@@ -270,6 +270,7 @@ async function getData(url:string, data?: any)
 
     // https://stackoverflow.com/questions/37668282/unable-to-fetch-post-without-no-cors-in-header
 
+    // https://davidwalsh.name/fetch
     let options: any = {
         "method": "POST", 
         // "headers": { 'auth': '1234','content-type': 'application/json'},
