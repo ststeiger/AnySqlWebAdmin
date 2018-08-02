@@ -1964,3 +1964,7 @@ startMap();
 
 
 // }
+
+
+// marker.bindTooltip("My Label", { permanent: true, className: "my-label", offset: [0, 0] });
+// polygon.bindTooltip("My Label", { permanent: true, className: "my-label", offset: [0, 0] });
