@@ -1018,6 +1018,76 @@ function observeIframe()
 } // End Function observeIframe
 
 
+
+
+// https://en.wikipedia.org/wiki/Centroid#Centroid_of_a_polygon
+// https://stackoverflow.com/questions/9692448/how-can-you-find-the-centroid-of-a-concave-irregular-polygon-in-javascript
+// https://math.stackexchange.com/questions/3177/why-doesnt-a-simple-mean-give-the-position-of-a-centroid-in-a-polygon
+function get_polygon_centroid(pts: L.LatLng[])
+{
+    let first = pts[0], last = pts[pts.length - 1];
+    if (first.lat != last.lat || first.lng != last.lng)
+        pts.push(first);
+
+    let twicearea = 0,
+        x = 0, y = 0,
+        nPts = pts.length,
+        p1, p2, f;
+
+    for (let i = 0, j = nPts - 1; i < nPts; j = i++)
+    {
+        p1 = pts[i]; p2 = pts[j];
+        f = p1.lat * p2.lng - p2.lat * p1.lng;
+        twicearea += f;
+        x += (p1.lat + p2.lat) * f;
+        y += (p1.lng + p2.lng) * f;
+    }
+    f = twicearea * 3;
+
+    // return { x: x / f, y: y / f };
+    return new L.LatLng(x / f, y / f);
+}
+
+
+function addTextLabel(map: L.Map, poly: L.LatLng[], label: string)
+{
+    let centroid = get_polygon_centroid(poly);
+
+    let span = document.createElement("span");
+    let labeltexts = label.split("<br />");
+
+
+
+
+    for (let l = 0; l < labeltexts.length; ++l)
+    {
+        if (l != 0)
+            span.appendChild(document.createElement("br"));
+
+        span.appendChild(document.createTextNode(labeltexts[l]));
+    } // Next l 
+
+
+    span.style.display = "hidden";
+    document.body.appendChild(span);
+    let ow = span.offsetWidth;
+    let oh = span.offsetHeight;
+    span.parentElement.removeChild(span);
+
+    let textIcon = L.divIcon(
+        {
+            className: "customTextIcon",
+            iconSize: [ow, oh],
+            iconAnchor: [ow / 2, oh / 2],
+            popupAnchor: [0, 0],
+            html: span.outerHTML
+        }
+    );
+
+    let textMarker = L.marker(centroid, { icon: textIcon }).addTo(map);
+}
+
+
 interface IGbMarkerTable
 {
     uid: string;
@@ -1080,7 +1150,7 @@ async function loadMarkers()
     {
         let uid:string = table.rows[i][index_uid];
         let code:string = table.rows[i][index_code];
-        let label:string = table.rows[i][index_label];
+        let label:string = table.rows[i][index_label] || "";
         let latitude:number = table.rows[i][index_latitude];
         let longitude:number = table.rows[i][index_longitude];
         let category: string = table.rows[i][index_category];
@@ -1094,10 +1164,6 @@ async function loadMarkers()
         // console.log(latitude);
         // console.log(longitude);
         // console.log(poly);
-
-
-        if (label == null)
-            label = "";
 
         label = label.replace(/(?:\r\n|\r|\n)/g, '<br />');
         // console.log(label);
@@ -1212,6 +1278,8 @@ async function loadMarkers()
 
 
         let polygon = L.polygon(poly);
+        addTextLabel(map, poly, label);
+
 
         /*
         polygon.setStyle({

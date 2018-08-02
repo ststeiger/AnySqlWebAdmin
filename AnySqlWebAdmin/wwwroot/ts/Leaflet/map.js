@@ -600,6 +600,45 @@ function observeIframe() {
     }
     catch (crapPad) { }
 }
+function get_polygon_centroid(pts) {
+    var first = pts[0], last = pts[pts.length - 1];
+    if (first.lat != last.lat || first.lng != last.lng)
+        pts.push(first);
+    var twicearea = 0, x = 0, y = 0, nPts = pts.length, p1, p2, f;
+    for (var i = 0, j = nPts - 1; i < nPts; j = i++) {
+        p1 = pts[i];
+        p2 = pts[j];
+        f = p1.lat * p2.lng - p2.lat * p1.lng;
+        twicearea += f;
+        x += (p1.lat + p2.lat) * f;
+        y += (p1.lng + p2.lng) * f;
+    }
+    f = twicearea * 3;
+    return new L.LatLng(x / f, y / f);
+}
+function addTextLabel(map, poly, label) {
+    var centroid = get_polygon_centroid(poly);
+    var span = document.createElement("span");
+    var labeltexts = label.split("<br />");
+    for (var l = 0; l < labeltexts.length; ++l) {
+        if (l != 0)
+            span.appendChild(document.createElement("br"));
+        span.appendChild(document.createTextNode(labeltexts[l]));
+    }
+    span.style.display = "hidden";
+    document.body.appendChild(span);
+    var ow = span.offsetWidth;
+    var oh = span.offsetHeight;
+    span.parentElement.removeChild(span);
+    var textIcon = L.divIcon({
+        className: "customTextIcon",
+        iconSize: [ow, oh],
+        iconAnchor: [ow / 2, oh / 2],
+        popupAnchor: [0, 0],
+        html: span.outerHTML
+    });
+    var textMarker = L.marker(centroid, { icon: textIcon }).addTo(map);
+}
 function loadMarkers() {
     return __awaiter(this, void 0, void 0, function () {
         var markerUrl, result, table, index_uid, index_code, index_label, index_latitude, index_longitude, index_category, index_color, index_poly, allCoords, markerHtmlStyles, options, _loop_1, this_1, i, initialBounds;
@@ -635,14 +674,12 @@ function loadMarkers() {
                     _loop_1 = function (i) {
                         var uid = table.rows[i][index_uid];
                         var code = table.rows[i][index_code];
-                        var label = table.rows[i][index_label];
+                        var label = table.rows[i][index_label] || "";
                         var latitude = table.rows[i][index_latitude];
                         var longitude = table.rows[i][index_longitude];
                         var category = table.rows[i][index_category];
                         var color = table.rows[i][index_color];
                         var polyString = table.rows[i][index_poly];
-                        if (label == null)
-                            label = "";
                         label = label.replace(/(?:\r\n|\r|\n)/g, '<br />');
                         var poly = null;
                         if (polyString != null)
@@ -685,6 +722,7 @@ function loadMarkers() {
                         if (poly == null)
                             return "continue";
                         var polygon = L.polygon(poly);
+                        addTextLabel(map, poly, label);
                         var popupString = "Fl&auml;che: " + thousandSeparator(polygonArea(poly)) + " m<sup>2</sup>";
                         polygon.addTo(map);
                         polygon.on("click", function (uuid, e) {
