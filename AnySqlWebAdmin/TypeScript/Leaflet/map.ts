@@ -1765,7 +1765,25 @@ function createZoomControl(map:L.Map & IMapWithZoom)
     
     document.body.appendChild(zoomControl);
 }
-    
+
+
+
+
+async function addDataLayer()
+{
+    map.closePopup();
+    let bb = map.getBounds();
+    let OSM_API_VERSION = "0.6";
+    let url = "https://www.openstreetmap.org/api/" + OSM_API_VERSION + "/map?bbox=" + bb.toBBoxString();
+
+    let xml = await getData(url);
+
+    var layer = new (<any>L).OSM.DataLayer(xml).addTo(map);
+    map.fitBounds(layer.getBounds());
+
+    // console.log(result);
+}
+
 
 // https://maps.wikimedia.org
 // https://maps.wikimedia.org/main.js
@@ -1780,7 +1798,7 @@ async function initMap()
     map = <any>L.map('swissMap', { zoomControl: false }).setView([47.317390, 8.520293], 18); // SwissRe Soodring 33, Adliswil
     map.zoomHome = function () { console.log("wrong instance"); };
     createZoomControl(map);
-
+    
     // https://jsfiddle.net/BC7q4/444/
     // let bounds = [[45.802216, 5.920721], [47.968862, 10.769762]];
     let southWest = new L.LatLng(45.802216, 5.920721);

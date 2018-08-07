@@ -1,0 +1,77 @@
+
+https://www.openstreetmap.org/api/0.6/map?bbox=8.232359290122988,47.41372491643813,8.238501548767092,47.41713709955768
+   function o() {
+            var i = e.getBounds(),
+                t = "/api/" + OSM.API_VERSION + "/map?bbox=" + i.toBBoxString(),
+                a = 2e3;
+            l && l.abort(), l = $.ajax({
+                url: t,
+                success: function(t) {
+                    function e() {
+                        $("#browse_status").empty(), d.addData(o), s = i
+                    }
+
+                    function n() {
+                        $("#browse_status").empty()
+                    }
+                    d.clearLayers(), c = null;
+                    var o = d.buildFeatures(t);
+                    o.length < a ? e() : r(o.length, a, e, n), l = null
+                }
+            })
+        }
+
+
+$.ajax({
+  url: "http://www.openstreetmap.org/api/0.6/node/164979149",
+  // or "http://www.openstreetmap.org/api/0.6/way/52477381/full"
+  dataType: "xml",
+  success: function (xml) {
+    var layer = new L.OSM.DataLayer(xml).addTo(map);
+    map.fitBounds(layer.getBounds());
+  }
+});
+
+
+
+response headers:
+cache-control: max-age=0, private, must-revalidate
+content-language: en-US
+content-security-policy: default-src 'self'; child-src 'self'; connect-src 'self' piwik.openstreetmap.org; font-src 'none'; form-action 'self'; frame-ancestors 'self'; frame-src 'self'; img-src 'self' data: www.gravatar.com *.wp.com *.tile.openstreetmap.org *.tile.thunderforest.com *.openstreetmap.fr piwik.openstreetmap.org; manifest-src 'none'; media-src 'none'; object-src 'self'; script-src 'self' piwik.openstreetmap.org; style-src 'self'; worker-src 'none'
+content-type: application/json; charset=utf-8
+date: Tue, 07 Aug 2018 15:37:35 GMT
+etag: W/"ed778c73ea51338d6576fb5992b189f2"
+expect-ct: max-age=0, report-uri="https://openstreetmap.report-uri.com/r/d/ct/reportOnly"
+server: Apache/2.4.29 (Ubuntu)
+status: 200 OK
+status: 200
+strict-transport-security: max-age=31536000; includeSubDomains; preload
+vary: Accept-Language,Origin
+x-content-type-options: nosniff
+x-download-options: noopen
+x-frame-options: sameorigin
+x-permitted-cross-domain-policies: none
+x-powered-by: Phusion Passenger 5.3.4
+x-request-id: W2m8v9uAcxeERYhxO8XTgwAAAAE
+x-runtime: 0.011273
+x-xss-protection: 1; mode=block
+
+
+
+request header: 
+:authority: www.openstreetmap.org
+:method: GET
+:path: /api/0.6/notes.json?bbox=8.232359290122988,47.41372491643813,8.238501548767092,47.41713709955768
+:scheme: https
+accept: */*
+accept-encoding: gzip, deflate, br
+accept-language: en-US,en;q=0.9,de-CH;q=0.8,de;q=0.7,fr-CH;q=0.6,fr;q=0.5,pt;q=0.4,lb;q=0.3,la;q=0.2,cs;q=0.1
+cache-control: no-cache
+cookie: _osm_welcome=hide; _osm_banner_sotmus2017=hide; _osm_session=8fef6217ebef779ca17a9b717e7175ee; _osm_totp_token=686592; _pk_ref.1.cf09=%5B%22%22%2C%22%22%2C1533653708%2C%22https%3A%2F%2Fwww.google.com%2F%22%5D; _pk_id.1.cf09=e971f84f62e9da15.1506689633.36.1533653948.1533653708.; _osm_location=8.23543%7C47.41543%7C18%7CTND; qos_token=737140
+dnt: 1
+pragma: no-cache
+referer: https://www.openstreetmap.org/note/new
+user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3440.84 Safari/537.36
+x-csrf-token: 3HM2fDE421hTTI7KRmYKfitu4LoisUaSKfk05hbhZ7WgeI0+9aZs71ZthFF+flDhA1xVXLXwuESLQg4P06b6Kw==
+x-requested-with: XMLHttpRequest
+

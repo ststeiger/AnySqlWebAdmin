@@ -1033,6 +1033,26 @@ function createZoomControl(map) {
     zoomControl.appendChild(clearMinusZoom);
     document.body.appendChild(zoomControl);
 }
+function addDataLayer() {
+    return __awaiter(this, void 0, void 0, function () {
+        var bb, OSM_API_VERSION, url, xml, layer;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    map.closePopup();
+                    bb = map.getBounds();
+                    OSM_API_VERSION = "0.6";
+                    url = "https://www.openstreetmap.org/api/" + OSM_API_VERSION + "/map?bbox=" + bb.toBBoxString();
+                    return [4, getData(url)];
+                case 1:
+                    xml = _a.sent();
+                    layer = new L.OSM.DataLayer(xml).addTo(map);
+                    map.fitBounds(layer.getBounds());
+                    return [2];
+            }
+        });
+    });
+}
 function initMap() {
     return __awaiter(this, void 0, void 0, function () {
         var ml, southWest, northEast, bounds, scale, scalex;
