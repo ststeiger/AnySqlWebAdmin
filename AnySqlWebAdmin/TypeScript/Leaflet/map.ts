@@ -1769,6 +1769,134 @@ function createZoomControl(map:L.Map & IMapWithZoom)
 
 
 
+// let url = "http://localhost:59799/sql?sql=Maps.Gebaeudekategorie.sql&BE_Hash=12435&format=" + badDataTable.toString();
+async function getXml(url:string, data?: any)
+{
+    if (url == null)
+    {
+        throw Error("URL is NULL...");
+    }
+
+
+    // https://developer.mozilla.org/en-US/docs/Web/API/NavigatorOnLine/Online_and_offline_events
+    // window.addEventListener('online', updateOnlineStatus);
+    // window.addEventListener('offline', updateOnlineStatus);
+    // https://caniuse.com/#feat=online-status // it doesn't work on Android's WebView...
+    if (!navigator.onLine)
+    {
+        // throw new Error("offline");
+        // throw new ApplicationOfflineError("msg");
+        throw new HttpRequestError(500, 'Client offline');
+        // if (error instanceof ApplicationOfflineError) { console.log(error.sayHello(); }
+    }
+    
+    
+    if (url.indexOf("no_cache") == -1)
+        url += "&no_cache=" + (new Date()).getTime();
+
+    let req: Response = null;
+    let xml: string = null;
+    let obj: Document = null;
+    let ex1: any = null;
+    let ex2: any = null;
+    let ex3: any = null;
+    
+    // https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch#Headers
+    let myHeaders = new Headers();
+    myHeaders.append("Accept", "*/*");
+    // myHeaders.append("Content-Type", "application/json");
+    
+    // https://stackoverflow.com/questions/37668282/unable-to-fetch-post-without-no-cors-in-header
+
+    // https://davidwalsh.name/fetch
+    let options: any = {
+        "method": "GET",
+        // "headers": { 'auth': '1234','content-type': 'application/json'},
+        // https://stackoverflow.com/questions/38156239/how-to-set-the-content-type-of-request-header-when-using-fetch-api
+        // "headers": new Headers({ 'content-type': 'application/json' })
+        // "headers": { "Content-Type": "application/json" } 
+        // "headers": new Headers({ 'Content-Type': 'application/json' }) 
+        // "headers": { 'Accept': 'application/json', 'Content-Type': 'application/json' },
+        // "headers": new Headers({ 'Accept': 'application/json', 'Content-Type': 'application/json' }), 
+        "headers": myHeaders
+        // ,"mode": "no-cors" 
+        ,"body": <any>null
+    };
+    
+    
+    if (data != null)
+    {
+        if (typeof data === 'string' || data instanceof String)
+            options["body"] = data;
+        else
+            options["body"] = JSON.stringify( { "id": 123 } );
+    }
+
+    try
+    {
+        // let result = <any>await fetch(url, options).then(function (response) { return response.json(); });
+        req = await fetch(url, options);
+    }
+    catch (ex)
+    {
+        console.log(ex);
+        ex1 = ex;
+    }
+
+    try
+    {
+        if(req != null)
+            xml = await req.text();
+    }
+    catch (ex)
+    {
+        console.log(ex);
+        ex2 = ex;
+    }
+    
+    try
+    {
+        obj = (new DOMParser()).parseFromString(xml, "text/xml");
+    }
+    catch (ex)
+    {
+        ex3 = ex;
+        console.log(ex);
+    }
+
+
+    if (obj == null)
+    {
+        throw new HttpRequestError(500, 'Server Error');
+    }
+    
+    console.log(obj);
+    return obj;
+} // End Function getXml 
+
+
+
+function mapArea()
+{
+    let bb = map.getBounds();
+    let nw = bb.getNorthWest();
+    let se = bb.getSouthEast();
+    // https://github.com/openstreetmap/cgimap/blob/master/src/bbox.cpp
+    // double bbox::area() const { return (maxlon - minlon) * (maxlat - minlat);
+    
+    let maxLng = Math.max(nw.lng, se.lng);
+    let maxLat = Math.max(nw.lat, se.lat);
+
+    let minLng = Math.min(nw.lng, se.lng);
+    let minLat = Math.min(nw.lat, se.lat);
+    let area = (maxLng - minLng) * (maxLat - minLat);
+
+
+    console.log("bb", bb.toBBoxString());
+    
+    console.log("map area: ", area);
+}
+
 async function addDataLayer()
 {
     map.closePopup();
@@ -1776,11 +1904,21 @@ async function addDataLayer()
     let OSM_API_VERSION = "0.6";
     let url = "https://www.openstreetmap.org/api/" + OSM_API_VERSION + "/map?bbox=" + bb.toBBoxString();
 
-    let xml = await getData(url);
-
-    var layer = new (<any>L).OSM.DataLayer(xml).addTo(map);
+    // https://github.com/openstreetmap/cgimap/blob/master/src/api06/map_handler.cpp
+    // Currently it is 0.25 degrees squared (e.g. 1°x0.25° or 0.5x0.5° etc), 
+    // or an area containing 50,000 nodes, whichever limit is reached first.
+    // if (bounds.area() > MAX_AREA) 
+    // #define MAX_AREA 0.25
+    // #define MAX_NODES 50000
+    // int num_nodes = sel->select_nodes_from_bbox(b, MAX_NODES);
+    
+    
+    
+    let xml = await getXml(url);
+    console.log("xml", xml);
+    let layer = new L.OSM.DataLayer(xml).addTo(map);
     map.fitBounds(layer.getBounds());
-
+    
     // console.log(result);
 }
 

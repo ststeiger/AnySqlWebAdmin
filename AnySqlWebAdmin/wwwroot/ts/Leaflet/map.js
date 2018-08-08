@@ -1033,6 +1033,93 @@ function createZoomControl(map) {
     zoomControl.appendChild(clearMinusZoom);
     document.body.appendChild(zoomControl);
 }
+function getXml(url, data) {
+    return __awaiter(this, void 0, void 0, function () {
+        var req, xml, obj, ex1, ex2, ex3, myHeaders, options, ex_4, ex_5;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    if (url == null) {
+                        throw Error("URL is NULL...");
+                    }
+                    if (!navigator.onLine) {
+                        throw new HttpRequestError(500, 'Client offline');
+                    }
+                    if (url.indexOf("no_cache") == -1)
+                        url += "&no_cache=" + (new Date()).getTime();
+                    req = null;
+                    xml = null;
+                    obj = null;
+                    ex1 = null;
+                    ex2 = null;
+                    ex3 = null;
+                    myHeaders = new Headers();
+                    myHeaders.append("Accept", "*/*");
+                    options = {
+                        "method": "GET",
+                        "headers": myHeaders,
+                        "body": null
+                    };
+                    if (data != null) {
+                        if (typeof data === 'string' || data instanceof String)
+                            options["body"] = data;
+                        else
+                            options["body"] = JSON.stringify({ "id": 123 });
+                    }
+                    _a.label = 1;
+                case 1:
+                    _a.trys.push([1, 3, , 4]);
+                    return [4, fetch(url, options)];
+                case 2:
+                    req = _a.sent();
+                    return [3, 4];
+                case 3:
+                    ex_4 = _a.sent();
+                    console.log(ex_4);
+                    ex1 = ex_4;
+                    return [3, 4];
+                case 4:
+                    _a.trys.push([4, 7, , 8]);
+                    if (!(req != null)) return [3, 6];
+                    return [4, req.text()];
+                case 5:
+                    xml = _a.sent();
+                    _a.label = 6;
+                case 6: return [3, 8];
+                case 7:
+                    ex_5 = _a.sent();
+                    console.log(ex_5);
+                    ex2 = ex_5;
+                    return [3, 8];
+                case 8:
+                    try {
+                        obj = (new DOMParser()).parseFromString(xml, "text/xml");
+                    }
+                    catch (ex) {
+                        ex3 = ex;
+                        console.log(ex);
+                    }
+                    if (obj == null) {
+                        throw new HttpRequestError(500, 'Server Error');
+                    }
+                    console.log(obj);
+                    return [2, obj];
+            }
+        });
+    });
+}
+function mapArea() {
+    var bb = map.getBounds();
+    var nw = bb.getNorthWest();
+    var se = bb.getSouthEast();
+    var maxLng = Math.max(nw.lng, se.lng);
+    var maxLat = Math.max(nw.lat, se.lat);
+    var minLng = Math.min(nw.lng, se.lng);
+    var minLat = Math.min(nw.lat, se.lat);
+    var area = (maxLng - minLng) * (maxLat - minLat);
+    console.log("bb", bb.toBBoxString());
+    console.log("map area: ", area);
+}
 function addDataLayer() {
     return __awaiter(this, void 0, void 0, function () {
         var bb, OSM_API_VERSION, url, xml, layer;
@@ -1043,9 +1130,10 @@ function addDataLayer() {
                     bb = map.getBounds();
                     OSM_API_VERSION = "0.6";
                     url = "https://www.openstreetmap.org/api/" + OSM_API_VERSION + "/map?bbox=" + bb.toBBoxString();
-                    return [4, getData(url)];
+                    return [4, getXml(url)];
                 case 1:
                     xml = _a.sent();
+                    console.log("xml", xml);
                     layer = new L.OSM.DataLayer(xml).addTo(map);
                     map.fitBounds(layer.getBounds());
                     return [2];
