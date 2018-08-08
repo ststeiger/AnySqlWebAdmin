@@ -333,7 +333,7 @@ async function getData(url:string, data?: any)
         throw new HttpRequestError(500, 'Server Error');
     }
     
-    console.log(obj);
+    // console.log(obj);
     return obj;
 }
     
@@ -598,15 +598,30 @@ function polygonAreaOld(poly2: Number[]): string
 
 // https://gis.stackexchange.com/a/816/3997
 // https://jsfiddle.net/xwaocc00/
-function polygonArea(poly2: L.LatLng[]): string  
+function polygonArea(poly2: L.LatLng[]): number  
 {
     let area: number = 0.0;
-    let poly: L.LatLng[] = JSON.parse(JSON.stringify(poly2));
-        
-    poly = poly.map(function (x: L.LatLng)
+    let poly: L.LatLng[] = [];
+
+    // Don't override the original array... 
+    for (let q = 0; q < poly2.length; ++q)
     {
-        return new L.LatLng(Math.radians(x.lat), Math.radians(x.lng))
-    });
+        poly.push(
+            new L.LatLng(
+                  Math.radians(poly2[q].lat)
+                , Math.radians(poly2[q].lng)
+            )
+        );
+    } // Next q
+
+    // Ensure polygon is closed... 
+    if (poly[0].lat != poly[poly.length - 1].lat || poly[0].lng != poly[poly.length - 1].lng)
+    {
+        poly.push(new L.LatLng(
+              poly[0].lat
+            , poly[0].lng
+        ));
+    } // End if (poly[0].lat != poly[poly.length - 1].lat || poly[0].lng != poly[poly.length - 1].lng) 
 
     let len:number = poly.length;
     for (let i = 0; i < len; i++)
@@ -660,7 +675,7 @@ function polygonArea(poly2: L.LatLng[]): string
 
     // return area;
     // return area.toFixed(2);
-    return Math.abs(area).toFixed(0);
+    return parseFloat(Math.abs(area).toFixed(0));
 } // End Function polygonArea 
 
 
@@ -710,7 +725,20 @@ function thousandSeparator(x:number | string): string
     if (x == null)
         return "";
 
-    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "'");
+    let s = x.toString();
+    let i = s.indexOf(".");
+    let comma = "";
+
+    if (i != -1)
+    {
+        comma = s.substr(i);
+        s = s.substr(0, i);
+    }
+
+    s = s.replace(/\B(?=(\d{3})+(?!\d))/g, "'");
+    s += comma;
+
+    return s;
 } // End Function thousandSeparator 
 
 
@@ -1777,7 +1805,7 @@ async function getXml(url:string, data?: any)
         throw Error("URL is NULL...");
     }
 
-
+    
     // https://developer.mozilla.org/en-US/docs/Web/API/NavigatorOnLine/Online_and_offline_events
     // window.addEventListener('online', updateOnlineStatus);
     // window.addEventListener('offline', updateOnlineStatus);
@@ -1800,17 +1828,21 @@ async function getXml(url:string, data?: any)
     let ex1: any = null;
     let ex2: any = null;
     let ex3: any = null;
-    
+
     // https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch#Headers
+    // https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Accept
     let myHeaders = new Headers();
-    myHeaders.append("Accept", "*/*");
+    myHeaders.append("accept", "*/*");
+    myHeaders.append("pragma", "no-cache");
+    myHeaders.append("cache-control", "no-cache");
+    
     // myHeaders.append("Content-Type", "application/json");
     
     // https://stackoverflow.com/questions/37668282/unable-to-fetch-post-without-no-cors-in-header
 
     // https://davidwalsh.name/fetch
     let options: any = {
-        "method": "GET",
+        "method": "GET" 
         // "headers": { 'auth': '1234','content-type': 'application/json'},
         // https://stackoverflow.com/questions/38156239/how-to-set-the-content-type-of-request-header-when-using-fetch-api
         // "headers": new Headers({ 'content-type': 'application/json' })
@@ -1818,7 +1850,15 @@ async function getXml(url:string, data?: any)
         // "headers": new Headers({ 'Content-Type': 'application/json' }) 
         // "headers": { 'Accept': 'application/json', 'Content-Type': 'application/json' },
         // "headers": new Headers({ 'Accept': 'application/json', 'Content-Type': 'application/json' }), 
-        "headers": myHeaders
+        ,"headers": myHeaders
+
+        // https://hacks.mozilla.org/2016/03/referrer-and-cache-control-apis-for-fetch/
+        // https://googlechrome.github.io/samples/fetch-api/fetch-referrer-policy.html
+        // https://w3c.github.io/webappsec-referrer-policy/#referrer-policy-state-origin
+        // https://w3c.github.io/webappsec/
+        // https://github.com/w3c/WebAppSec
+        , "referrerPolicy": "origin-when-cross-origin" 
+
         // ,"mode": "no-cors" 
         ,"body": <any>null
     };
@@ -1870,17 +1910,15 @@ async function getXml(url:string, data?: any)
         throw new HttpRequestError(500, 'Server Error');
     }
     
-    console.log(obj);
+    // console.log(obj);
     return obj;
 } // End Function getXml 
 
 
-
-function mapArea()
+function getBoundsArea(bounds:L.LatLngBounds):number 
 {
-    let bb = map.getBounds();
-    let nw = bb.getNorthWest();
-    let se = bb.getSouthEast();
+    let nw = bounds.getNorthWest();
+    let se = bounds.getSouthEast();
     // https://github.com/openstreetmap/cgimap/blob/master/src/bbox.cpp
     // double bbox::area() const { return (maxlon - minlon) * (maxlat - minlat);
     
@@ -1891,18 +1929,13 @@ function mapArea()
     let minLat = Math.min(nw.lat, se.lat);
     let area = (maxLng - minLng) * (maxLat - minLat);
 
-
-    console.log("bb", bb.toBBoxString());
-    
-    console.log("map area: ", area);
-}
+    return area;
+} // End Function getBoundsArea 
 
 async function addDataLayer()
 {
     map.closePopup();
     let bb = map.getBounds();
-    let OSM_API_VERSION = "0.6";
-    let url = "https://www.openstreetmap.org/api/" + OSM_API_VERSION + "/map?bbox=" + bb.toBBoxString();
 
     // https://github.com/openstreetmap/cgimap/blob/master/src/api06/map_handler.cpp
     // Currently it is 0.25 degrees squared (e.g. 1°x0.25° or 0.5x0.5° etc), 
@@ -1911,15 +1944,22 @@ async function addDataLayer()
     // #define MAX_AREA 0.25
     // #define MAX_NODES 50000
     // int num_nodes = sel->select_nodes_from_bbox(b, MAX_NODES);
-    
-    
-    
+    let area = getBoundsArea(bb);
+    if (area > 0.25)
+    {
+        alert("The maximum bbox size is 0.25, and your request was too large.\nEither request a smaller area, or use planet.osm.");
+        return;
+    }
+
+    let OSM_API_VERSION = "0.6";
+    let url = "https://www.openstreetmap.org/api/" + OSM_API_VERSION + "/map?bbox=" + bb.toBBoxString();
+
     let xml = await getXml(url);
     console.log("xml", xml);
     let layer = new L.OSM.DataLayer(xml).addTo(map);
     // map.fitBounds(layer.getBounds());
     
-    // console.log(result);
+    // console.log(layer);
 }
 
 
@@ -2082,6 +2122,40 @@ async function initMap()
     */
         
 } // End Function initMap 
+
+
+function CreatePolygon( latLongs:L.LatLng[])
+{
+    //POLYGON ((73.232821 34.191819,73.233755 34.191942,73.233653 34.192358,73.232843 34.192246,73.23269 34.191969,73.232821 34.191819))
+    let polyString = "";
+
+    for (let i = 0; i < latLongs.length; ++i)
+    {
+        if (i !== 0)
+            polyString += ",";
+
+        polyString += latLongs[i].lng + " " + latLongs[i].lat; // + ",";
+    }
+
+    polyString = "POLYGON((" + polyString+"))";
+    return polyString;
+}
+
+
+// setPositon(47.551811, 7.599570);
+function setPositon(latitude:number, longitude:number)
+{
+    // It just depends on what behavior you want.
+    // map.panTo() will pan to the location with zoom/pan animation, 
+    // while map.setView() immediately set the new view to the desired location/zoom level.
+
+    // Use map.panTo(); does not do anything if the point is in the current view. 
+    // Use map.setView() instead.
+
+    // map.panTo(new L.LatLng(latitude, longitude));
+    // map.setZoom(8);
+    map.setView(new L.LatLng(latitude, longitude), 18);
+}
 
 
 async function startMap()

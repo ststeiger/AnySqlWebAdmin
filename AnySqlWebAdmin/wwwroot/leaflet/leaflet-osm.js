@@ -66,7 +66,36 @@ L.OSM.DataLayer = L.FeatureGroup.extend({
       this.addData(xml);
     }
   },
-  
+
+
+  getPolygonData: function (latLngs)
+  {
+      // event.sourceTarget.feature.nodes[q].latLng.lng
+
+      var data = [];
+      for (let q = 0; q < latLngs.length; ++q)
+      {
+          data.push(new L.LatLng(
+                latLngs[q].lat
+              , latLngs[q].lng
+              , latLngs[q].alt
+          ));
+      }
+
+      if (data[0].lat != data[data.length - 1].lat || data[0].lng != data[data.length - 1].lng)
+      {
+          data.push(new L.LatLng(
+                data[0].lat
+              , data[0].lng
+              , data[0].alt
+          ));
+      }
+
+      data.area = parseFloat(polygonArea(data));
+      return data;
+  },
+
+
   addData: function (features) {
     if (!(features instanceof Array)) {
       features = this.buildFeatures(features);
@@ -77,6 +106,8 @@ L.OSM.DataLayer = L.FeatureGroup.extend({
       var feature = features[i], layer;
       
       var isPolygon = false;
+      var addPolygon = false;
+      var polygonData = null;
       
       if (feature.type === "changeset") {
         layer = L.rectangle(feature.latLngBounds, this.options.styles.changeset);
@@ -90,18 +121,89 @@ L.OSM.DataLayer = L.FeatureGroup.extend({
         }
         
         if (this.isWayArea(feature)) {
-          latLngs.pop(); // Remove last == first.
-          layer = L.polygon(latLngs, this.options.styles.area);
+            latLngs.pop(); // Remove last == first.
+
+            // var area = parseFloat(polygonArea(latLngs));
+            //if (area > 9000)
+            // if (features[i].tags.landuse === "residential")
+            // if (features[i].tags.leisure === "park")
+            if (features[i].tags.building != null)
+            { 
+                addPolygon = true;
+                polygonData = this.getPolygonData(latLngs)
+                // console.log(area);
+                // console.log(features[i])
+            }
+            
+            layer = L.polygon(latLngs, this.options.styles.area);
             isPolygon = true;
         } else {
           layer = L.polyline(latLngs, this.options.styles.way);
         }
       }
       
-      console.log("addto", this);
+      // console.log("addto", this);
       // this: FeatureGroup - extends LayerGroup
-      if (isPolygon)
+      if (isPolygon && addPolygon)
       {
+          if(false)
+          layer.on("click", function (event)
+          {
+              console.log(event);
+              // console.log(latLngs);
+
+              if (!(event && event.sourceTarget && event.sourceTarget.feature && event.sourceTarget.feature.nodes))
+                  return;
+
+              if (event.sourceTarget.feature.nodes.constructor !== Array)
+                  return;
+
+              var data = [];
+              for (let q = 0; q < event.sourceTarget.feature.nodes.length; ++q)
+              {
+                  data.push(new L.LatLng(
+                        event.sourceTarget.feature.nodes[q].latLng.lat
+                      , event.sourceTarget.feature.nodes[q].latLng.lng
+                      , event.sourceTarget.feature.nodes[q].latLng.alt
+                  ));
+              }
+
+              if (data[0].lat != data[data.length - 1].lat || data[0].lng != data[data.length - 1].lng)
+              {
+                  data.push(new L.LatLng(
+                        event.sourceTarget.feature.nodes[0].latLng.lat
+                      , event.sourceTarget.feature.nodes[0].latLng.lng
+                      , event.sourceTarget.feature.nodes[0].latLng.alt
+                  ));
+              }
+
+              // console.log("area", parseFloat(polygonArea(data)));
+              // console.log("data", data);
+              // console.log("area", polygonArea(data));
+              
+              //for (var p = 0; p < data.length; ++p)
+              //{
+              //    console.log("p: ", p, data[0].lat);
+              //    console.log("p: ", p, data[0].lng);
+              //}
+
+          });
+
+          
+          var contentString = "area: ~" + thousandSeparator(polygonData.area) + "m<sup>2</sup></br>GPS:</br>";
+
+          for (var r = 0; r < polygonData.length; ++r)
+          {
+              contentString += polygonData[r].lat+ "°N,"+ polygonData[r].lng + "°E<br />";
+          }
+
+          var popup = new L.Popup()
+              .setContent(contentString)
+              ;
+
+          layer.bindPopup(popup);
+
+
           layer.addTo(this);
           layer.feature = feature;  
       }

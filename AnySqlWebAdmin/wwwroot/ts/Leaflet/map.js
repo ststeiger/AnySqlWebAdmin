@@ -168,7 +168,6 @@ function getData(url, data) {
                     if (obj == null) {
                         throw new HttpRequestError(500, 'Server Error');
                     }
-                    console.log(obj);
                     return [2, obj];
             }
         });
@@ -325,10 +324,13 @@ function polygonAreaOld(poly2) {
 }
 function polygonArea(poly2) {
     var area = 0.0;
-    var poly = JSON.parse(JSON.stringify(poly2));
-    poly = poly.map(function (x) {
-        return new L.LatLng(Math.radians(x.lat), Math.radians(x.lng));
-    });
+    var poly = [];
+    for (var q = 0; q < poly2.length; ++q) {
+        poly.push(new L.LatLng(Math.radians(poly2[q].lat), Math.radians(poly2[q].lng)));
+    }
+    if (poly[0].lat != poly[poly.length - 1].lat || poly[0].lng != poly[poly.length - 1].lng) {
+        poly.push(new L.LatLng(poly[0].lat, poly[0].lng));
+    }
     var len = poly.length;
     for (var i = 0; i < len; i++) {
         if (len > 2) {
@@ -349,7 +351,7 @@ function polygonArea(poly2) {
             area = area * radius * radius / 2.0;
         }
     }
-    return Math.abs(area).toFixed(0);
+    return parseFloat(Math.abs(area).toFixed(0));
 }
 function latLongToString(latlng) {
     var x = latlng.lat;
@@ -376,7 +378,16 @@ function latLongToString(latlng) {
 function thousandSeparator(x) {
     if (x == null)
         return "";
-    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "'");
+    var s = x.toString();
+    var i = s.indexOf(".");
+    var comma = "";
+    if (i != -1) {
+        comma = s.substr(i);
+        s = s.substr(0, i);
+    }
+    s = s.replace(/\B(?=(\d{3})+(?!\d))/g, "'");
+    s += comma;
+    return s;
 }
 function addWerbetafel(lat, lng) {
     return __awaiter(this, void 0, void 0, function () {
@@ -1054,10 +1065,13 @@ function getXml(url, data) {
                     ex2 = null;
                     ex3 = null;
                     myHeaders = new Headers();
-                    myHeaders.append("Accept", "*/*");
+                    myHeaders.append("accept", "*/*");
+                    myHeaders.append("pragma", "no-cache");
+                    myHeaders.append("cache-control", "no-cache");
                     options = {
                         "method": "GET",
                         "headers": myHeaders,
+                        "referrerPolicy": "origin-when-cross-origin",
                         "body": null
                     };
                     if (data != null) {
@@ -1102,32 +1116,34 @@ function getXml(url, data) {
                     if (obj == null) {
                         throw new HttpRequestError(500, 'Server Error');
                     }
-                    console.log(obj);
                     return [2, obj];
             }
         });
     });
 }
-function mapArea() {
-    var bb = map.getBounds();
-    var nw = bb.getNorthWest();
-    var se = bb.getSouthEast();
+function getBoundsArea(bounds) {
+    var nw = bounds.getNorthWest();
+    var se = bounds.getSouthEast();
     var maxLng = Math.max(nw.lng, se.lng);
     var maxLat = Math.max(nw.lat, se.lat);
     var minLng = Math.min(nw.lng, se.lng);
     var minLat = Math.min(nw.lat, se.lat);
     var area = (maxLng - minLng) * (maxLat - minLat);
-    console.log("bb", bb.toBBoxString());
-    console.log("map area: ", area);
+    return area;
 }
 function addDataLayer() {
     return __awaiter(this, void 0, void 0, function () {
-        var bb, OSM_API_VERSION, url, xml, layer;
+        var bb, area, OSM_API_VERSION, url, xml, layer;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
                     map.closePopup();
                     bb = map.getBounds();
+                    area = getBoundsArea(bb);
+                    if (area > 0.25) {
+                        alert("The maximum bbox size is 0.25, and your request was too large.\nEither request a smaller area, or use planet.osm.");
+                        return [2];
+                    }
                     OSM_API_VERSION = "0.6";
                     url = "https://www.openstreetmap.org/api/" + OSM_API_VERSION + "/map?bbox=" + bb.toBBoxString();
                     return [4, getXml(url)];
@@ -1209,6 +1225,19 @@ function initMap() {
             }
         });
     });
+}
+function CreatePolygon(latLongs) {
+    var polyString = "";
+    for (var i = 0; i < latLongs.length; ++i) {
+        if (i !== 0)
+            polyString += ",";
+        polyString += latLongs[i].lng + " " + latLongs[i].lat;
+    }
+    polyString = "POLYGON((" + polyString + "))";
+    return polyString;
+}
+function setPositon(latitude, longitude) {
+    map.setView(new L.LatLng(latitude, longitude), 18);
 }
 function startMap() {
     return __awaiter(this, void 0, void 0, function () {

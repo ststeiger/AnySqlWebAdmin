@@ -2,6 +2,11 @@
 import * as geojson from 'geojson';
 
 
+// https://github.com/openstreetmap/leaflet-osm/blob/master/leaflet-osm.js
+// https://github.com/openstreetmap/leaflet-osm
+// https://asmaloney.com/2014/01/code/creating-an-interactive-map-with-leaflet-and-openstreetmap/
+
+
 declare global
 {
 
@@ -17,10 +22,10 @@ declare global
 
                 getBounds(): LatLngBounds;
 
-            }
+            } // End Class DataLayer 
 
-        }
+        } // End namespace OSM 
 
-    }
+    } // End namespace L 
 
 }
