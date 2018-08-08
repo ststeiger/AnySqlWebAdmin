@@ -66,37 +66,46 @@ L.OSM.DataLayer = L.FeatureGroup.extend({
       this.addData(xml);
     }
   },
-
+  
   addData: function (features) {
     if (!(features instanceof Array)) {
       features = this.buildFeatures(features);
     }
-
+    
+    
     for (var i = 0; i < features.length; i++) {
       var feature = features[i], layer;
-
+      
+      var isPolygon = false;
+      
       if (feature.type === "changeset") {
         layer = L.rectangle(feature.latLngBounds, this.options.styles.changeset);
       } else if (feature.type === "node") {
         layer = L.circleMarker(feature.latLng, this.options.styles.node);
       } else {
         var latLngs = new Array(feature.nodes.length);
-
+        
         for (var j = 0; j < feature.nodes.length; j++) {
           latLngs[j] = feature.nodes[j].latLng;
         }
-
+        
         if (this.isWayArea(feature)) {
           latLngs.pop(); // Remove last == first.
           layer = L.polygon(latLngs, this.options.styles.area);
+            isPolygon = true;
         } else {
           layer = L.polyline(latLngs, this.options.styles.way);
         }
       }
-
-      layer.addTo(this);
-      layer.feature = feature;
-    }
+      
+      console.log("addto", this);
+      // this: FeatureGroup - extends LayerGroup
+      if (isPolygon)
+      {
+          layer.addTo(this);
+          layer.feature = feature;  
+      }
+    } // Next i 
   },
 
   buildFeatures: function (xml) {
@@ -166,7 +175,7 @@ L.OSM.DataLayer = L.FeatureGroup.extend({
 L.Util.extend(L.OSM, {
   getChangesets: function (xml) {
     var result = [];
-
+    
     var nodes = xml.getElementsByTagName("changeset");
     for (var i = 0; i < nodes.length; i++) {
       var node = nodes[i], id = node.getAttribute("id");
@@ -219,7 +228,7 @@ L.Util.extend(L.OSM, {
       for (var j = 0; j < nds.length; j++) {
         way_object.nodes[j] = nodes[nds[j].getAttribute("ref")];
       }
-
+      
       result.push(way_object);
     }
 
@@ -228,7 +237,7 @@ L.Util.extend(L.OSM, {
 
   getRelations: function (xml, nodes, ways) {
     var result = [];
-
+    
     var rels = xml.getElementsByTagName("relation");
     for (var i = 0; i < rels.length; i++) {
       var rel = rels[i], members = rel.getElementsByTagName("member");

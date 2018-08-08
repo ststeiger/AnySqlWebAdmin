@@ -1917,7 +1917,7 @@ async function addDataLayer()
     let xml = await getXml(url);
     console.log("xml", xml);
     let layer = new L.OSM.DataLayer(xml).addTo(map);
-    map.fitBounds(layer.getBounds());
+    // map.fitBounds(layer.getBounds());
     
     // console.log(result);
 }

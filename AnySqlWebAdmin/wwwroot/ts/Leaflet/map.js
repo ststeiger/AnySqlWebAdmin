@@ -1135,7 +1135,6 @@ function addDataLayer() {
                     xml = _a.sent();
                     console.log("xml", xml);
                     layer = new L.OSM.DataLayer(xml).addTo(map);
-                    map.fitBounds(layer.getBounds());
                     return [2];
             }
         });
