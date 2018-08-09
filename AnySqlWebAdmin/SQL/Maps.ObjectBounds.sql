@@ -26,7 +26,7 @@ UNION ALL
 
 
 SELECT 
-	'ORT' AS OBJT_UID 
+	 'ORT' AS OBJT_UID 
 	,T_AP_Ref_Ort.ORT_UID AS OBJ_UID 
 	 
 	,T_AP_Ref_Ort.ORT_GM_Lat AS OBJ_Lat 

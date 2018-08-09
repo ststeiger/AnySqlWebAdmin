@@ -2136,9 +2136,16 @@ function CreatePolygon( latLongs:L.LatLng[])
 
         polyString += latLongs[i].lng + " " + latLongs[i].lat; // + ",";
     }
-
+    
     polyString = "POLYGON((" + polyString+"))";
     return polyString;
+}
+
+function CreateSqlPolygon( latLongs:L.LatLng[])
+{
+    let s = "geography::STPolyFromText('" + CreatePolygon(latLongs) + "', 4326)";
+    console.log(s);
+    return s; 
 }
 
 

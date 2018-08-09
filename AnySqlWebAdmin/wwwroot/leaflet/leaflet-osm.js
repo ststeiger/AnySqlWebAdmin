@@ -191,12 +191,15 @@ L.OSM.DataLayer = L.FeatureGroup.extend({
 
           
           var contentString = "area: ~" + thousandSeparator(polygonData.area) + "m<sup>2</sup></br>GPS:</br>";
-
+          contentString += CreateSqlPolygon(polygonData);
+          
+          /*
           for (var r = 0; r < polygonData.length; ++r)
           {
               contentString += polygonData[r].lat+ "°N,"+ polygonData[r].lng + "°E<br />";
           }
-
+          */
+          
           var popup = new L.Popup()
               .setContent(contentString)
               ;

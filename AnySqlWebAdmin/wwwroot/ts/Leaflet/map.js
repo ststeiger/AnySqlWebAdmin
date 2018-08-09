@@ -1236,6 +1236,11 @@ function CreatePolygon(latLongs) {
     polyString = "POLYGON((" + polyString + "))";
     return polyString;
 }
+function CreateSqlPolygon(latLongs) {
+    var s = "geography::STPolyFromText('" + CreatePolygon(latLongs) + "', 4326)";
+    console.log(s);
+    return s;
+}
 function setPositon(latitude, longitude) {
     map.setView(new L.LatLng(latitude, longitude), 18);
 }
