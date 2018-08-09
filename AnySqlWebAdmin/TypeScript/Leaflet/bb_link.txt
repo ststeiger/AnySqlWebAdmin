@@ -45,7 +45,7 @@ a == b
 +a == +b
 
 
----------------------------------
+-- --------------------------------------------------------------
 
 https://stackoverflow.com/questions/2667748/how-do-i-combine-complex-polygons 
 https://blogs.msdn.microsoft.com/davidlean/2008/10/25/sql-2008-spatial-samples-part-6-of-9-geometric-set-theory-methods/ 
@@ -58,3 +58,74 @@ DECLARE @b GEOMETRY = 'POLYGON((4 1, 3 5, 4 9, 9 5, 4 1),(4 5, 5 7, 6 7, 4 4, 4 
 
           SELECT @a as geo, 'A' as Labels 
 UNION ALL SELECT @b as geo, 'B' as Labels 
+
+-- --------------------------------------------------------------
+
+https://gis.stackexchange.com/questions/165131/postgis-how-to-effeciently-st-union-all-overlapping-polygons-in-a-single-table
+
+http://www.postgis.net/docs/ST_Union.html
+geometry ST_Union(geometry g1, geometry g2);
+
+http://www.postgis.net/docs/ST_GeomFromText.html
+geometry ST_GeomFromText(text WKT);
+geometry ST_GeomFromText(text WKT, integer srid);
+
+
+ SELECT ST_AsText(ST_Union(ST_GeomFromText('POINT(1 2)'),
+	ST_GeomFromText('POINT(-2 3)') ) )
+
+SELECT ST_GeomFromText('POLYGON((-71.1776585052917 42.3902909739571,-71.1776820268866 42.3903701743239,
+-71.1776063012595 42.3903825660754,-71.1775826583081 42.3903033653531,-71.1776585052917 42.3902909739571))');
+
+SRID: 4326
+SELECT ST_GeomFromText('LINESTRING(-71.160281 42.258729,-71.160837 42.259113,-71.161144 42.25932)',4269);
+
+
+https://postgis.net/docs/ST_Intersects.html
+boolean ST_Intersects( geometry geomA , geometry geomB );
+boolean ST_Intersects( geography geogA , geography geogB );
+http://www.h2gis.org/docs/dev/ST_Intersects/
+POLYGON((1 1, 4 1, 4 5, 1 5, 1 1))	POINT(3 3)
+
+See also: 
+ST_Intersection, ST_Overlaps, ST_Contains, ST_Touches
+
+-- --------------------------------------------------------------
+Oracle Editins:
+https://docs.oracle.com/database/121/DBLIC/editions.htm#DBLIC-GUID-F796455D-C7EF-4836-9F69-2BCCDA49B7BD
+
+
+
+https://en.wikipedia.org/wiki/Oracle_Database#Releases_and_versions
+Oracle Database 12c Release 1 - July 2013
+Oracle Database 12c Release 2 - March 2017
+Oracle Database 18c - February 2018
+
+
+https://www.directionsmag.com/article/2704
+10g: 
+• 4GB total data stored
+• XE is limited to 1GB of RAM
+• XE is limited to 1 processor 
+
+
+https://mobiliardbblog.wordpress.com/2017/10/20/new-xe-version-available-with-oracle-18c/
+18c: 
+The Oracle XE Edition is completely free 
+and contains more or less all options that are available in EE including Multitenant.
+
+Limits for XE 18c will be
+-  2 GB of memory 
+- 12 GB of storage 
+  (with basic/advanced compression pushing the real capacity up to around 40GB)
+- 2 CPUs
+- 4 pluggable databases
+
+
+https://medium.com/@marcelo.ochoa/building-oracle-18-0-0-0-docker-image-7dee4e65cc03
+https://mikedietrichde.com/2018/07/23/oracle-database-18-3-0-on-premises-available-for-download-on-linux/
+https://tuhrig.de/3-ways-of-installing-oracle-xe-11g-on-ubuntu/
+https://askubuntu.com/questions/566734/how-to-install-oracle-11gr2-on-ubuntu-14-04
+
+https://tutorialforlinux.com/2018/05/09/how-to-install-oracle-12c-r2-database-on-ubuntu-18-04-bionic-64bit-easy-guide/
+https://askubuntu.com/questions/1033264/oracle-12-c-db-installation-on-ubuntu-18-04-lts/1047991
