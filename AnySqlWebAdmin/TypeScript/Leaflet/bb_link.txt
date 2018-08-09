@@ -43,3 +43,18 @@ b.valueOf()
 
 a == b
 +a == +b
+
+
+---------------------------------
+
+https://stackoverflow.com/questions/2667748/how-do-i-combine-complex-polygons 
+https://blogs.msdn.microsoft.com/davidlean/2008/10/25/sql-2008-spatial-samples-part-6-of-9-geometric-set-theory-methods/ 
+
+-- ==< Sample: STUnion >=== 
+DECLARE @a GEOMETRY = 'POLYGON((1 0, 1 8, 6 4, 1 0))'
+DECLARE @b GEOMETRY = 'POLYGON((4 1, 3 5, 4 9, 9 5, 4 1),(4 5, 5 7, 6 7, 4 4, 4 5) )'
+
+--SELECT @a.STUnion(@b) as 'STUnion', 'STUnion' as Labels
+
+          SELECT @a as geo, 'A' as Labels 
+UNION ALL SELECT @b as geo, 'B' as Labels 
