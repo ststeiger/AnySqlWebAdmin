@@ -1,4 +1,4 @@
-
+ï»¿
 https://stackoverflow.com/questions/2049502/what-characters-are-allowed-in-an-email-address
 https://stackoverflow.com/questions/801166/sql-script-to-find-invalid-email-addresses
 https://github.com/jstedfast/EmailValidation/tree/master/EmailValidation
@@ -27,6 +27,30 @@ Hauptsitz
 VB2 Engelgasse 9+11
 Engelgasse 9+11
 4052 Basel
+
+
+setPositon(47.551811, 7.599570);
+addDataLayer()
+
+
+setPositon(47.551811, 7.599570);
+drawTestPolygon();
+
+
+setPositon(47.551811, 7.599570);
+drawTestPolygon(1);
+
+
+
+neither... start a business. Don't get a GOOD job. 
+People with GOOD jobs get taxed up their ass and work long hours, 
+not worth it in Modern day America. 
+Start a business, first 3-5 years are absolute hell 
+because you have to build up your systems, but after those years, 
+the business will run on almost auto pilot. 
+Lastly you'll be able to leave a legacy with a business, 
+and your kids will be set.ï»¿
+
 
 
 https://stackoverflow.com/questions/47967913/determine-if-point-is-inside-shape-sql-server-2014
@@ -133,9 +157,9 @@ Oracle Database 18c - February 2018
 
 https://www.directionsmag.com/article/2704
 10g: 
-• 4GB total data stored
-• XE is limited to 1GB of RAM
-• XE is limited to 1 processor 
+â€¢ 4GB total data stored
+â€¢ XE is limited to 1GB of RAM
+â€¢ XE is limited to 1 processor 
 
 
 https://mobiliardbblog.wordpress.com/2017/10/20/new-xe-version-available-with-oracle-18c/
