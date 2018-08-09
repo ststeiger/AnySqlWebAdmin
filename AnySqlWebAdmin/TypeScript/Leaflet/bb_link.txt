@@ -1,4 +1,12 @@
 
+https://stackoverflow.com/questions/2049502/what-characters-are-allowed-in-an-email-address
+https://stackoverflow.com/questions/801166/sql-script-to-find-invalid-email-addresses
+https://github.com/jstedfast/EmailValidation/tree/master/EmailValidation
+https://msdn.microsoft.com/en-us/library/system.globalization.idnmapping(v=vs.110).aspx
+
+
+
+
 https://www.openstreetmap.org/api/0.6/map?bbox=8.232359290122988,47.41372491643813,8.238501548767092,47.41713709955768
 https://www.openstreetmap.org/api/0.6/notes.json?bbox=8.232359290122988,47.41372491643813,8.238501548767092,47.41713709955768
 
@@ -59,6 +67,10 @@ DECLARE @b GEOMETRY = 'POLYGON((4 1, 3 5, 4 9, 9 5, 4 1),(4 5, 5 7, 6 7, 4 4, 4 
           SELECT @a as geo, 'A' as Labels 
 UNION ALL SELECT @b as geo, 'B' as Labels 
 
+
+
+STPolyFromText(nvarchar(max)) geometry
+
 -- --------------------------------------------------------------
 
 https://gis.stackexchange.com/questions/165131/postgis-how-to-effeciently-st-union-all-overlapping-polygons-in-a-single-table
@@ -89,6 +101,23 @@ POLYGON((1 1, 4 1, 4 5, 1 5, 1 1))	POINT(3 3)
 
 See also: 
 ST_Intersection, ST_Overlaps, ST_Contains, ST_Touches
+
+
+http://www.postgis.org/docs/ST_AsText.html
+text ST_AsText(geometry g1);
+text ST_AsText(geography g1);
+
+SELECT ST_AsText('01030000000100000005000000000000000000
+000000000000000000000000000000000000000000000000
+F03F000000000000F03F000000000000F03F000000000000F03
+F000000000000000000000000000000000000000000000000');
+
+
+https://postgis.net/docs/ST_PolygonFromText.html
+geometry ST_PolygonFromText(text WKT);
+geometry ST_PolygonFromText(text WKT, integer srid);
+
+
 
 -- --------------------------------------------------------------
 Oracle Editins:

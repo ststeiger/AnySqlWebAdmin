@@ -5,8 +5,87 @@
 // System.Data.Entity.Spatial.DbGeography vs. Microsoft.SqlServer.Types.SqlGeography
 // DbGeography is just a dumbed down version of SqlGeography,
 
+using System.Linq;
+
 namespace AnySqlWebAdmin
 {
+
+    public class test
+    {
+
+        // https://stackoverflow.com/questions/1175888/determine-if-a-type-is-static
+        // static classes are declared abstract and sealed at the IL level. 
+        // type.IsAbstract && type.IsSealed
+        // However, abstract classes are not the only types you can't instantiate directly. 
+        // You should check for things like interfaces (without the CoClass attribute) 
+        // and types that don't have a constructor accessible by the calling code.
+        public static void isstatic()
+        {
+            System.Type t = typeof(System.GC);
+            System.Console.WriteLine(t.Attributes);
+            System.Reflection.TypeAttributes attribForStaticClass = System.Reflection.TypeAttributes.AutoLayout 
+                | System.Reflection.TypeAttributes.AnsiClass 
+                | System.Reflection.TypeAttributes.Class |
+            System.Reflection.TypeAttributes.Public | System.Reflection.TypeAttributes.Abstract 
+            | System.Reflection.TypeAttributes.Sealed | System.Reflection.TypeAttributes.BeforeFieldInit;
+            System.Console.WriteLine((t.Attributes == attribForStaticClass));
+        }
+
+
+        public static void ByPublicConstructor()
+        {
+            System.Type t = typeof(System.Environment);
+            var c = t.GetConstructors(System.Reflection.BindingFlags.Public);
+            if (!t.IsAbstract && c.Length > 0)
+            {
+                //You can create instance
+            }
+
+            // Or if you only interested in parameterless constructor you can use
+
+            var cc = t.GetConstructor(System.Type.EmptyTypes);
+            if (cc != null && cc.IsPublic && !t.IsAbstract)
+            {
+                //You can create instance
+            }
+
+        }
+
+
+        // https://stackoverflow.com/questions/1198417/generate-list-of-methods-of-a-class-with-method-types
+        public static void ShowMethods(System.Type type)
+        {
+            foreach (var method in type.GetMethods())
+            {
+                var parameters = method.GetParameters();
+                var parameterDescriptions = string.Join
+                    (", ", method.GetParameters()
+                                 .Select(x => x.ParameterType + " " + x.Name)
+                                 .ToArray());
+
+                System.Console.WriteLine("{0} {1} ({2})",
+                                  method.ReturnType,
+                                  method.Name,
+                                  parameterDescriptions);
+            }
+        }
+
+        public static void ListAllClasses()
+        {
+            System.Reflection.Assembly assembly1 = System.Reflection.Assembly.ReflectionOnlyLoad("fullAssemblyName");
+            System.Reflection.Assembly assembly2 = System.Reflection.Assembly.ReflectionOnlyLoadFrom("fileName");
+
+            System.Reflection.Assembly mscorlib = typeof(string).Assembly;
+            foreach (System.Type type in mscorlib.GetTypes())
+            {
+                System.Console.WriteLine(type.FullName);
+            }
+        }
+
+    }
+
+
+
     public class DbGeography
     {
         public static int DefaultCoordinateSystemId { get; }
