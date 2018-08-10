@@ -1236,8 +1236,7 @@ async function loadMarkers()
         // https://jsfiddle.net/guspersson/393ehmsq/
         // let marker = L.marker([latitude, longitude]).addTo(map);
         let marker = L.marker([latitude, longitude], { icon: greenIcon }).addTo(map);
-
-
+        
         let tt = L.tooltip(
             {
                 permanent: true,
@@ -2154,10 +2153,10 @@ function CreatePolygon( latLongs:L.LatLng[])
     return polyString;
 }
 
+
 function CreateSqlPolygon( latLongs:L.LatLng[])
 {
     let s = "geography::STPolyFromText('" + CreatePolygon(latLongs) + "', 4326)";
-    console.log(s);
     return s; 
 }
 

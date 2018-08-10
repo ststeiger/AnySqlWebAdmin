@@ -134,8 +134,9 @@ L.OSM.DataLayer = L.FeatureGroup.extend({
                 // console.log(area);
                 // console.log(features[i])
             }
-            
-            layer = L.polygon(latLngs, this.options.styles.area);
+
+            //layer = L.polygon(latLngs, this.options.styles.area);
+            layer = L.polygon(latLngs, { className: 'osm_data_polygon', __color: "red", __dashArray: '10,10' } );
             isPolygon = true;
         } else {
           layer = L.polyline(latLngs, this.options.styles.way);
@@ -199,6 +200,9 @@ L.OSM.DataLayer = L.FeatureGroup.extend({
               contentString += polygonData[r].lat+ "°N,"+ polygonData[r].lng + "°E<br />";
           }
           */
+
+
+
           
           var popup = new L.Popup()
               .setContent(contentString)
@@ -206,6 +210,20 @@ L.OSM.DataLayer = L.FeatureGroup.extend({
 
           layer.bindPopup(popup);
 
+          layer.on("click", function (event)
+          {
+              // console.log("lc", event);
+              // console.log("tgt", event.target);
+              // console.log("sd", event.sourceTarget);
+              // console.log("ogt", event.originalEvent.target);
+              // event.originalEvent.target.setAttribute("style", "fill: blue !important;");
+
+              // https://developer.mozilla.org/en-US/docs/Web/API/Element/classList
+              if (event.originalEvent.target.classList.contains("active"))
+                  event.originalEvent.target.classList.remove("active");
+              else
+                event.originalEvent.target.classList.add("active");
+          });
 
           layer.addTo(this);
           layer.feature = feature;  

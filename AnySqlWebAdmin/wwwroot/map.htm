@@ -200,12 +200,33 @@
     </script>
     
     <style type="text/css" media="all">
-        
+
+        /*
         path.leaflet-interactive
         {
             fill: red !important;
+            orange,
+            greenpalegoldenrod,#58ff00
         }
-        
+        */
+
+        .osm_data_polygon 
+        {
+            fill: green;
+            opacity: 1;
+        }
+
+        .osm_data_polygon:hover 
+        {
+            fill: palegoldenrod;
+            opacity: 1;
+        }
+
+        .osm_data_polygon.active 
+        {
+            fill: #58ff00;
+        }
+
     </style>
     
 </body>

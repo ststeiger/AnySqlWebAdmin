@@ -1248,7 +1248,6 @@ function CreatePolygon(latLongs) {
 }
 function CreateSqlPolygon(latLongs) {
     var s = "geography::STPolyFromText('" + CreatePolygon(latLongs) + "', 4326)";
-    console.log(s);
     return s;
 }
 function setPositon(latitude, longitude) {
