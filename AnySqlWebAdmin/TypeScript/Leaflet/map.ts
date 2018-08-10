@@ -2232,7 +2232,10 @@ function polygonStringToCoordinates(polygonString:string)
 
     // mystring.match(/\[(.*?)\]/);
     polygonString = polygonString.match(/\s*POLYGON\s*\(\s*\(\s*(.*?)\s*\)\s*\)\s*/)[1];
-
+    // polygonString = polygonString.replace( new RegExp("\\s*,\\s*", 'g'), ",");
+    polygonString = polygonString.replace(/\s*,\s*/g, ",");
+    
+    
     //let allPoints: string[] = polygonString.split(", ");
     let allPoints: string[] = polygonString.split(",");
     for (let i = 0; i < allPoints.length; ++i)

@@ -1282,6 +1282,7 @@ function toCounterClockWise(poly) {
 function polygonStringToCoordinates(polygonString) {
     var latlongs = [];
     polygonString = polygonString.match(/\s*POLYGON\s*\(\s*\(\s*(.*?)\s*\)\s*\)\s*/)[1];
+    polygonString = polygonString.replace(/\s*,\s*/g, ",");
     var allPoints = polygonString.split(",");
     for (var i = 0; i < allPoints.length; ++i) {
         var pointComponents = allPoints[i].split(" ");
