@@ -1329,3 +1329,10 @@ function startMap() {
     });
 }
 startMap();
+function foo() {
+    var layerGroupNew = new L.LayerGroup();
+    layerGroupNew.addTo(map);
+    var x = L.marker(new L.LatLng(0, 0, 0));
+    x.addTo(layerGroupNew);
+    var featureGroupNew = new L.FeatureGroup().addTo(layerGroupNew);
+}

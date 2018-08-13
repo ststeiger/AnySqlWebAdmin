@@ -2306,3 +2306,20 @@ startMap();
 
 // marker.bindTooltip("My Label", { permanent: true, className: "my-label", offset: [0, 0] });
 // polygon.bindTooltip("My Label", { permanent: true, className: "my-label", offset: [0, 0] });
+
+
+function foo()
+{
+    
+    var layerGroupNew = new L.LayerGroup();
+    layerGroupNew.addTo(map);
+
+    let x = L.marker(new L.LatLng(0, 0, 0))
+    x.addTo(layerGroupNew);
+
+    let featureGroupNew = new L.FeatureGroup().addTo(layerGroupNew);
+}
+
+// https://gis.stackexchange.com/questions/161940/how-to-add-layers-and-update-layer-control-dynamically-leaflet
+// https://leafletjs.com/examples/layers-control/
+// https://leafletjs.com/examples/extending/extending-2-layers.html
