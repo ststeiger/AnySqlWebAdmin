@@ -1349,3 +1349,64 @@ function foo() {
     x.addTo(layerGroupNew);
     var featureGroupNew = new L.FeatureGroup().addTo(layerGroupNew);
 }
+function getBuildings() {
+    return __awaiter(this, void 0, void 0, function () {
+        var bb, area, OSM_API_VERSION, url, xml, buildingsNodes, nodes, nodeDictionary, buildings, i, nodeId, i, buildingNodes, coords, j, ref, wayId, property, thisBuilding, contentString, popup;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    bb = map.getBounds();
+                    area = getBoundsArea(bb);
+                    if (area > 0.25) {
+                        alert("The maximum bbox size is 0.25, and your request was too large.\nEither request a smaller area, or use planet.osm.");
+                        return [2];
+                    }
+                    OSM_API_VERSION = "0.6";
+                    url = "https://www.openstreetmap.org/api/" + OSM_API_VERSION + "/map?bbox=" + bb.toBBoxString();
+                    return [4, getXml(url)];
+                case 1:
+                    xml = _a.sent();
+                    console.log("xml", xml);
+                    buildingsNodes = Array.prototype.slice.call(xml.querySelectorAll('way tag[k="building"]')).map(function (x) { return x.parentElement || x.parentNode; });
+                    nodes = Array.prototype.slice.call(xml.querySelectorAll('node'));
+                    nodeDictionary = {};
+                    buildings = {};
+                    for (i = 0; i < nodes.length; ++i) {
+                        nodeId = nodes[i].getAttribute("id");
+                        nodeDictionary[nodeId] = new L.LatLng(parseFloat(nodes[i].getAttribute("lat")), parseFloat(nodes[i].getAttribute("lon")));
+                    }
+                    for (i = 0; i < buildingsNodes.length; ++i) {
+                        buildingNodes = Array.prototype.slice.call(buildingsNodes[i].getElementsByTagName("nd"));
+                        coords = [];
+                        for (j = 0; j < buildingNodes.length; ++j) {
+                            ref = buildingNodes[j].getAttribute("ref");
+                            coords.push(nodeDictionary[ref]);
+                        }
+                        toCounterClockWise(coords);
+                        wayId = buildingsNodes[i].getAttribute("id");
+                        buildings[wayId] = coords;
+                    }
+                    console.log(buildings);
+                    for (property in buildings) {
+                        if (buildings.hasOwnProperty(property)) {
+                            console.log(property, buildings[property]);
+                            thisBuilding = L.polygon(buildings[property], { className: 'osm_data_polygon' });
+                            thisBuilding.addTo(map);
+                            contentString = "area: ~" + thousandSeparator(polygonArea(buildings[property])) + "m<sup>2</sup></br>GPS:</br>";
+                            contentString += CreateSqlPolygon(buildings[property]);
+                            popup = new L.Popup()
+                                .setContent(contentString);
+                            thisBuilding.bindPopup(popup);
+                            thisBuilding.on("click", function (event) {
+                                if (event.originalEvent.target.classList.contains("active"))
+                                    event.originalEvent.target.classList.remove("active");
+                                else
+                                    event.originalEvent.target.classList.add("active");
+                            });
+                        }
+                    }
+                    return [2];
+            }
+        });
+    });
+}

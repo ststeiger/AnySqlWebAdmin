@@ -2349,9 +2349,156 @@ function foo()
     .addTo(map); 
     */
     
-    
 }
 
 // https://gis.stackexchange.com/questions/161940/how-to-add-layers-and-update-layer-control-dynamically-leaflet
 // https://leafletjs.com/examples/layers-control/
 // https://leafletjs.com/examples/extending/extending-2-layers.html
+
+declare var DOMTokenListProto: any;
+
+async function getBuildings()
+{
+    let bb = map.getBounds();
+
+    let area = getBoundsArea(bb);
+    if (area > 0.25)
+    {
+        alert("The maximum bbox size is 0.25, and your request was too large.\nEither request a smaller area, or use planet.osm.");
+        return;
+    } // End if (area > 0.25) 
+
+    let OSM_API_VERSION = "0.6";
+    let url = "https://www.openstreetmap.org/api/" + OSM_API_VERSION + "/map?bbox=" + bb.toBBoxString();
+
+    let xml = await getXml(url);
+    console.log("xml", xml);
+    
+    // let hello = ``
+    // let xml = (new DOMParser()).parseFromString(hello, "text/xml");
+    
+    
+    let buildingsNodes: Element[] = Array.prototype.slice.call(xml.querySelectorAll('way tag[k="building"]')).map(function (x: Node) { return x.parentElement || x.parentNode });
+    let nodes: Element[] = Array.prototype.slice.call(xml.querySelectorAll('node'));
+    // console.log("buildingsNodes", buildingsNodes);
+    // console.log("nodes", nodes);
+    
+    let nodeDictionary: any = {};
+    let buildings: any = {};
+
+    for (let i = 0; i < nodes.length; ++i)
+    {
+        let nodeId = nodes[i].getAttribute("id");
+        nodeDictionary[nodeId] = new L.LatLng(parseFloat(nodes[i].getAttribute("lat"))
+            , parseFloat(nodes[i].getAttribute("lon"))
+        );
+    } // Next i 
+
+    for (let i = 0; i < buildingsNodes.length; ++i)
+    {
+        // console.log(buildings[i].id);
+
+        let buildingNodes: Element[] = Array.prototype.slice.call(buildingsNodes[i].getElementsByTagName("nd"));
+        let coords:L.LatLng[] = [];
+        for (let j = 0; j < buildingNodes.length; ++j)
+        {
+            let ref = buildingNodes[j].getAttribute("ref");
+            coords.push(nodeDictionary[ref]);
+            // console.log("ref", ref, coords[j]);
+        } // Next j 
+
+        toCounterClockWise(coords);
+        let wayId = buildingsNodes[i].getAttribute("id");
+        buildings[wayId] = coords;
+        // console.log(buildingsNodes[i].id, coords);
+    } // Next i 
+
+    console.log(buildings);
+
+
+    for (let property in buildings)
+    {
+        if (buildings.hasOwnProperty(property))
+        {
+            console.log(property, buildings[property]);
+            let thisBuilding = L.polygon(buildings[property], { className: 'osm_data_polygon' /*, "__color": "red", "__dashArray": '10,10'*/ });
+            thisBuilding.addTo(map);
+
+            let contentString = "area: ~" + thousandSeparator(polygonArea(buildings[property])) + "m<sup>2</sup></br>GPS:</br>";
+            contentString += CreateSqlPolygon(buildings[property]);
+
+            /*
+            for (var r = 0; r < polygonData.length; ++r)
+            {
+                contentString += polygonData[r].lat+ "°N,"+ polygonData[r].lng + "°E<br />";
+            }
+            */
+
+            let popup = new L.Popup()
+                .setContent(contentString)
+                ;
+
+            thisBuilding.bindPopup(popup);
+
+
+            thisBuilding.on("click", function (event: L.LeafletMouseEvent)
+            {
+                // console.log("lc", event);
+                // console.log("tgt", event.target);
+                // console.log("sd", event.sourceTarget);
+                // console.log("ogt", event.originalEvent.target);
+                // event.originalEvent.target.setAttribute("style", "fill: blue !important;");
+
+                // https://developer.mozilla.org/en-US/docs/Web/API/Element/classList
+                if ((<Element>event.originalEvent.target).classList.contains("active"))
+                    (<Element>event.originalEvent.target).classList.remove("active");
+                else
+                    (<Element>event.originalEvent.target).classList.add("active");
+            });
+
+        } // End if (buildings.hasOwnProperty(property)) 
+
+    } // Next property 
+
+
+    
+
+    // my.querySelector('way[id="28858269"]').getElementsByTagName("nd")
+
+    /*
+    // Xpathresult is undefined in IE11
+    // Internet Explorer does not support XPATH.
+    
+    let iterator = my.evaluate(
+         '//way/tag[@k="building"]/..' 
+        ,my 
+        ,{
+            // interface XPathNSResolver { lookupNamespaceURI(prefix: string): string }
+            lookupNamespaceURI: function (prefix:string):string
+            {
+                if (prefix === 'ns1')
+                    return 'http://tempuri.org/AWEService/API/WASAPI';
+                else
+                    return null;
+            }
+        }
+        , XPathResult.ANY_TYPE
+        , null
+    );
+
+    try
+    {
+        let thisNode = iterator.iterateNext();
+
+        while (thisNode)
+        {
+            console.log(thisNode);
+            thisNode = iterator.iterateNext();
+        }
+    }
+    catch (e)
+    {
+        console.log("error", e);
+    }
+    */
+}
