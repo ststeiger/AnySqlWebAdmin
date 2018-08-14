@@ -2181,11 +2181,11 @@ function setPositon(latitude:number, longitude:number)
 // MIT, see LICENSE.md for details.
 function isClockwiseSimple(poly: number[][])
 {
-    var sum = 0
-    for (var i = 0; i < poly.length - 1; i++)
+    let sum = 0;
+    for (let i = 0; i < poly.length - 1; i++)
     {
-        var cur = poly[i],
-            next = poly[i + 1]
+        let cur = poly[i],
+            next = poly[i + 1];
         sum += (next[0] - cur[0]) * (next[1] + cur[1])
     }
     return sum > 0
@@ -2307,17 +2307,49 @@ startMap();
 // marker.bindTooltip("My Label", { permanent: true, className: "my-label", offset: [0, 0] });
 // polygon.bindTooltip("My Label", { permanent: true, className: "my-label", offset: [0, 0] });
 
+// https://wiki.openstreetmap.org/wiki/Slippy_map_tilenames#Lon..2Flat._to_tile_numbers_2
+function long2tile(lon:number, zoom:number) 
+{ 
+    return (Math.floor((lon+180)/360*Math.pow(2,zoom))); 
+}
+
+
+function lat2tile(lat:number, zoom:number)  
+{ 
+    return (Math.floor((1-Math.log(Math.tan(lat*Math.PI/180) + 1/Math.cos(lat*Math.PI/180))/Math.PI)/2 *Math.pow(2,zoom))); 
+}
+
+
+function tile2long(x:number, z:number) 
+{
+    return (x/Math.pow(2, z)*360-180);
+}
+
+function tile2lat(y:number, z:number) 
+{
+    let n=Math.PI-2*Math.PI*y/Math.pow(2,z);
+    return (180/Math.PI*Math.atan(0.5*(Math.exp(n)-Math.exp(-n))));
+}
+
 
 function foo()
 {
-    
-    var layerGroupNew = new L.LayerGroup();
+    let layerGroupNew = new L.LayerGroup();
     layerGroupNew.addTo(map);
 
-    let x = L.marker(new L.LatLng(0, 0, 0))
+    let x = L.marker(new L.LatLng(0, 0, 0));
     x.addTo(layerGroupNew);
-
+    
+    // Extended LayerGroup that makes it easier to do the same thing to all its member layers:
     let featureGroupNew = new L.FeatureGroup().addTo(layerGroupNew);
+    /*
+    L.featureGroup([marker1, marker2, polyline])
+    .bindPopup('Hello world!')
+    .on('click', function() { alert('Clicked on a member of the group!'); })
+    .addTo(map); 
+    */
+    
+    
 }
 
 // https://gis.stackexchange.com/questions/161940/how-to-add-layers-and-update-layer-control-dynamically-leaflet
