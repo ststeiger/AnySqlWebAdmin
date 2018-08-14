@@ -1349,6 +1349,49 @@ function foo() {
     x.addTo(layerGroupNew);
     var featureGroupNew = new L.FeatureGroup().addTo(layerGroupNew);
 }
+function boundsFomDistance(lat, lon, distanceInMeters) {
+    function toRadians(val) {
+        return (val / 180.0 * Math.PI);
+    }
+    function toDegrees(val) {
+        return val / Math.PI * 180.0;
+    }
+    var R = 6371.0088;
+    var radius = distanceInMeters * 0.001;
+    var lon1 = lon - toDegrees(radius / R / Math.cos(toRadians(lat)));
+    var lon2 = lon + toDegrees(radius / R / Math.cos(toRadians(lat)));
+    var lat1 = lat + toDegrees(radius / R);
+    var lat2 = lat - toDegrees(radius / R);
+    return new L.LatLngBounds(new L.LatLng(lat2, lon2), new L.LatLng(lat1, lon1));
+}
+function deg2rad(degrees) {
+    return Math.PI * degrees / 180.0;
+}
+;
+function rad2deg(radians) {
+    return 180.0 * radians / Math.PI;
+}
+function WGS84EarthRadius(lat) {
+    var WGS84_a = 6378137.0;
+    var WGS84_b = 6356752.3;
+    var An = WGS84_a * WGS84_a * Math.cos(lat);
+    var Bn = WGS84_b * WGS84_b * Math.sin(lat);
+    var Ad = WGS84_a * Math.cos(lat);
+    var Bd = WGS84_b * Math.sin(lat);
+    return Math.sqrt((An * An + Bn * Bn) / (Ad * Ad + Bd * Bd));
+}
+function boundingBox(latitudeInDegrees, longitudeInDegrees, halfSideInKm) {
+    var lat = deg2rad(latitudeInDegrees);
+    var lon = deg2rad(longitudeInDegrees);
+    var halfSide = 1000 * halfSideInKm;
+    var radius = WGS84EarthRadius(lat);
+    var pradius = radius * Math.cos(lat);
+    var latMin = lat - halfSide / radius;
+    var latMax = lat + halfSide / radius;
+    var lonMin = lon - halfSide / pradius;
+    var lonMax = lon + halfSide / pradius;
+    return new L.LatLngBounds(new L.LatLng(rad2deg(latMin), rad2deg(lonMin)), new L.LatLng(rad2deg(latMax), rad2deg(lonMax)));
+}
 function getBuildings() {
     return __awaiter(this, void 0, void 0, function () {
         var bb, area, OSM_API_VERSION, url, xml, buildingsNodes, nodes, nodeDictionary, buildings, i, nodeId, i, buildingNodes, coords, j, ref, wayId, property, thisBuilding, contentString, popup;
@@ -1366,7 +1409,6 @@ function getBuildings() {
                     return [4, getXml(url)];
                 case 1:
                     xml = _a.sent();
-                    console.log("xml", xml);
                     buildingsNodes = Array.prototype.slice.call(xml.querySelectorAll('way tag[k="building"]')).map(function (x) { return x.parentElement || x.parentNode; });
                     nodes = Array.prototype.slice.call(xml.querySelectorAll('node'));
                     nodeDictionary = {};
@@ -1386,10 +1428,8 @@ function getBuildings() {
                         wayId = buildingsNodes[i].getAttribute("id");
                         buildings[wayId] = coords;
                     }
-                    console.log(buildings);
                     for (property in buildings) {
                         if (buildings.hasOwnProperty(property)) {
-                            console.log(property, buildings[property]);
                             thisBuilding = L.polygon(buildings[property], { className: 'osm_data_polygon' });
                             thisBuilding.addTo(map);
                             contentString = "area: ~" + thousandSeparator(polygonArea(buildings[property])) + "m<sup>2</sup></br>GPS:</br>";

@@ -2355,7 +2355,90 @@ function foo()
 // https://leafletjs.com/examples/layers-control/
 // https://leafletjs.com/examples/extending/extending-2-layers.html
 
-declare var DOMTokenListProto: any;
+// INCORRECT !!! 
+function boundsFomDistance(lat: number, lon: number, distanceInMeters: number): L.LatLngBounds 
+{
+
+    function toRadians(val:number):number
+    {
+        
+        return (val / 180.0 * Math.PI);
+    }
+
+    function toDegrees(val:number):number
+    {
+        return val / Math.PI * 180.0;
+    }
+
+    // https://en.wikipedia.org/wiki/Earth_radius
+    // For Earth, the mean radius is 6,371.0088 km
+    let R = 6371.0088;  // earth radius in km
+    let radius = distanceInMeters * 0.001; // km
+
+    
+    let lon1 = lon - toDegrees(radius / R / Math.cos(toRadians(lat)));
+    let lon2 = lon + toDegrees(radius / R / Math.cos(toRadians(lat)));
+
+    let lat1 = lat + toDegrees(radius / R);
+    let lat2 = lat - toDegrees(radius / R);
+
+    return new L.LatLngBounds(new L.LatLng(lat2, lon2), new L.LatLng(lat1, lon1))
+} // End Function boundsFomDistance 
+
+
+// degrees to radians
+function deg2rad(degrees: number)
+{
+    return Math.PI * degrees / 180.0;
+};
+// radians to degrees
+function rad2deg(radians: number)
+{
+    return 180.0 * radians / Math.PI;
+}
+
+
+// Earth radius at a given latitude, according to the WGS- 84 ellipsoid [m]
+function WGS84EarthRadius(lat: number)
+{
+    // Semi - axes of WGS- 84 geoidal reference
+    const WGS84_a = 6378137.0;  // Major semiaxis [m]
+    const WGS84_b = 6356752.3;  // Minor semiaxis [m]
+
+    // http://en.wikipedia.org/wiki/Earth_radius
+    let An = WGS84_a * WGS84_a * Math.cos(lat);
+    let Bn = WGS84_b * WGS84_b * Math.sin(lat);
+    let Ad = WGS84_a * Math.cos(lat);
+    let Bd = WGS84_b * Math.sin(lat);
+    return Math.sqrt((An * An + Bn * Bn) / (Ad * Ad + Bd * Bd))
+}
+
+// Bounding box surrounding the point at given coordinates,
+// assuming local approximation of Earth surface as a sphere
+// of radius given by WGS84
+// https://stackoverflow.com/questions/238260/how-to-calculate-the-bounding-box-for-a-given-lat-lng-location
+function boundingBox(latitudeInDegrees: number, longitudeInDegrees: number, halfSideInKm: number)
+{
+    let lat = deg2rad(latitudeInDegrees);
+    let lon = deg2rad(longitudeInDegrees);
+    let halfSide = 1000 * halfSideInKm;
+
+    // Radius of Earth at given latitude
+    let radius = WGS84EarthRadius(lat);
+    // Radius of the parallel at given latitude
+    let pradius = radius * Math.cos(lat);
+
+    let latMin = lat - halfSide / radius;
+    let latMax = lat + halfSide / radius;
+    let lonMin = lon - halfSide / pradius;
+    let lonMax = lon + halfSide / pradius;
+
+    // return (rad2deg(latMin), rad2deg(lonMin), rad2deg(latMax), rad2deg(lonMax));
+    return new L.LatLngBounds(new L.LatLng(rad2deg(latMin), rad2deg(lonMin)), new L.LatLng(rad2deg(latMax), rad2deg(lonMax)));
+}
+
+// boundsFomDistance(47.430383, 9.378554, 50)
+// boundingBox(47.430383, 9.378554, 0.050)
 
 async function getBuildings()
 {
@@ -2372,7 +2455,7 @@ async function getBuildings()
     let url = "https://www.openstreetmap.org/api/" + OSM_API_VERSION + "/map?bbox=" + bb.toBBoxString();
 
     let xml = await getXml(url);
-    console.log("xml", xml);
+    // console.log("xml", xml);
     
     // let hello = ``
     // let xml = (new DOMParser()).parseFromString(hello, "text/xml");
@@ -2413,14 +2496,14 @@ async function getBuildings()
         // console.log(buildingsNodes[i].id, coords);
     } // Next i 
 
-    console.log(buildings);
+    // console.log(buildings);
 
 
     for (let property in buildings)
     {
         if (buildings.hasOwnProperty(property))
         {
-            console.log(property, buildings[property]);
+            // console.log(property, buildings[property]);
             let thisBuilding = L.polygon(buildings[property], { className: 'osm_data_polygon' /*, "__color": "red", "__dashArray": '10,10'*/ });
             thisBuilding.addTo(map);
 
