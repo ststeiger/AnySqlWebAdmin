@@ -2511,7 +2511,7 @@ async function getBuildings()
             contentString += CreateSqlPolygon(buildings[property]);
 
             /*
-            for (var r = 0; r < polygonData.length; ++r)
+            for (let r = 0; r < polygonData.length; ++r)
             {
                 contentString += polygonData[r].lat+ "°N,"+ polygonData[r].lng + "°E<br />";
             }
@@ -2585,3 +2585,82 @@ async function getBuildings()
     }
     */
 }
+
+
+// let a = new L.LatLng(0, 0); a.lng a.lat
+class GeoPoint
+{
+    public Lat: number;
+    public Lng: number;
+}
+
+
+class GeographicOperations
+{
+
+    constructor()
+    { }
+
+
+    // https://stackoverflow.com/questions/217578/how-can-i-determine-whether-a-2d-point-is-within-a-polygon
+    public isPointInPolygon(p: GeoPoint, polygon: GeoPoint[])
+    {
+        let isInside = false;
+        let minX = polygon[0].Lat, maxX = polygon[0].Lat;
+        let minY = polygon[0].Lng, maxY = polygon[0].Lng;
+        for (let n = 1; n < polygon.length; n++)
+        {
+            let q = polygon[n];
+            minX = Math.min(q.Lat, minX);
+            maxX = Math.max(q.Lat, maxX);
+            minY = Math.min(q.Lng, minY);
+            maxY = Math.max(q.Lng, maxY);
+        } // Next n 
+
+        if (p.Lat < minX || p.Lat > maxX || p.Lng < minY || p.Lng > maxY)
+        {
+            return false;
+        } // End if point not in bounding box 
+
+        let i = 0, j = polygon.length - 1;
+        for (i, j; i < polygon.length; j = i++)
+        {
+            if ((polygon[i].Lng > p.Lng) != (polygon[j].Lng > p.Lng)
+                && p.Lat <
+                      (polygon[j].Lat - polygon[i].Lat) * (p.Lng - polygon[i].Lng)
+                    / (polygon[j].Lng - polygon[i].Lng) + polygon[i].Lat)
+            {
+                isInside = !isInside;
+            } // End if 
+
+        } // Next i,j 
+
+        return isInside;
+    } // End Function isPointInPolygon 
+
+
+    /// Determines if the given point is inside the polygon
+    // https://stackoverflow.com/questions/4243042/c-sharp-point-in-polygon
+    public isPointInPolygon4(polygon: GeoPoint[], testPoint: GeoPoint)
+    {
+        let result = false;
+        let j = polygon.length - 1;
+
+        for (let i = 0; i < polygon.length; i++)
+        {
+            if (polygon[i].Lng < testPoint.Lng && polygon[j].Lng >= testPoint.Lng || polygon[j].Lng < testPoint.Lng && polygon[i].Lng >= testPoint.Lng)
+            {
+                if (polygon[i].Lat + (testPoint.Lng - polygon[i].Lng) / (polygon[j].Lng - polygon[i].Lng) * (polygon[j].Lat - polygon[i].Lat) < testPoint.Lat)
+                {
+                    result = !result;
+                }
+            }
+
+            j = i;
+        } // Next i 
+
+        return result;
+    } // End Function isPointInPolygon4 
+
+
+} // End CLass GeographicOperations

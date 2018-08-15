@@ -1450,3 +1450,51 @@ function getBuildings() {
         });
     });
 }
+var GeoPoint = (function () {
+    function GeoPoint() {
+    }
+    return GeoPoint;
+}());
+var GeographicOperations = (function () {
+    function GeographicOperations() {
+    }
+    GeographicOperations.prototype.isPointInPolygon = function (p, polygon) {
+        var isInside = false;
+        var minX = polygon[0].Lat, maxX = polygon[0].Lat;
+        var minY = polygon[0].Lng, maxY = polygon[0].Lng;
+        for (var n = 1; n < polygon.length; n++) {
+            var q = polygon[n];
+            minX = Math.min(q.Lat, minX);
+            maxX = Math.max(q.Lat, maxX);
+            minY = Math.min(q.Lng, minY);
+            maxY = Math.max(q.Lng, maxY);
+        }
+        if (p.Lat < minX || p.Lat > maxX || p.Lng < minY || p.Lng > maxY) {
+            return false;
+        }
+        var i = 0, j = polygon.length - 1;
+        for (i, j; i < polygon.length; j = i++) {
+            if ((polygon[i].Lng > p.Lng) != (polygon[j].Lng > p.Lng)
+                && p.Lat <
+                    (polygon[j].Lat - polygon[i].Lat) * (p.Lng - polygon[i].Lng)
+                        / (polygon[j].Lng - polygon[i].Lng) + polygon[i].Lat) {
+                isInside = !isInside;
+            }
+        }
+        return isInside;
+    };
+    GeographicOperations.prototype.isPointInPolygon4 = function (polygon, testPoint) {
+        var result = false;
+        var j = polygon.length - 1;
+        for (var i = 0; i < polygon.length; i++) {
+            if (polygon[i].Lng < testPoint.Lng && polygon[j].Lng >= testPoint.Lng || polygon[j].Lng < testPoint.Lng && polygon[i].Lng >= testPoint.Lng) {
+                if (polygon[i].Lat + (testPoint.Lng - polygon[i].Lng) / (polygon[j].Lng - polygon[i].Lng) * (polygon[j].Lat - polygon[i].Lat) < testPoint.Lat) {
+                    result = !result;
+                }
+            }
+            j = i;
+        }
+        return result;
+    };
+    return GeographicOperations;
+}());
