@@ -14,6 +14,8 @@ namespace AnySqlWebAdmin
         
         public static void Main(string[] args)
         {
+            // GeographicOperations.Test();
+            
             BuildWebHost(args).Run();
         }
         

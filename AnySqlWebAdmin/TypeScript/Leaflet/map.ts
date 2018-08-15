@@ -2342,13 +2342,13 @@ function foo()
     
     // Extended LayerGroup that makes it easier to do the same thing to all its member layers:
     let featureGroupNew = new L.FeatureGroup().addTo(layerGroupNew);
+    
     /*
     L.featureGroup([marker1, marker2, polyline])
     .bindPopup('Hello world!')
     .on('click', function() { alert('Clicked on a member of the group!'); })
     .addTo(map); 
     */
-    
 }
 
 // https://gis.stackexchange.com/questions/161940/how-to-add-layers-and-update-layer-control-dynamically-leaflet
