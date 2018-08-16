@@ -72,11 +72,17 @@ namespace AnySqlWebAdmin
                 maxX = System.Math.Max(q.X, maxX);
                 minY = System.Math.Min(q.Y, minY);
                 maxY = System.Math.Max(q.Y, maxY);
+                
+                // check if point is q.x/y
             } // Next i 
-
+            
             float edgePointX = minX - float.Epsilon;
             float edgePointY = minY - float.Epsilon;
-
+            
+            
+            // schnittpunkt 
+            // test schnittpunkt aus linie 
+            
             int numIntersections = 0;
 
             for (int i = 1; i < polygon.Length; i++)
@@ -95,8 +101,8 @@ namespace AnySqlWebAdmin
 
 
         }
-
-
+        
+        
         public static IntersectionType_t areIntersecting(
             float v1x1, float v1y1, float v1x2, float v1y2, // i-1, i
             float v2x1, float v2y1, float v2x2, float v2y2

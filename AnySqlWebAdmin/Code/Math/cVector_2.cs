@@ -173,7 +173,14 @@ namespace Vectors
             return nReturnValue;
         }
 
-
+        
+        // a*v1 + b+v2 = 0
+        // l(v1) *e(v1) + b*v2
+        
+        // b = a(x+y+x)/(u+v+w) where u+v+w != 0 
+        
+        
+        
         // var vec:cVector_2d=cVector_2d.GetNormalVector(vec2_VecLine);
         public static cVector_2d GetNormalVector(cVector_2d vec)
         {
