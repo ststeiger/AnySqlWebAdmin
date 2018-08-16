@@ -11,20 +11,20 @@ namespace Vectors
 
 
         //Constructor
-        public cVector_3d(double nXparam = 0, double nYparam = 0, double nZparam = 0)
+        public cVector_3d(double x0 = 0, double y0 = 0, double z0 = 0)
         {
             this.bCurrentlyValid = true;
-            this.x = nXparam;
-            this.y = nYparam;
-            this.z = nZparam;
+            this.x = x0;
+            this.y = y0;
+            this.z = z0;
         } // End Constructor
 
 
 
         // cVector_3d.MakeVector(endx, endy, endz [, startx, starty, starz]);
-        public static cVector_3d MakeVector(double nX1param, double nY1param, double nZ1param, double nX0param = 0, double nY0param = 0, double nZ0param = 0)
+        public static cVector_3d MakeVector(double x1, double y1, double z1, double x0 = 0, double y0 = 0, double z0 = 0)
         {
-            cVector_3d vecReturnValue = new cVector_3d(nX1param - nY0param, nY1param - nY0param, nZ1param - nZ0param);
+            cVector_3d vecReturnValue = new cVector_3d(x1 - x0, y1 - y0, z1 - z0);
             return vecReturnValue;
         } // End function MakeVector
 
@@ -69,11 +69,19 @@ namespace Vectors
         // cVector_3d.VectorLength(vec);
         public static double VectorLength(cVector_3d vec)
         {
-            double nReturnValue = System.Math.Pow(vec.x, 2) + System.Math.Pow(vec.y, 2) + System.Math.Pow(vec.z, 2);
+            double nReturnValue = VectorNormSquared(vec);
             nReturnValue = System.Math.Sqrt(nReturnValue);
             return nReturnValue;
         } // End function VectorLength
 
+
+
+        // cVector_3d.VectorNorm(vec);
+        public static double VectorNormSquared(cVector_3d vec)
+        {
+            double nReturnValue = System.Math.Pow(vec.x, 2) + System.Math.Pow(vec.y, 2) + System.Math.Pow(vec.z, 2);
+            return nReturnValue;
+        } // End function VectorNorm
 
 
         // cVector_3d.VectorNorm(vec);

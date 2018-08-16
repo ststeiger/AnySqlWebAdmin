@@ -78,15 +78,18 @@ namespace AnySqlWebAdmin
             
             float edgePointX = minX - float.Epsilon;
             float edgePointY = minY - float.Epsilon;
+
+            // Vector point outside polygon => clickPint
+            Vectors.cVector_2d ray = Vectors.cVector_2d.MakeVector(edgePointX, edgePointY, testPoint.X, testPoint.Y);
             
-            
-            // schnittpunkt 
-            // test schnittpunkt aus linie 
+            // Schnittpunkt 
+            // Test schnittpunkt aus Linie 
             
             int numIntersections = 0;
 
             for (int i = 1; i < polygon.Length; i++)
             {
+
                 IntersectionType_t t = areIntersecting(polygon[i - i].X, polygon[i - i].Y,
                     polygon[i].X, polygon[i].Y,
                    edgePointX, edgePointY, testPoint.X, testPoint.Y

@@ -11,20 +11,20 @@ namespace Vectors
 		public z:number=0;
 		
 		
-		constructor(nXparam:number=0, nYparam:number=0, nZparam:number=0)
+		constructor(x0:number=0, y0:number=0, z0:number=0)
 		{
 			this.bCurrentlyValid=true;
-			this.x=nXparam;
-			this.y=nYparam;
-			this.z=nZparam;
+			this.x=x0;
+			this.y=y0;
+			this.z=z0;
 		} // End Constructor
 		
 		
 		
 		// cVector_3d.MakeVector(endx, endy, endz [, startx, starty, starz]);
-		public static MakeVector(nX1param:number, nY1param:number, nZ1param:number, nX0param:number=0, nY0param:number=0, nZ0param:number=0):cVector_3d
+		public static MakeVector(x1:number, y1:number, z1:number, x0:number=0, y0:number=0, z0:number=0):cVector_3d
 		{
-			let vecReturnValue:cVector_3d= new cVector_3d(nX1param-nY0param, nY1param-nY0param, nZ1param-nZ0param);
+            let vecReturnValue: cVector_3d = new cVector_3d(x1 - x0, y1 - y0, z1 - z0);
 			return vecReturnValue;
 		} // End function MakeVector
 		

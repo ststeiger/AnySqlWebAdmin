@@ -18,12 +18,12 @@ namespace Vectors
 		public z:number = 0; // Yay, for 3D abuse in 2D
 		
 		
-        constructor(nXparam:number=0, nYparam:number=0, nZparam:number=0)
+        constructor(x0:number=0, y0:number=0, z0:number=0)
 		{
 			this.bCurrentlyValid=true;
-			this.x=nXparam;
-			this.y=nYparam;
-			this.z=nZparam;
+            this.x = x0;
+            this.y = y0;
+            this.z = z0;
 		} // End Constructor
 		
 		
@@ -52,9 +52,9 @@ namespace Vectors
 		
 		
 		// cVector_2d.MakeVector(endx, endy [, startx, starty]);
-		public static MakeVector(nX1param:number, nY1param:number, nX0param:number=0, nY0param:number=0):cVector_2d
+		public static MakeVector(x1:number, y1:number, x0:number=0, y0:number=0):cVector_2d
 		{
-			let vecReturnValue:cVector_2d = new cVector_2d(nX1param-nX0param, nY1param-nY0param);
+            let vecReturnValue: cVector_2d = new cVector_2d(x1 - x0, y1 - y0);
 			return vecReturnValue;
 		} // End function MakeVector
 		
@@ -178,7 +178,80 @@ namespace Vectors
 			let nReturnValue:number = DeltaNorm/x2minusx1Norm;
 			return nReturnValue;
 		}
-		
+
+
+        public static schnittpunktlii(p1: Point, vec1: cVector_2d, p2: Point, vec2: cVector_2d): Point 
+        {
+            return cVector_2d.schnittpunktli(p1, new Point(p1.x + vec1.x, p1.y + vec1.y), p2, new Point(p2.x + vec2.x, p2.y + vec2.y));
+        }
+
+        public static schnittpunktli(p1: Point, p2: Point, p3: Point, p4: Point): Point
+        {
+            let x1 = p1.x;
+            let x2 = p2.x;
+            let x3 = p3.x;
+            let x4 = p4.x;
+
+            let y1 = p1.y;
+            let y2 = p2.y;
+            let y3 = p3.y;
+            let y4 = p4.y;
+
+            let topaX = cVector_2d.Determinant2d(x1, y1, x2, y2);
+            let topbX = cVector_2d.Determinant2d(x1, 1, x2, 1);
+            let topcX = cVector_2d.Determinant2d(x3, y3, x4, y4);
+            let topdX = cVector_2d.Determinant2d(x3, 1, x4, 1);
+            let topX = cVector_2d.Determinant2d(topaX, topbX, topcX, topdX);
+
+            let bottomaX = cVector_2d.Determinant2d(x1, 1, x2, 1);
+            let bottombX = cVector_2d.Determinant2d(y1, 1, y2, 1);
+            let bottomcX = cVector_2d.Determinant2d(x3, 1, x4, 1);
+            let bottomdX = cVector_2d.Determinant2d(y3, 1, y4, 1);
+            let bottomX = cVector_2d.Determinant2d(bottomaX, bottombX, bottomcX, bottomdX);
+
+            let x = topX / bottomX;
+
+
+            let topaY = cVector_2d.Determinant2d(x1, y1, x2, y2);
+            let topbY = cVector_2d.Determinant2d(y1, 1, y2, 1);
+            let topcY = cVector_2d.Determinant2d(x3, y3, x4, y4);
+            let topdY = cVector_2d.Determinant2d(x3, 1, y4, 1);
+            let topY = cVector_2d.Determinant2d(topaY, topbY, topcY, topdY);
+
+            let bottomaY = cVector_2d.Determinant2d(x1, 1, x2, 1);
+            let bottombY = cVector_2d.Determinant2d(y1, 1, y2, 1);
+            let bottomcY = cVector_2d.Determinant2d(x3, 1, x4, 1);
+            let bottomdY = cVector_2d.Determinant2d(y3, 1, y4, 1);
+            let bottomY = cVector_2d.Determinant2d(bottomaY, bottombY, bottomcY, bottomdY);
+
+            let y = topY / bottomY;
+
+            // m = (y2-y1)/(x2-x1)
+            // Case 1: horizontal line: slope = 0           | y=constant, x=variable
+            // Case 2: vertical line:   slope = +/-infinity | x=constant, y=variable 
+            // Case 3: Parallel => m1 = m2
+            // Case 4: orthogonal resp. right-angle => m1 = -1/m2 
+
+            return new Point(x, y);
+        }
+
+
+        // https://en.wikipedia.org/wiki/Determinant
+        // | a  b |
+        // | c  d |
+        public static Determinant2d(a: number, b: number, c: number, d: number):number
+        {
+            return a * d - b * c;
+        }
+
+        // | a  b c |
+        // | d  e f |
+        // | g  h i |
+        public static Determinant3d(a: number, b: number, c: number, d: number, e: number, f: number, g: number, h: number, i: number): number
+        {
+            return a * e * i + b * f * g + c * d * h - c * e * g - b * d * i - a * f * h;
+        }
+
 		
 		// let vec:cVector_2d=cVector_2d.GetNormalVector(vec2_VecLine);
 		public static GetNormalVector(vec:cVector_2d):cVector_2d

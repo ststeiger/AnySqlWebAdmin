@@ -1,24 +1,24 @@
 var Vectors;
 (function (Vectors) {
     var cVector_3d = (function () {
-        function cVector_3d(nXparam, nYparam, nZparam) {
-            if (nXparam === void 0) { nXparam = 0; }
-            if (nYparam === void 0) { nYparam = 0; }
-            if (nZparam === void 0) { nZparam = 0; }
+        function cVector_3d(x0, y0, z0) {
+            if (x0 === void 0) { x0 = 0; }
+            if (y0 === void 0) { y0 = 0; }
+            if (z0 === void 0) { z0 = 0; }
             this.bCurrentlyValid = true;
             this.x = 0;
             this.y = 0;
             this.z = 0;
             this.bCurrentlyValid = true;
-            this.x = nXparam;
-            this.y = nYparam;
-            this.z = nZparam;
+            this.x = x0;
+            this.y = y0;
+            this.z = z0;
         }
-        cVector_3d.MakeVector = function (nX1param, nY1param, nZ1param, nX0param, nY0param, nZ0param) {
-            if (nX0param === void 0) { nX0param = 0; }
-            if (nY0param === void 0) { nY0param = 0; }
-            if (nZ0param === void 0) { nZ0param = 0; }
-            var vecReturnValue = new cVector_3d(nX1param - nY0param, nY1param - nY0param, nZ1param - nZ0param);
+        cVector_3d.MakeVector = function (x1, y1, z1, x0, y0, z0) {
+            if (x0 === void 0) { x0 = 0; }
+            if (y0 === void 0) { y0 = 0; }
+            if (z0 === void 0) { z0 = 0; }
+            var vecReturnValue = new cVector_3d(x1 - x0, y1 - y0, z1 - z0);
             return vecReturnValue;
         };
         cVector_3d.VectorSubtract = function (b, a) {

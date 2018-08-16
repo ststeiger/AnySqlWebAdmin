@@ -1,18 +1,18 @@
 var Vectors;
 (function (Vectors) {
     var cVector_2d = (function () {
-        function cVector_2d(nXparam, nYparam, nZparam) {
-            if (nXparam === void 0) { nXparam = 0; }
-            if (nYparam === void 0) { nYparam = 0; }
-            if (nZparam === void 0) { nZparam = 0; }
+        function cVector_2d(x0, y0, z0) {
+            if (x0 === void 0) { x0 = 0; }
+            if (y0 === void 0) { y0 = 0; }
+            if (z0 === void 0) { z0 = 0; }
             this.bCurrentlyValid = true;
             this.x = 0;
             this.y = 0;
             this.z = 0;
             this.bCurrentlyValid = true;
-            this.x = nXparam;
-            this.y = nYparam;
-            this.z = nZparam;
+            this.x = x0;
+            this.y = y0;
+            this.z = z0;
         }
         cVector_2d.prototype.tostring = function () {
             var strReturnValue = "[" + this.x + ", " + this.y + "]";
@@ -27,10 +27,10 @@ var Vectors;
             nReturnValue = Math.sqrt(nReturnValue);
             return nReturnValue;
         };
-        cVector_2d.MakeVector = function (nX1param, nY1param, nX0param, nY0param) {
-            if (nX0param === void 0) { nX0param = 0; }
-            if (nY0param === void 0) { nY0param = 0; }
-            var vecReturnValue = new cVector_2d(nX1param - nX0param, nY1param - nY0param);
+        cVector_2d.MakeVector = function (x1, y1, x0, y0) {
+            if (x0 === void 0) { x0 = 0; }
+            if (y0 === void 0) { y0 = 0; }
+            var vecReturnValue = new cVector_2d(x1 - x0, y1 - y0);
             return vecReturnValue;
         };
         cVector_2d.cPoint2Vector = function (cptPoint) {
@@ -87,6 +87,48 @@ var Vectors;
             var x2minusx1Norm = cVector_2d.VectorNorm(x2minusx1);
             var nReturnValue = DeltaNorm / x2minusx1Norm;
             return nReturnValue;
+        };
+        cVector_2d.schnittpunktlii = function (p1, vec1, p2, vec2) {
+            return cVector_2d.schnittpunktli(p1, new Vectors.Point(p1.x + vec1.x, p1.y + vec1.y), p2, new Vectors.Point(p2.x + vec2.x, p2.y + vec2.y));
+        };
+        cVector_2d.schnittpunktli = function (p1, p2, p3, p4) {
+            var x1 = p1.x;
+            var x2 = p2.x;
+            var x3 = p3.x;
+            var x4 = p4.x;
+            var y1 = p1.y;
+            var y2 = p2.y;
+            var y3 = p3.y;
+            var y4 = p4.y;
+            var topaX = cVector_2d.Determinant2d(x1, y1, x2, y2);
+            var topbX = cVector_2d.Determinant2d(x1, 1, x2, 1);
+            var topcX = cVector_2d.Determinant2d(x3, y3, x4, y4);
+            var topdX = cVector_2d.Determinant2d(x3, 1, x4, 1);
+            var topX = cVector_2d.Determinant2d(topaX, topbX, topcX, topdX);
+            var bottomaX = cVector_2d.Determinant2d(x1, 1, x2, 1);
+            var bottombX = cVector_2d.Determinant2d(y1, 1, y2, 1);
+            var bottomcX = cVector_2d.Determinant2d(x3, 1, x4, 1);
+            var bottomdX = cVector_2d.Determinant2d(y3, 1, y4, 1);
+            var bottomX = cVector_2d.Determinant2d(bottomaX, bottombX, bottomcX, bottomdX);
+            var x = topX / bottomX;
+            var topaY = cVector_2d.Determinant2d(x1, y1, x2, y2);
+            var topbY = cVector_2d.Determinant2d(y1, 1, y2, 1);
+            var topcY = cVector_2d.Determinant2d(x3, y3, x4, y4);
+            var topdY = cVector_2d.Determinant2d(x3, 1, y4, 1);
+            var topY = cVector_2d.Determinant2d(topaY, topbY, topcY, topdY);
+            var bottomaY = cVector_2d.Determinant2d(x1, 1, x2, 1);
+            var bottombY = cVector_2d.Determinant2d(y1, 1, y2, 1);
+            var bottomcY = cVector_2d.Determinant2d(x3, 1, x4, 1);
+            var bottomdY = cVector_2d.Determinant2d(y3, 1, y4, 1);
+            var bottomY = cVector_2d.Determinant2d(bottomaY, bottombY, bottomcY, bottomdY);
+            var y = topY / bottomY;
+            return new Vectors.Point(x, y);
+        };
+        cVector_2d.Determinant2d = function (a, b, c, d) {
+            return a * d - b * c;
+        };
+        cVector_2d.Determinant3d = function (a, b, c, d, e, f, g, h, i) {
+            return a * e * i + b * f * g + c * d * h - c * e * g - b * d * i - a * f * h;
         };
         cVector_2d.GetNormalVector = function (vec) {
             var vecReturnValue = new cVector_2d(-vec.y, vec.x, 0);
