@@ -1,4 +1,8 @@
 ﻿
+// https://github.com/mono/opentk/tree/master/Source/OpenTK/Math
+// https://github.com/mono/opentk/blob/master/Source/OpenTK/Math/Vector3.cs
+// https://github.com/mono/opentk/blob/master/Source/OpenTK/Math/Quaternion.cs
+
 namespace Vectors
 {
 
@@ -18,12 +22,14 @@ namespace Vectors
             this.Z = z;
         }
 
+
         public MyPoint3D(MyPoint3D<T> point)
         {
             this.X = point.X;
             this.Y = point.Y;
             this.Z = point.Z;
         }
+
 
         public MyPoint3D<T> Clone()
         {
@@ -34,15 +40,61 @@ namespace Vectors
         public MyPoint3D()
             : this(default(T), default(T), default(T)) 
         { }
-    }
-    
-    
+
+
+        /// <summary>
+        /// Returns the hashcode for this instance.
+        /// </summary>
+        /// <returns>A System.Int32 containing the unique hashcode for this instance.</returns>
+        public override int GetHashCode()
+        {
+            return this.X.GetHashCode() ^ this.Y.GetHashCode() ^ this.Z.GetHashCode();
+        }
+
+
+        /// <summary>
+        /// Returns a System.String that represents the current Vector3.
+        /// </summary>
+        /// <returns></returns>
+        public override string ToString()
+        {
+            return string.Format("({0}, {1}, {2})", this.X, this.Y, this.Z);
+        }
+
+
+        /// <summary>
+        /// Returns a new Vector that is the linear blend of the 2 given Vectors
+        /// </summary>
+        /// <param name="a">First input vector</param>
+        /// <param name="b">Second input vector</param>
+        /// <param name="blend">The blend factor. a when blend=0, b when blend=1.</param>
+        /// <returns>a when blend=0, b when blend=1, and a linear combination otherwise</returns>
+        public static MyPoint3D<T> Lerp(MyPoint3D<T> a, MyPoint3D<T> b, T blend)
+        {
+            T bxax = Arithmetics<T>.Subtract(b.X, a.X);
+            T byay = Arithmetics<T>.Subtract(b.Y, a.Y);
+            T bzaz = Arithmetics<T>.Subtract(b.Z, a.Z);
+
+            T f1 = Arithmetics<T>.Multiply(blend, bxax);
+            T f2 = Arithmetics<T>.Multiply(blend, byay);
+            T f3 = Arithmetics<T>.Multiply(blend, bzaz);
+
+            T x = Arithmetics<T>.Add(f1, a.X);
+            T y = Arithmetics<T>.Add(f2, a.Y);
+            T z = Arithmetics<T>.Add(f3, a.Z);
+
+            return new MyPoint3D<T>(x, y, z);
+        }
+
+
+    } // End Class MyPoint3D<T> 
+
+
     public class MyVector3D<T> 
         : MyPoint3D<T>
         where T : System.IComparable<T>, System.IEquatable<T>
     {
 
-        
 
         public MyVector3D(MyPoint3D<T> a, MyPoint3D<T> b)
         {
@@ -55,6 +107,7 @@ namespace Vectors
         public MyVector3D(T x, T y, T z)
             : base(x, y, z)
         { }
+
 
         public MyVector3D(MyVector3D<T> vector)
             : base(vector.X, vector.Y, vector.Z)
@@ -70,7 +123,8 @@ namespace Vectors
             :base()
         { }
 
-        public MyVector3D<T> Clone()
+
+        public new MyVector3D<T> Clone()
         {
             return new MyVector3D<T>(this);
         }
@@ -134,6 +188,7 @@ namespace Vectors
             return v;
         }
         
+
         public static MyPoint3D<T> operator+(MyVector3D<T> a, MyPoint3D<T> point)
         {
             MyPoint3D<T> p = point.Clone();
@@ -188,7 +243,7 @@ namespace Vectors
         }
         
 
-        public T VectorNormSquared
+        public T MagnitudeSquared
         {
             get {
                 T a = Arithmetics<T>.Multiply(this.X, this.X);
@@ -202,11 +257,11 @@ namespace Vectors
 
 
         // Length of vector 
-        public T VectorNorm
+        public T Magnitude 
         {
             get
             {
-                T retValue = this.VectorNormSquared;
+                T retValue = this.MagnitudeSquared;
 
                 double ret = System.Convert.ToDouble(retValue);
                 ret = System.Math.Sqrt(ret);
@@ -215,21 +270,64 @@ namespace Vectors
                 return retValue;
             }
         }
-        
 
-        public MyVector3D<T> UnitVector()
+
+        public MyVector3D<T> Normalized
         {
-            T len = this.VectorNorm;
+            get {
+                T len = this.Magnitude;
 
-            T a = Arithmetics<T>.Divide(this.X, len);
-            T b = Arithmetics<T>.Divide(this.Y, len);
-            T c = Arithmetics<T>.Divide(this.Z, len);
+                T a = Arithmetics<T>.Divide(this.X, len);
+                T b = Arithmetics<T>.Divide(this.Y, len);
+                T c = Arithmetics<T>.Divide(this.Z, len);
 
-            MyVector3D<T> vecReturnValue = new MyVector3D<T>(a, b, c);
-            return vecReturnValue;
-        } // End function UnitVector
+                MyVector3D<T> vecReturnValue = new MyVector3D<T>(a, b, c);
+                return vecReturnValue;
+            }
+        }
 
 
+        // http://mathworld.wolfram.com/NormalVector.html
+        public static MyVector3D<T> GetNormalVector(MyVector3D<T> vec)
+        {
+            MyVector3D<T> normalVector1 = new MyVector3D<T>(Arithmetics<T>.Minus(vec.Y), vec.X, vec.Z);
+            // MyVector3D<T> normalVector2 = new MyVector3D<T>(vec.Y, Arithmetics<T>.Minus(vec.X), vec.Z);
+
+            return normalVector1;
+        }
+
+        public MyVector3D<T> NormalVector
+        {
+            get
+            {
+                MyVector3D<T> normalVector1 = new MyVector3D<T>(Arithmetics<T>.Minus(this.Y), this.X, this.Z);
+                // MyVector3D<T> normalVector2 = new MyVector3D<T>(this.Y, Arithmetics<T>.Minus(this.X), this.Z);
+
+                return normalVector1;
+            }
+        }
+
+
+        // http://mathworld.wolfram.com/NormalVector.html
+        public MyVector3D<T> NormalVectorTo(MyVector3D<T> vec)
+        {
+            MyVector3D<T> cross = CrossP(this, vec);
+            return cross.Normalized;
+        }
+
+
+        // http://mathworld.wolfram.com/NormalVector.html
+        public static MyVector3D<T> GetNormalVector(MyVector3D<T> vec1, MyVector3D<T> vec2)
+        {
+            MyVector3D<T> cross = CrossP(vec1, vec2);
+            return cross.Normalized;
+        }
+
+
+        /// <summary>
+        /// Returns the CrossProduct.
+        /// </summary>
+        /// <returns>Vector&lt;T&gt; containing the value of the CrossProduct.</returns>
         public static MyVector3D<T> CrossP(MyVector3D<T> a, MyVector3D<T> b)
         {
             T x1 = Arithmetics<T>.Multiply(a.Y, b.Z);
@@ -251,9 +349,12 @@ namespace Vectors
             
             return vecReturnValue;
         } // End function CrossP
-        
-        
-        // cVector_3d.DotP(vec1, vec2);
+
+
+        /// <summary>
+        /// Returns the DotProduct.
+        /// </summary>
+        /// <returns>T containing the value of the DotProduct.</returns>
         public static T DotP(MyVector3D<T> a, MyVector3D<T> b)
         {
             T s1 = Arithmetics<T>.Multiply(a.X, b.X);
@@ -266,306 +367,104 @@ namespace Vectors
             return retValue;
         } // End function DotP
 
-    }
 
-
-    public class Arithmetics<T> 
-        where T:System.IComparable<T>, System.IEquatable<T>
-    {
-
-        public static decimal DecimalEpsilon;
-        public static decimal DecimalPositiveInfinity;
-        public static decimal DecimalNegativeInfinity;
-
-
-        public delegate T Operation_T(T a, T b);
-
-        public static Operation_T Add;
-        public static Operation_T Subtract;
-        private static Operation_T MultiplyInternal;
-        public static Operation_T Divide;
-        public static Operation_T Mod;
-
-
-        public static T Div(T a, T b)
+        public static T Angle_Rad(MyVector3D<T> a, MyVector3D<T> b)
         {
-            T mod = Mod(a, b);
-            T noRemainder = Subtract(a, mod);
-            return Divide(noRemainder, b);
-        }
-        
-        
-        // The signum function is the derivative of the absolute value function
-        // (up to the indeterminacy at zero): 
-        // -1 if x < 0
-        // 0 if x == 0
-        // 1 if x > 0 
-        public static int Sign(T a)
-        {
-            T zero = (T) System.Convert.ChangeType(0, typeof(T));
-            int comp = a.CompareTo(zero);
-            
-            if (comp == 0)
-                return 0;
+            T axbx = Arithmetics<T>.Multiply(a.X, b.X);
+            T ayby = Arithmetics<T>.Multiply(a.Y, b.Y);
+            T azbz = Arithmetics<T>.Multiply(a.Z, b.Z);
 
-            if (comp < 0)
-                return -1;
+            T sumAB = Arithmetics<T>.Sum(axbx, ayby, azbz);
 
-            return 1;
-        }
-        
-        
-        public static T Abs(T a)
+            T ax2 = Arithmetics<T>.Pow(a.X, 2);
+            T ay2 = Arithmetics<T>.Pow(a.Y, 2);
+            T az2 = Arithmetics<T>.Pow(a.Z, 2);
+
+            T bx2 = Arithmetics<T>.Pow(b.X, 2);
+            T by2 = Arithmetics<T>.Pow(b.Y, 2);
+            T bz2 = Arithmetics<T>.Pow(b.Z, 2);
+
+
+            T aSquare = Arithmetics<T>.Sum(ax2, ay2, az2);
+            T bSquare = Arithmetics<T>.Sum(bx2, by2, bz2);
+
+            T val = Arithmetics<T>.Divide(sumAB,
+                            (
+                                Arithmetics<T>.Multiply(Arithmetics<T>.Sqrt(aSquare), Arithmetics<T>.Sqrt(bSquare))
+                            )
+            );
+
+            T nReturnValue = Arithmetics<T>.Acos(val);
+
+            return nReturnValue;
+        }  // End function Angle_Rad
+
+
+        public static T Angle_Degrees(MyVector3D<T> a, MyVector3D<T> b)
         {
-            T zero = (T) System.Convert.ChangeType(0, typeof(T));
-            
-            if (a.CompareTo(zero)<0)
-                return MultiplyInternal(a,(T) System.Convert.ChangeType(-1, typeof(T)));
-            
-            return a;
+            T nReturnValue = Angle_Rad(a, b);
+
+            decimal decReturnType = System.Convert.ToDecimal(nReturnValue);
+            decimal quotient = decReturnType * 180.0m / (decimal)System.Math.PI;
+            T ret = (T)System.Convert.ChangeType(quotient, typeof(T));
+
+            return ret;
+        }  // End function Angle_Degrees
+
+
+        public override bool Equals(object obj)
+        {
+            MyVector3D<T> tof = (MyVector3D<T>)obj;
+            return this == tof;
         }
 
 
-        private static void Test()
+        /// <summary>
+        /// Returns the hashcode for this instance.
+        /// </summary>
+        /// <returns>A System.Int32 containing the unique hashcode for this instance.</returns>
+        public override int GetHashCode()
         {
-            double d = Vectors.Arithmetics<double>.Div(5.1, 0.25);
-            double e = Vectors.Arithmetics<double>.Divide(5.1, 0.25);
-            //double f = Vectors.Arithmetics<double>.Mod(5.1, 0.25);
-            int f = Vectors.Arithmetics<int>.Mod(8, 3);
-
-            double s = Vectors.Arithmetics<double>.Subtract(5, 3);
-
-            System.Console.WriteLine(d);
-            System.Console.WriteLine(e);
-            System.Console.WriteLine(f);
-            System.Console.WriteLine(s);
+            return this.X.GetHashCode() ^ this.Y.GetHashCode() ^ this.Z.GetHashCode();
         }
 
 
-        static Arithmetics()
+        /// <summary>
+        /// Returns a System.String that represents the current Vector3.
+        /// </summary>
+        /// <returns></returns>
+        public override string ToString()
         {
-            DecimalEpsilon = new decimal(1, 0, 0, false, 27);
-            DecimalPositiveInfinity = 1m / DecimalEpsilon;
-            DecimalNegativeInfinity = -1m / DecimalEpsilon;
-
-            System.Linq.Expressions.ParameterExpression paramA =
-                    System.Linq.Expressions.Expression.Parameter(typeof(T), "a");
-            System.Linq.Expressions.ParameterExpression paramB =
-                System.Linq.Expressions.Expression.Parameter(typeof(T), "b");
-
-            // Add the parameters together
-            System.Linq.Expressions.BinaryExpression addBody =
-                System.Linq.Expressions.Expression.Add(paramA, paramB);
-
-            // a-b 
-            System.Linq.Expressions.BinaryExpression subtractBody =
-                System.Linq.Expressions.Expression.Subtract(paramA, paramB);
-
-            // a*b
-            System.Linq.Expressions.BinaryExpression multiplyBody =
-                System.Linq.Expressions.Expression.Multiply(paramA, paramB);
-
-            // a/b
-            System.Linq.Expressions.BinaryExpression divideBody =
-                System.Linq.Expressions.Expression.Divide(paramA, paramB);
-
-            // a%b
-            System.Linq.Expressions.BinaryExpression moduloBody =
-                System.Linq.Expressions.Expression.Modulo(paramA, paramB);
-
-            Add = System.Linq.Expressions.Expression.Lambda<Operation_T>(addBody, paramA, paramB).Compile();
-            Subtract = System.Linq.Expressions.Expression.Lambda<Operation_T>(subtractBody, paramA, paramB).Compile();
-            MultiplyInternal = System.Linq.Expressions.Expression.Lambda<Operation_T>(multiplyBody, paramA, paramB).Compile();
-            Divide = System.Linq.Expressions.Expression.Lambda<Operation_T>(divideBody, paramA, paramB).Compile();
-            Mod = System.Linq.Expressions.Expression.Lambda<Operation_T>(moduloBody, paramA, paramB).Compile();
+            return string.Format("({0}, {1}, {2})", this.X, this.Y, this.Z);
         }
 
 
-        public static int Compare(T a, T b)
+        /// <summary>
+        /// Returns a new Vector that is the linear blend of the 2 given Vectors
+        /// </summary>
+        /// <param name="a">First input vector</param>
+        /// <param name="b">Second input vector</param>
+        /// <param name="blend">The blend factor. a when blend=0, b when blend=1.</param>
+        /// <returns>a when blend=0, b when blend=1, and a linear combination otherwise</returns>
+        public static MyVector3D<T> Lerp(MyVector3D<T> a, MyVector3D<T> b, T blend)
         {
-            return a.CompareTo(b);
+            T bxax = Arithmetics<T>.Subtract(b.X, a.X);
+            T byay = Arithmetics<T>.Subtract(b.Y, a.Y);
+            T bzaz = Arithmetics<T>.Subtract(b.Z, a.Z);
+
+            T f1 = Arithmetics<T>.Multiply(blend, bxax);
+            T f2 = Arithmetics<T>.Multiply(blend, byay);
+            T f3 = Arithmetics<T>.Multiply(blend, bzaz);
+
+            T x = Arithmetics<T>.Add(f1, a.X);
+            T y = Arithmetics<T>.Add(f2, a.Y);
+            T z = Arithmetics<T>.Add(f3, a.Z);
+
+            return new MyVector3D<T>(x, y, z);
         }
 
 
-        public static bool Equals(T a, T b)
-        {
-            return a.Equals(b);
-        }
-
-
-        public static T Sum(System.Collections.Generic.IEnumerable<T> list, out long length)
-        {
-            T sum = default(T);
-            length = 0;
-
-            foreach (T thisValue in list)
-            {
-                sum = Add(sum, thisValue);
-                length++;
-            } // Next thisValue 
-
-            return sum;
-        }
-
-
-        public static T Sum(System.Collections.Generic.IEnumerable<T> list)
-        {
-            long length;
-            return Sum(list, out length);
-        }
-
-
-        public static T Sum(params T[] list)
-        {
-            long length;
-            return Sum(list, out length);
-        }
-
-
-        public static T Multiply(params T[] list)
-        {
-            if (list == null || list.Length < 2)
-                throw new System.ArgumentException("list NULL or smallerThan2.");
-
-            T product = list[0];
-
-            for(int i = 1; i < list.Length;++i)
-            {
-                product = MultiplyInternal(product, list[i]);
-            } // Next thisValue 
-
-            return product;
-        }
-        
-
-        public static decimal Average(System.Collections.Generic.IEnumerable<T> list)
-        {
-            long length;
-            T sum = Sum(list, out length);
-            decimal decSum = System.Convert.ToDecimal(sum);
-            decimal decLen = System.Convert.ToDecimal(length);
-
-            return decSum / decLen;
-        }
-        
-
-        public static T Pow(T num, long n)
-        {
-            if (n < 0)
-                throw new System.ArgumentException("Expected n >= 0 | Actual: n < 0 ...");
-
-            T one = (T)System.Convert.ChangeType(1, typeof(T));
-
-            if (n == 0)
-                return one;
-
-            T product = one;
-
-            for (long i = 0; i < n; ++i)
-            {
-                product = Multiply(product, num);
-            }
-
-            return product;
-        }
-
-
-        public static decimal GetMedian(params T[] sourceNumbers)
-        {
-            //Framework 2.0 version of this method. there is an easier way in F4        
-            if (sourceNumbers == null || sourceNumbers.Length == 0)
-                throw new System.Exception("Median of empty array not defined.");
-
-            if (sourceNumbers.Length == 1)
-                return System.Convert.ToDecimal(sourceNumbers[0]);
-
-            //make sure the list is sorted, but use a new array
-            T[] sortedPNumbers = (T[])sourceNumbers.Clone();
-            System.Array.Sort(sortedPNumbers);
-
-            //get the median
-            long size = sortedPNumbers.LongLength;
-            long mid = size / 2;
-            
-            decimal median = (size % 2 != 0) ? 
-                System.Convert.ToDecimal(sortedPNumbers[mid]) : 
-                (System.Convert.ToDecimal(sortedPNumbers[mid]) + System.Convert.ToDecimal(sortedPNumbers[mid - 1])) / 2.0m;
-
-            return median;
-        }
-
-        public static T Max(T a, T b)
-        {
-            int x = a.CompareTo(b);
-
-            if (x < 0) // Less than zero : a precedes b in the sort order.
-                return b;
-
-            // if (x > 0) return a; // Greater than zero: a follows b in the sort order.
-
-            // Zero: a occurs in the same position in the sort order as b.
-            return a;
-        }
-
-
-        public static T Min(T a, T b)
-        {
-            int x = a.CompareTo(b);
-
-            if (x > 0)
-                return b; // Greater than zero: a follows b in the sort order.
-
-            // if (x < 0) return a; // Less than zero : a precedes b in the sort order.
-
-            // Zero: a occurs in the same position in the sort order as b.
-            return a;
-        }
-
-
-        public T Max(params T[] values)
-        {
-            if (values == null || values.Length < 1)
-            {
-                throw new System.ArgumentException("Cannot compute the maximum of 0 values.");
-            }
-
-            if (values.Length < 2)
-            {
-                return values[0];
-            }
-
-            T runningMax = values[0];
-            for (int i = 1; i < values.Length - 1; i++)
-            {
-                runningMax = Max(runningMax, values[i]);
-            }
-
-            return runningMax;
-        }
-
-
-        public T Min(params T[] values)
-        {
-            if (values == null || values.Length < 1)
-            {
-                throw new System.ArgumentException("Cannot compute the minimum of 0 values.");
-            }
-
-            if (values.Length < 2)
-            {
-                return values[0];
-            }
-
-            T runningMin = values[0];
-            for (int i = 1; i < values.Length - 1; i++)
-            {
-                runningMin = Min(runningMin, values[i]);
-            }
-
-            return runningMin;
-        }
-
-    }
+    } // End Class MyVector3<T> 
 
 
     public class MyLine3D<T>
@@ -596,8 +495,10 @@ namespace Vectors
             this.Start = new MyPoint3D<T>();
             this.End = new MyPoint3D<T>();
         }
-        
-        
+
+
+
+
         // https://math.stackexchange.com/questions/799783/slope-of-a-line-in-3d-coordinate-system
         public decimal Slope2D
         {
@@ -630,21 +531,21 @@ namespace Vectors
                 return Arithmetics<T>.DecimalPositiveInfinity;
             }
         }
-        
-        
+
+
         // https://stackoverflow.com/questions/17692922/check-is-a-point-x-y-is-between-two-points-drawn-on-a-straight-line
         public bool IsPointOnLine(MyPoint3D<T> p)
         {
-            T norm = this.Vector.VectorNorm;
+            T norm = this.Vector.MagnitudeSquared;
             MyVector3D<T> vec1 = new MyVector3D<T>(this.m_start, p);
             MyVector3D<T> vec2 = new MyVector3D<T>(this.m_end, p);
             
-            T dist = Arithmetics<T>.Add(vec1.VectorNormSquared, vec2.VectorNormSquared);
+            T dist = Arithmetics<T>.Add(vec1.MagnitudeSquared, vec2.MagnitudeSquared);
             
             if (norm.Equals(dist))
                 return true;
             
-            T delta = Arithmetics<T>.Subtract(vec1.VectorNormSquared, vec2.VectorNormSquared);
+            T delta = Arithmetics<T>.Subtract(vec1.MagnitudeSquared, vec2.MagnitudeSquared);
             
             decimal decDelta = System.Convert.ToDecimal(delta);
             decDelta = System.Math.Abs(decDelta);
@@ -707,13 +608,31 @@ namespace Vectors
         }
 
 
-        public override int GetHashCode()
+        public MyPoint3D<T> MidPoint
         {
-            return Start.GetHashCode() | End.GetHashCode();
+            get
+            {
+                T x = Arithmetics<T>.Add(this.Start.X, this.End.X);
+                T y = Arithmetics<T>.Add(this.Start.Y, this.End.Y);
+                T z = Arithmetics<T>.Add(this.Start.Z, this.End.Z);
+
+                x = Arithmetics<T>.Third(x);
+                y = Arithmetics<T>.Third(y);
+                z = Arithmetics<T>.Third(z);
+
+                MyPoint3D<T> ret = new MyPoint3D<T>(x, y, z);
+                return ret;
+            }
         }
 
 
-    }
+        public override int GetHashCode()
+        {
+            return Start.GetHashCode() ^ End.GetHashCode();
+        }
 
 
-}
+    } // End Class MyLine3D<T> 
+
+
+} // End Namespace Vectors 

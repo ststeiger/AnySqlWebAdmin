@@ -1,4 +1,5 @@
-﻿
+﻿#if false
+
 namespace Vectors
 {
 
@@ -16,10 +17,80 @@ namespace Vectors
         }  // End Constructor
 
 
-        public uint FindNearestLineEndIndex(cPoint cptPointToAdd)
+        public static cVector_2d GetNormalVector(cVector_2d vec)
         {
-            if (this.aptDefinitionPoints.Length == 0)
+            return null;
+        }
 
+
+
+
+
+        // vec2_LineStart = cVector_2d.MakeVector(aptDefinitionPoints[iLast].x,aptDefinitionPoints[iLast].y);
+        // vec2_LineEnd = cVector_2d.MakeVector(aptDefinitionPoints[i].x,aptDefinitionPoints[i].y);
+        // vec2_Point = cVector_2d.MakeVector(cptPointToAdd.x,cptPointToAdd.y);
+        // nDistance = cVector_2d.DistanceOfPointToLine(vec2_Point, vec2_LineStart, vec2_LineEnd);
+        // vec2_VecLine = cVector_2d.VectorSubtract(vec2_LineStart, vec2_LineEnd);
+        // cptIntersectionPoint = cVector_2d.GetPointVerticalIntersection(aptDefinitionPoints[i], vec2_VecLine, cptPointToAdd);
+
+        // cVector_2d.GetPointVerticalIntersection(aptDefinitionPoints[i], vec2_VecLine, cptPointToAdd);
+
+        // vecInputLine: vector/line between two polygon points
+        // cptPointQ: Origin of vector vecInputLine, one of the two polygon points
+        // cpPointP: Click point 
+        // Schnittpunkt zwischen Normale zu vecInputLine und cpPointP auf vecInputLine 
+        public static cPoint GetPointVerticalIntersection(cPoint cptPointQ, cVector_2d vecInputLine, cPoint cpPointP)
+        {
+            // Q: Line start/endpoint
+            // P + a * vecNormalVector = Intersection = Q + b * vecInputLine
+            // a = (-(Px*vy-Py*vx-Qx*vy+Qy*vx))/(nx*vy-ny*vx)
+            // b = (-(Px*ny-Py*nx-Qx*ny+Qy*nx))/(nx*vy-ny*vx)
+
+            cVector_2d vecNormalVector = GetNormalVector(vecInputLine);
+            double nDenominator = vecNormalVector.x * vecInputLine.y - vecNormalVector.y * vecInputLine.x;
+
+
+            cPoint cptIntersectionPoint = new cPoint();
+            if (nDenominator == 0)
+            {
+                // no intersection
+                cptIntersectionPoint.bHasInterSection = false;
+                return cptIntersectionPoint;
+            }
+
+            double a = (-(cpPointP.x * vecInputLine.y - cpPointP.y * vecInputLine.x - cptPointQ.x * vecInputLine.y + cptPointQ.y * vecInputLine.x)) / nDenominator;
+            double b = (-(cpPointP.x * vecNormalVector.y - cpPointP.y * vecNormalVector.x - cptPointQ.x * vecNormalVector.y + cptPointQ.y * vecNormalVector.x)) / nDenominator;
+            cptIntersectionPoint.bHasInterSection = true;
+            cptIntersectionPoint.x = cpPointP.x + a * vecNormalVector.x;
+            cptIntersectionPoint.y = cpPointP.y + a * vecNormalVector.y;
+
+            return cptIntersectionPoint;
+        }
+
+
+        // var xy:Point=cVector_2d.GetPolygonCenter(pt1, pt2,..., ptn);
+        public static Point GetPolygonCenter(params cPoint[] args)
+        {
+            // http://www.flex888.com/574/can-i-have-a-variable-number-of-arguments-in-as3.html
+            Point sum = new Point(0, 0);
+            for (int i = 0; i < args.Length; i++)
+            {
+                sum.x += args[i].x;
+                sum.y += args[i].y;
+            }
+
+            sum.x /= args.Length;
+            sum.y /= args.Length;
+            return sum;
+        } // End function GetPolygonCenter
+
+
+
+        public uint FindNearestLineEndIndex<T>(MyPoint2D<T> cptPointToAdd)
+        {
+            
+
+            if (this.aptDefinitionPoints.Length == 0)
             {
                 return 0;
             }
@@ -30,11 +101,12 @@ namespace Vectors
                 double nOldDistance = 1000000;
                 uint iOldIndex = 0;
                 double nDistance = 0;
-                cVector_2d vec2_LineStart = null;
-                cVector_2d vec2_LineEnd = null;
-                cVector_2d vec2_Point = null;
-                cVector_2d vec2_VecLine = null;
-                cPoint cptIntersectionPoint = null;
+
+                MyVector2D<T> vec2_LineStart = null;
+                MyVector2D<T> vec2_LineEnd = null;
+                MyVector2D<T> vec2_Point = null;
+                MyVector2D<T> vec2_VecLine = null;
+                MyPoint2D<T> cptIntersectionPoint = null;
 
 
                 bool bHasFirst = false;
@@ -325,3 +397,5 @@ namespace Vectors
 
 // http://de.wikipedia.org/wiki/Schwerpunkt
 // https://www.adobe.com/livedocs/flash/9.0/ActionScriptLangRefV3/Array.html#splice()
+
+#endif

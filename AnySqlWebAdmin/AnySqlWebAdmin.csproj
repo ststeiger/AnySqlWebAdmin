@@ -5,6 +5,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Remove="Code\LDS.cs" />
+    <Compile Remove="Code\Math\cVector_3d.cs" />
     <Compile Remove="Code\SqlServiceJsonHelperAssociative.cs" />
   </ItemGroup>
   <ItemGroup>

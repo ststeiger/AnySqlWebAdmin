@@ -80,7 +80,7 @@ namespace AnySqlWebAdmin
             float edgePointY = minY - float.Epsilon;
 
             // Vector point outside polygon => clickPint
-            Vectors.cVector_2d ray = Vectors.cVector_2d.MakeVector(edgePointX, edgePointY, testPoint.X, testPoint.Y);
+            // Vectors.cVector_2d ray = Vectors.cVector_2d.MakeVector(edgePointX, edgePointY, testPoint.X, testPoint.Y);
             
             // Schnittpunkt 
             // Test schnittpunkt aus Linie 
