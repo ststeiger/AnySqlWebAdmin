@@ -18,7 +18,19 @@ namespace Vectors
             this.Z = z;
         }
 
+        public MyPoint3d(MyPoint3d<T> point)
+        {
+            this.X = point.X;
+            this.Y = point.Y;
+            this.Z = point.Z;
+        }
 
+        public MyPoint3d<T> Clone()
+        {
+            return new MyPoint3d<T>(this);
+        }
+        
+        
         public MyPoint3d()
             : this(default(T), default(T), default(T)) 
         { }
@@ -48,7 +60,12 @@ namespace Vectors
             : base(vector.X, vector.Y, vector.Z)
         { }
 
-
+        
+        public MyVector(MyPoint3d<T> point)
+            : base(point.X, point.Y, point.Z)
+        { }
+        
+        
         public MyVector()
             :base()
         { }
@@ -57,8 +74,8 @@ namespace Vectors
         {
             return new MyVector<T>(this);
         }
-
-
+        
+        
         // https://math.stackexchange.com/questions/799783/slope-of-a-line-in-3d-coordinate-system
         public decimal Slope2D
         {
@@ -88,8 +105,76 @@ namespace Vectors
                 return Arithmetics<T>.DecimalPositiveInfinity;
             }
         }
+        
+        
+        public static bool operator== (MyVector<T> a, MyVector<T> b) 
+        {
+            return a.X.Equals(b.X)
+                   && a.Y.Equals(b.Y)
+                   && a.Z.Equals(b.Z);
+        }
+        
+        
+        public static bool operator!= (MyVector<T> a, MyVector<T> b) 
+        {
+            return !a.X.Equals(b.X)
+                   || !a.Y.Equals(b.Y)
+                   || !a.Z.Equals(b.Z);
+        }
+        
+        
+        public static MyVector<T> operator+ (MyVector<T> a, MyVector<T> b) 
+        {
+            MyVector<T> v = a.Clone();
+            
+            v.X = Arithmetics<T>.Add(v.X, b.X);
+            v.Y = Arithmetics<T>.Add(v.Y, b.Y);
+            v.Z = Arithmetics<T>.Add(v.Z, b.Z);
+            
+            return v;
+        }
+        
+        public static MyPoint3d<T> operator+(MyVector<T> a, MyPoint3d<T> point)
+        {
+            MyPoint3d<T> p = point.Clone();
+            
+            p.X = Arithmetics<T>.Add(p.X, a.X);
+            p.Y = Arithmetics<T>.Add(p.Y, a.Y);
+            p.Z = Arithmetics<T>.Add(p.Z, a.Z);
 
-
+            return p;
+        }
+        
+        
+        public static MyVector<T> operator- (MyVector<T> a, MyVector<T> b) 
+        {
+            MyVector<T> v = a.Clone();
+            
+            v.X = Arithmetics<T>.Subtract(v.X, b.X);
+            v.Y = Arithmetics<T>.Subtract(v.Y, b.Y);
+            v.Z = Arithmetics<T>.Subtract(v.Z, b.Z);
+            
+            return v;
+        }
+        
+        
+        public static MyVector<T> operator*(MyVector<T> a, MyVector<T> b)
+        {
+            return CrossP(a, b);
+        }
+        
+        
+        public static MyVector<T> operator* (MyVector<T> a, T b) 
+        {
+            MyVector<T> v = a.Clone();
+            
+            v.X = Arithmetics<T>.Multiply(v.X, b);
+            v.Y = Arithmetics<T>.Multiply(v.Y, b);
+            v.Z = Arithmetics<T>.Multiply(v.Z, b);
+            
+            return v;
+        }
+        
 
         public T VectorNormSquared
         {
@@ -137,26 +222,25 @@ namespace Vectors
         {
             T x1 = Arithmetics<T>.Multiply(a.Y, b.Z);
             T x2 = Arithmetics<T>.Multiply(a.Z, b.Y);
-
-
+            
+            
             T y1 = Arithmetics<T>.Multiply(a.Z, b.X);
             T y2 = Arithmetics<T>.Multiply(a.X, b.Z);
-
+            
             T z1 = Arithmetics<T>.Multiply(a.X, b.Y);
             T z2 = Arithmetics<T>.Multiply(a.Y, b.X);
-
+            
             //A × B = [(ay*bz-az*by),(az*bx-ax*bz),(ax*by-ay*bx)]
             MyVector<T> vecReturnValue = new MyVector<T>(
                   Arithmetics<T>.Subtract(x1, x2)
                 , Arithmetics<T>.Subtract(y1, y2)
                 , Arithmetics<T>.Subtract(z1, z2)
             );
-
+            
             return vecReturnValue;
         } // End function CrossP
-
-
-
+        
+        
         // cVector_3d.DotP(vec1, vec2);
         public static T DotP(MyVector<T> a, MyVector<T> b)
         {
@@ -196,6 +280,37 @@ namespace Vectors
             T mod = Mod(a, b);
             T noRemainder = Subtract(a, mod);
             return Divide(noRemainder, b);
+        }
+        
+        
+        // The signum function is the derivative of the absolute value function
+        // (up to the indeterminacy at zero): 
+        // -1 if x < 0
+        // 0 if x == 0
+        // 1 if x > 0 
+        public static int Sign(T a)
+        {
+            T zero = (T) System.Convert.ChangeType(0, typeof(T));
+            int comp = a.CompareTo(zero);
+            
+            if (comp == 0)
+                return 0;
+
+            if (comp < 0)
+                return -1;
+
+            return 1;
+        }
+        
+        
+        public static T Abs(T a)
+        {
+            T zero = (T) System.Convert.ChangeType(0, typeof(T));
+            
+            if (a.CompareTo(zero)<0)
+                return MultiplyInternal(a,(T) System.Convert.ChangeType(-1, typeof(T)));
+            
+            return a;
         }
 
 
@@ -441,15 +556,39 @@ namespace Vectors
     }
 
 
-    public class MyLine<T>
+    public class MyLine3d<T>
         where T : System.IComparable<T>, System.IEquatable<T>
     {
 
         protected MyPoint3d<T> m_start;
         protected MyPoint3d<T> m_end;
         protected MyVector<T> m_cachedVector;
+        
+        
+        public MyLine3d(MyPoint3d<T> start, MyPoint3d<T> end)
+        {
+            this.Start = start;
+            this.End = end;
+        }
 
 
+        public MyLine3d(MyPoint3d<T> start, MyVector<T> vec)
+        {
+            this.Start = start;
+
+            var v = new MyVector<T>(start);
+            
+        }
+
+
+
+        public MyLine3d()
+        {
+            this.Start = new Point();
+            this.End = new Point();
+        }
+        
+        
         // https://math.stackexchange.com/questions/799783/slope-of-a-line-in-3d-coordinate-system
         public decimal Slope2D
         {
@@ -482,24 +621,35 @@ namespace Vectors
                 return Arithmetics<T>.DecimalPositiveInfinity;
             }
         }
-
-
+        
+        
+        // https://stackoverflow.com/questions/17692922/check-is-a-point-x-y-is-between-two-points-drawn-on-a-straight-line
         public bool IsPointOnLine(MyPoint3d<T> p)
         {
             T norm = this.Vector.VectorNorm;
             MyVector<T> vec1 = new MyVector<T>(this.m_start, p);
             MyVector<T> vec2 = new MyVector<T>(this.m_end, p);
-
-            T dist = Arithmetics<T>.Add(vec1.VectorNorm, vec2.VectorNorm);
-
+            
+            T dist = Arithmetics<T>.Add(vec1.VectorNormSquared, vec2.VectorNormSquared);
+            
             if (norm.Equals(dist))
                 return true;
-
+            
+            T delta = Arithmetics<T>.Subtract(vec1.VectorNormSquared, vec2.VectorNormSquared);
+            
+            decimal decDelta = System.Convert.ToDecimal(delta);
+            decDelta = System.Math.Abs(decDelta);
+            
+            // Greatest possible floating-point difference 
+            decimal decFloatEpsilon = System.Convert.ToDecimal(float.Epsilon);
+            
+            if (decDelta <= decFloatEpsilon)
+                return true;
+            
             return false;
         }
-
-
-
+        
+        
         public static MyVector<T> ToVector(MyPoint3d<T> start, MyPoint3d<T> end)
         {
             T x = Arithmetics<T>.Subtract(end.X, start.X);
