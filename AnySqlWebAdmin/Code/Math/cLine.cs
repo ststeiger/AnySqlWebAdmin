@@ -3,7 +3,7 @@ namespace Vectors
 {
 
 
-    public class MyPoint3d<T>
+    public class MyPoint3D<T>
         where T : System.IComparable<T>, System.IEquatable<T>
     {
         public T X;
@@ -11,40 +11,40 @@ namespace Vectors
         public T Z;
         
 
-        public MyPoint3d(T x, T y, T z)
+        public MyPoint3D(T x, T y, T z)
         {
             this.X = x;
             this.Y = y;
             this.Z = z;
         }
 
-        public MyPoint3d(MyPoint3d<T> point)
+        public MyPoint3D(MyPoint3D<T> point)
         {
             this.X = point.X;
             this.Y = point.Y;
             this.Z = point.Z;
         }
 
-        public MyPoint3d<T> Clone()
+        public MyPoint3D<T> Clone()
         {
-            return new MyPoint3d<T>(this);
+            return new MyPoint3D<T>(this);
         }
         
         
-        public MyPoint3d()
+        public MyPoint3D()
             : this(default(T), default(T), default(T)) 
         { }
     }
     
     
-    public class MyVector<T> 
-        : MyPoint3d<T>
+    public class MyVector3D<T> 
+        : MyPoint3D<T>
         where T : System.IComparable<T>, System.IEquatable<T>
     {
 
         
 
-        public MyVector(MyPoint3d<T> a, MyPoint3d<T> b)
+        public MyVector3D(MyPoint3D<T> a, MyPoint3D<T> b)
         {
             this.X = Arithmetics<T>.Subtract(a.X, b.X);
             this.Y = Arithmetics<T>.Subtract(a.Y, b.Y);
@@ -52,27 +52,27 @@ namespace Vectors
         }
 
 
-        public MyVector(T x, T y, T z)
+        public MyVector3D(T x, T y, T z)
             : base(x, y, z)
         { }
 
-        public MyVector(MyVector<T> vector)
+        public MyVector3D(MyVector3D<T> vector)
             : base(vector.X, vector.Y, vector.Z)
         { }
 
         
-        public MyVector(MyPoint3d<T> point)
+        public MyVector3D(MyPoint3D<T> point)
             : base(point.X, point.Y, point.Z)
         { }
         
         
-        public MyVector()
+        public MyVector3D()
             :base()
         { }
 
-        public MyVector<T> Clone()
+        public MyVector3D<T> Clone()
         {
-            return new MyVector<T>(this);
+            return new MyVector3D<T>(this);
         }
         
         
@@ -107,7 +107,7 @@ namespace Vectors
         }
         
         
-        public static bool operator== (MyVector<T> a, MyVector<T> b) 
+        public static bool operator== (MyVector3D<T> a, MyVector3D<T> b) 
         {
             return a.X.Equals(b.X)
                    && a.Y.Equals(b.Y)
@@ -115,7 +115,7 @@ namespace Vectors
         }
         
         
-        public static bool operator!= (MyVector<T> a, MyVector<T> b) 
+        public static bool operator!= (MyVector3D<T> a, MyVector3D<T> b) 
         {
             return !a.X.Equals(b.X)
                    || !a.Y.Equals(b.Y)
@@ -123,9 +123,9 @@ namespace Vectors
         }
         
         
-        public static MyVector<T> operator+ (MyVector<T> a, MyVector<T> b) 
+        public static MyVector3D<T> operator+ (MyVector3D<T> a, MyVector3D<T> b) 
         {
-            MyVector<T> v = a.Clone();
+            MyVector3D<T> v = a.Clone();
             
             v.X = Arithmetics<T>.Add(v.X, b.X);
             v.Y = Arithmetics<T>.Add(v.Y, b.Y);
@@ -134,9 +134,9 @@ namespace Vectors
             return v;
         }
         
-        public static MyPoint3d<T> operator+(MyVector<T> a, MyPoint3d<T> point)
+        public static MyPoint3D<T> operator+(MyVector3D<T> a, MyPoint3D<T> point)
         {
-            MyPoint3d<T> p = point.Clone();
+            MyPoint3D<T> p = point.Clone();
             
             p.X = Arithmetics<T>.Add(p.X, a.X);
             p.Y = Arithmetics<T>.Add(p.Y, a.Y);
@@ -146,9 +146,21 @@ namespace Vectors
         }
         
         
-        public static MyVector<T> operator- (MyVector<T> a, MyVector<T> b) 
+        public static MyPoint3D<T> operator+(MyPoint3D<T> point, MyVector3D<T> a)
         {
-            MyVector<T> v = a.Clone();
+            MyPoint3D<T> p = point.Clone();
+            
+            p.X = Arithmetics<T>.Add(p.X, a.X);
+            p.Y = Arithmetics<T>.Add(p.Y, a.Y);
+            p.Z = Arithmetics<T>.Add(p.Z, a.Z);
+
+            return p;
+        }
+        
+        
+        public static MyVector3D<T> operator- (MyVector3D<T> a, MyVector3D<T> b) 
+        {
+            MyVector3D<T> v = a.Clone();
             
             v.X = Arithmetics<T>.Subtract(v.X, b.X);
             v.Y = Arithmetics<T>.Subtract(v.Y, b.Y);
@@ -158,15 +170,15 @@ namespace Vectors
         }
         
         
-        public static MyVector<T> operator*(MyVector<T> a, MyVector<T> b)
+        public static MyVector3D<T> operator*(MyVector3D<T> a, MyVector3D<T> b)
         {
             return CrossP(a, b);
         }
         
         
-        public static MyVector<T> operator* (MyVector<T> a, T b) 
+        public static MyVector3D<T> operator* (MyVector3D<T> a, T b) 
         {
-            MyVector<T> v = a.Clone();
+            MyVector3D<T> v = a.Clone();
             
             v.X = Arithmetics<T>.Multiply(v.X, b);
             v.Y = Arithmetics<T>.Multiply(v.Y, b);
@@ -205,7 +217,7 @@ namespace Vectors
         }
         
 
-        public MyVector<T> UnitVector()
+        public MyVector3D<T> UnitVector()
         {
             T len = this.VectorNorm;
 
@@ -213,12 +225,12 @@ namespace Vectors
             T b = Arithmetics<T>.Divide(this.Y, len);
             T c = Arithmetics<T>.Divide(this.Z, len);
 
-            MyVector<T> vecReturnValue = new MyVector<T>(a, b, c);
+            MyVector3D<T> vecReturnValue = new MyVector3D<T>(a, b, c);
             return vecReturnValue;
         } // End function UnitVector
 
 
-        public static MyVector<T> CrossP(MyVector<T> a, MyVector<T> b)
+        public static MyVector3D<T> CrossP(MyVector3D<T> a, MyVector3D<T> b)
         {
             T x1 = Arithmetics<T>.Multiply(a.Y, b.Z);
             T x2 = Arithmetics<T>.Multiply(a.Z, b.Y);
@@ -231,7 +243,7 @@ namespace Vectors
             T z2 = Arithmetics<T>.Multiply(a.Y, b.X);
             
             //A × B = [(ay*bz-az*by),(az*bx-ax*bz),(ax*by-ay*bx)]
-            MyVector<T> vecReturnValue = new MyVector<T>(
+            MyVector3D<T> vecReturnValue = new MyVector3D<T>(
                   Arithmetics<T>.Subtract(x1, x2)
                 , Arithmetics<T>.Subtract(y1, y2)
                 , Arithmetics<T>.Subtract(z1, z2)
@@ -242,7 +254,7 @@ namespace Vectors
         
         
         // cVector_3d.DotP(vec1, vec2);
-        public static T DotP(MyVector<T> a, MyVector<T> b)
+        public static T DotP(MyVector3D<T> a, MyVector3D<T> b)
         {
             T s1 = Arithmetics<T>.Multiply(a.X, b.X);
             T s2 = Arithmetics<T>.Multiply(a.Y, b.Y);
@@ -556,36 +568,33 @@ namespace Vectors
     }
 
 
-    public class MyLine3d<T>
+    public class MyLine3D<T>
         where T : System.IComparable<T>, System.IEquatable<T>
     {
 
-        protected MyPoint3d<T> m_start;
-        protected MyPoint3d<T> m_end;
-        protected MyVector<T> m_cachedVector;
+        protected MyPoint3D<T> m_start;
+        protected MyPoint3D<T> m_end;
+        protected MyVector3D<T> m_cachedVector;
         
         
-        public MyLine3d(MyPoint3d<T> start, MyPoint3d<T> end)
+        public MyLine3D(MyPoint3D<T> start, MyPoint3D<T> end)
         {
             this.Start = start;
             this.End = end;
         }
-
-
-        public MyLine3d(MyPoint3d<T> start, MyVector<T> vec)
+        
+        
+        public MyLine3D(MyPoint3D<T> start, MyVector3D<T> vec)
         {
             this.Start = start;
-
-            var v = new MyVector<T>(start);
-            
+            this.End = start + vec;
         }
-
-
-
-        public MyLine3d()
+        
+        
+        public MyLine3D()
         {
-            this.Start = new Point();
-            this.End = new Point();
+            this.Start = new MyPoint3D<T>();
+            this.End = new MyPoint3D<T>();
         }
         
         
@@ -624,11 +633,11 @@ namespace Vectors
         
         
         // https://stackoverflow.com/questions/17692922/check-is-a-point-x-y-is-between-two-points-drawn-on-a-straight-line
-        public bool IsPointOnLine(MyPoint3d<T> p)
+        public bool IsPointOnLine(MyPoint3D<T> p)
         {
             T norm = this.Vector.VectorNorm;
-            MyVector<T> vec1 = new MyVector<T>(this.m_start, p);
-            MyVector<T> vec2 = new MyVector<T>(this.m_end, p);
+            MyVector3D<T> vec1 = new MyVector3D<T>(this.m_start, p);
+            MyVector3D<T> vec2 = new MyVector3D<T>(this.m_end, p);
             
             T dist = Arithmetics<T>.Add(vec1.VectorNormSquared, vec2.VectorNormSquared);
             
@@ -650,17 +659,17 @@ namespace Vectors
         }
         
         
-        public static MyVector<T> ToVector(MyPoint3d<T> start, MyPoint3d<T> end)
+        public static MyVector3D<T> ToVector(MyPoint3D<T> start, MyPoint3D<T> end)
         {
             T x = Arithmetics<T>.Subtract(end.X, start.X);
             T y = Arithmetics<T>.Subtract(end.Y, start.Y);
             T z = Arithmetics<T>.Subtract(end.Z, start.Z);
 
-            return new MyVector<T>(x, y, z);
+            return new MyVector3D<T>(x, y, z);
         }
 
 
-        public MyPoint3d<T> Start
+        public MyPoint3D<T> Start
         {
             get
             {
@@ -674,7 +683,7 @@ namespace Vectors
         }
 
 
-        public MyPoint3d<T> End
+        public MyPoint3D<T> End
         {
             get
             {
@@ -689,7 +698,7 @@ namespace Vectors
 
 
 
-        public MyVector<T> Vector
+        public MyVector3D<T> Vector
         {
             get
             {
