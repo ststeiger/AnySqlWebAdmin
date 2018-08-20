@@ -6,35 +6,37 @@
 namespace Vectors
 {
 
-    
+
     public class MyPoint2D<T>
         where T : System.IComparable<T>, System.IEquatable<T>
     {
         public T X;
         public T Y;
-        
+
 
         public MyPoint2D(T x, T y)
         {
             this.X = x;
             this.Y = y;
-        }
+        } // End Constructor 
+
 
         public MyPoint2D(MyPoint2D<T> point)
         {
             this.X = point.X;
             this.Y = point.Y;
-        }
+        } // End Constructor 
+
+
+        public MyPoint2D()
+            : this(default(T), default(T))
+        { } // End Constructor 
+
 
         public MyPoint2D<T> Clone()
         {
             return new MyPoint2D<T>(this);
-        }
-        
-        
-        public MyPoint2D()
-            : this(default(T), default(T)) 
-        { }
+        } // End Function Clone 
 
 
         /// <summary>
@@ -44,7 +46,7 @@ namespace Vectors
         public override int GetHashCode()
         {
             return this.X.GetHashCode() ^ this.Y.GetHashCode();
-        }
+        } // End Function GetHashCode 
 
 
         /// <summary>
@@ -54,7 +56,8 @@ namespace Vectors
         public override string ToString()
         {
             return string.Format("({0}, {1})", this.X, this.Y);
-        }
+        } // End Function ToString 
+
 
         /// <summary>
         /// Returns a new Vector that is the linear blend of the 2 given Vectors
@@ -75,54 +78,57 @@ namespace Vectors
             T y = Arithmetics<T>.Add(f2, a.Y);
 
             return new MyPoint2D<T>(x, y);
-        }
+        } // End Function Lerp 
+
 
     } // End Class MyPoint2D<T> 
 
 
-    public class MyVector2D<T> 
+    public class MyVector2D<T>
         : MyPoint2D<T>
         where T : System.IComparable<T>, System.IEquatable<T>
     {
-        
-        
+
+
         public MyVector2D(MyPoint2D<T> a, MyPoint2D<T> b)
         {
             this.X = Arithmetics<T>.Subtract(a.X, b.X);
             this.Y = Arithmetics<T>.Subtract(a.Y, b.Y);
-        }
+        } // End Constructor 
 
 
         public MyVector2D(T x, T y)
             : base(x, y)
-        { }
-        
+        { } // End Constructor 
+
+
         public MyVector2D(MyVector2D<T> vector)
             : base(vector.X, vector.Y)
-        { }
+        { } // End Constructor 
 
-        
+
         public MyVector2D(MyPoint2D<T> point)
             : base(point.X, point.Y)
-        { }
-        
-        
+        { } // End Constructor 
+
+
         public MyVector2D()
-            :base()
-        { }
+            : base()
+        { } // End Constructor 
+
 
         public new MyVector2D<T> Clone()
         {
             return new MyVector2D<T>(this);
-        }
-        
-        
+        } // End Function Clone 
+
+
         // https://math.stackexchange.com/questions/799783/slope-of-a-line-in-3d-coordinate-system
         public decimal Slope
         {
             get
             {
-                
+
                 // m = (y2-y1)/(x2-x1)
                 // Case 1: horizontal line: slope = 0           | y=constant, x=variable
                 // Case 2: vertical line:   slope = +/-infinity | x=constant, y=variable 
@@ -143,93 +149,95 @@ namespace Vectors
 
                 return Arithmetics<T>.DecimalPositiveInfinity;
             }
-        }
-        
-        
-        public static bool operator== (MyVector2D<T> a, MyVector2D<T> b)
+        } // End Property Slope 
+
+
+        public static bool operator ==(MyVector2D<T> a, MyVector2D<T> b)
         {
-            return a.X.Equals(b.X)
+            return    a.X.Equals(b.X)
                    && a.Y.Equals(b.Y);
-        }
-        
-        
-        public static bool operator!= (MyVector2D<T> a, MyVector2D<T> b)
+        } // End Operator == 
+
+
+        public static bool operator !=(MyVector2D<T> a, MyVector2D<T> b)
         {
-            return !a.X.Equals(b.X)
+            return    !a.X.Equals(b.X)
                    || !a.Y.Equals(b.Y);
-        }
-        
-        
-        public static MyVector2D<T> operator+ (MyVector2D<T> a, MyVector2D<T> b) 
+        } // End Operator != 
+
+
+        public static MyVector2D<T> operator +(MyVector2D<T> a, MyVector2D<T> b)
         {
             MyVector2D<T> v = a.Clone();
-            
+
             v.X = Arithmetics<T>.Add(v.X, b.X);
             v.Y = Arithmetics<T>.Add(v.Y, b.Y);
-            
+
             return v;
-        }
-        
-        public static MyPoint2D<T> operator+(MyVector2D<T> a, MyPoint2D<T> point)
+        } // End Operator + 
+
+
+        public static MyPoint2D<T> operator +(MyVector2D<T> a, MyPoint2D<T> point)
         {
             MyPoint2D<T> p = point.Clone();
-            
+
             p.X = Arithmetics<T>.Add(p.X, a.X);
             p.Y = Arithmetics<T>.Add(p.Y, a.Y);
 
             return p;
-        }
-        
-        public static MyPoint2D<T> operator+(MyPoint2D<T> point, MyVector2D<T> a)
+        } // End Operator + 
+
+
+        public static MyPoint2D<T> operator +(MyPoint2D<T> point, MyVector2D<T> a)
         {
             MyPoint2D<T> p = point.Clone();
-            
+
             p.X = Arithmetics<T>.Add(p.X, a.X);
             p.Y = Arithmetics<T>.Add(p.Y, a.Y);
-            
+
             return p;
-        }
-        
-        
-        
-        public static MyVector2D<T> operator- (MyVector2D<T> a, MyVector2D<T> b) 
+        } // End Operator + 
+
+
+        public static MyVector2D<T> operator -(MyVector2D<T> a, MyVector2D<T> b)
         {
             MyVector2D<T> v = a.Clone();
-            
+
             v.X = Arithmetics<T>.Subtract(v.X, b.X);
             v.Y = Arithmetics<T>.Subtract(v.Y, b.Y);
-            
+
             return v;
-        }
-        
-        
-        public static T operator*(MyVector2D<T> a, MyVector2D<T> b)
+        } // End Operator - 
+
+
+        public static T operator *(MyVector2D<T> a, MyVector2D<T> b)
         {
             return CrossP(a, b);
-        }
-        
-        
-        public static MyVector2D<T> operator* (MyVector2D<T> a, T b) 
+        } // End Operator * 
+
+
+        public static MyVector2D<T> operator *(MyVector2D<T> a, T b)
         {
             MyVector2D<T> v = a.Clone();
-            
+
             v.X = Arithmetics<T>.Multiply(v.X, b);
             v.Y = Arithmetics<T>.Multiply(v.Y, b);
-            
+
             return v;
-        }
-        
+        } // End Operator * 
+
 
         public T MagnitudeSquared
         {
-            get {
+            get
+            {
                 T a = Arithmetics<T>.Multiply(this.X, this.X);
                 T b = Arithmetics<T>.Multiply(this.Y, this.Y);
-                
+
                 T nReturnValue = Arithmetics<T>.Add(a, b);
                 return nReturnValue;
             }
-        }
+        } // End Property MagnitudeSquared 
 
 
         // Length of vector 
@@ -245,7 +253,7 @@ namespace Vectors
 
                 return retValue;
             }
-        }
+        } // End Property Magnitude 
 
 
         public MyVector2D<T> Normalized
@@ -260,6 +268,7 @@ namespace Vectors
                 MyVector2D<T> vecReturnValue = new MyVector2D<T>(a, b);
                 return vecReturnValue;
             }
+
         } // End Property Normalized
 
 
@@ -271,7 +280,7 @@ namespace Vectors
             // MyVector2D<T> normal2 = new MyVector2D<T>(vec.Y, Arithmetics<T>.Minus(vec.X));
 
             return normal1;
-        }
+        } // End Function GetNormalVector 
 
 
         public MyVector2D<T> NormalVector
@@ -283,7 +292,8 @@ namespace Vectors
 
                 return normalVector1;
             }
-        }
+
+        } // End Property NormalVector 
 
 
         // http://mathworld.wolfram.com/CrossProduct.html
@@ -295,13 +305,13 @@ namespace Vectors
             // crossp = det(a,b) = a.X*b.Y- a.Y*b.X
             T s1 = Arithmetics<T>.Multiply(a.X, b.Y);
             T s2 = Arithmetics<T>.Multiply(a.Y, b.X);
-            
+
             T retValue = Arithmetics<T>.Subtract(s1, s2);
-            
+
             return retValue;
         } // End function CrossP
-        
-        
+
+
         // The dot product (also called the scalar product) is the magnitude of
         // vector b multiplied by the size of the projection of a onto b.
         // The size of the projection is a cosθ (where θ is the angle between the 2 vectors).
@@ -312,13 +322,13 @@ namespace Vectors
         {
             T s1 = Arithmetics<T>.Multiply(a.X, b.X);
             T s2 = Arithmetics<T>.Multiply(a.Y, b.Y);
-            
+
             //A * B = ax*bx+ay*by+az*bz
             T retValue = Arithmetics<T>.Add(s1, s2);
-            
+
             return retValue;
         } // End function DotP
-        
+
 
         public static T Angle_Rad(MyVector2D<T> a, MyVector2D<T> b)
         {
@@ -358,11 +368,10 @@ namespace Vectors
 
             decimal decReturnType = System.Convert.ToDecimal(nReturnValue);
             decimal quotient = decReturnType * 180.0m / (decimal)System.Math.PI;
-            T ret = (T) System.Convert.ChangeType(quotient, typeof(T));
+            T ret = (T)System.Convert.ChangeType(quotient, typeof(T));
 
             return ret;
         }  // End function Angle_Degrees
-
 
 
         public MyPoint2D<T> Schnittpunktli(MyPoint2D<T> p1, MyVector2D<T> vec1, MyPoint2D<T> p2, MyVector2D<T> vec2)
@@ -374,7 +383,8 @@ namespace Vectors
             T y2 = Arithmetics<T>.Add(p2.Y, vec2.Y);
 
             return Schnittpunktli(p1, new MyPoint2D<T>(x1, x1), p2, new MyPoint2D<T>(x2, y2));
-        }
+        } // End Function Schnittpunktli 
+
 
         // https://en.wikipedia.org/wiki/Determinant
         // | a  b |
@@ -386,7 +396,8 @@ namespace Vectors
 
             T result = Arithmetics<T>.Subtract(f1, f2);
             return result;
-        }
+        } // End Function Determinant2d 
+
 
         public MyPoint2D<T> Schnittpunktli(MyPoint2D<T> p1, MyPoint2D<T> p2, MyPoint2D<T> p3, MyPoint2D<T> p4)
         {
@@ -435,15 +446,14 @@ namespace Vectors
             // Case 4: orthogonal resp. right-angle => m1 = -1/m2 
 
             return new MyPoint2D<T>(x, y);
-        }
+        } // End Function Schnittpunktli 
 
 
         public override bool Equals(object obj)
         {
-            MyVector2D<T> tof = (MyVector2D<T>) obj;
+            MyVector2D<T> tof = (MyVector2D<T>)obj;
             return this == tof;
-        }
-
+        } // End Function Equals 
 
 
         /// <summary>
@@ -453,7 +463,7 @@ namespace Vectors
         public override int GetHashCode()
         {
             return this.X.GetHashCode() ^ this.Y.GetHashCode();
-        }
+        } // End Function GetHashCode 
 
 
         /// <summary>
@@ -463,7 +473,7 @@ namespace Vectors
         public override string ToString()
         {
             return string.Format("({0}, {1})", this.X, this.Y);
-        }
+        } // End Function ToString 
 
 
         /// <summary>
@@ -485,12 +495,12 @@ namespace Vectors
             T y = Arithmetics<T>.Add(f2, a.Y);
 
             return new MyVector2D<T>(x, y);
-        }
+        } // End Function Lerp 
 
 
-    }
-    
-    
+    } // End Class MyVector2D<T> 
+
+
     public class MyLine2D<T>
         where T : System.IComparable<T>, System.IEquatable<T>
     {
@@ -498,29 +508,29 @@ namespace Vectors
         protected MyPoint2D<T> m_start;
         protected MyPoint2D<T> m_end;
         protected MyVector2D<T> m_cachedVector;
-        
-        
+
+
         public MyLine2D(MyPoint2D<T> start, MyPoint2D<T> end)
         {
             this.Start = start;
             this.End = end;
-        }
-        
-        
+        } // End Constructor 
+
+
         public MyLine2D(MyPoint2D<T> start, MyVector2D<T> vec)
         {
             this.Start = start;
             this.End = start + vec;
-        }
-        
-        
+        } // End Constructor 
+
+
         public MyLine2D()
         {
             this.Start = new MyPoint2D<T>();
             this.End = new MyPoint2D<T>();
-        }
-        
-        
+        } // End Constructor 
+
+
         // https://math.stackexchange.com/questions/799783/slope-of-a-line-in-3d-coordinate-system
         public decimal Slope
         {
@@ -549,45 +559,46 @@ namespace Vectors
 
                 return Arithmetics<T>.DecimalPositiveInfinity;
             }
-        }
-        
-        
+
+        } // End Property Slope 
+
+
         // https://stackoverflow.com/questions/17692922/check-is-a-point-x-y-is-between-two-points-drawn-on-a-straight-line
         public bool IsPointOnLine(MyPoint2D<T> p)
         {
             T norm = this.Vector.MagnitudeSquared;
             MyVector2D<T> vec1 = new MyVector2D<T>(this.m_start, p);
             MyVector2D<T> vec2 = new MyVector2D<T>(this.m_end, p);
-            
+
             T dist = Arithmetics<T>.Add(vec1.MagnitudeSquared, vec2.MagnitudeSquared);
-            
+
             if (norm.Equals(dist))
                 return true;
-            
+
             T delta = Arithmetics<T>.Subtract(vec1.MagnitudeSquared, vec2.MagnitudeSquared);
-            
+
             decimal decDelta = System.Convert.ToDecimal(delta);
             decDelta = System.Math.Abs(decDelta);
-            
+
             // Greatest possible floating-point difference 
             decimal decFloatEpsilon = System.Convert.ToDecimal(float.Epsilon);
-            
+
             if (decDelta <= decFloatEpsilon)
                 return true;
-            
+
             return false;
-        }
-        
-        
+        } // End Function IsPointOnLine 
+
+
         public static MyVector2D<T> ToVector(MyPoint2D<T> start, MyPoint2D<T> end)
         {
             T x = Arithmetics<T>.Subtract(end.X, start.X);
             T y = Arithmetics<T>.Subtract(end.Y, start.Y);
-            
+
             return new MyVector2D<T>(x, y);
-        }
-        
-        
+        } // End Function ToVector 
+
+
         public MyPoint2D<T> Start
         {
             get
@@ -599,9 +610,9 @@ namespace Vectors
                 this.m_start = value;
                 this.m_cachedVector = ToVector(this.m_start, this.m_end);
             }
-        }
-        
-        
+        } // End Property Start 
+
+
         public MyPoint2D<T> End
         {
             get
@@ -613,7 +624,7 @@ namespace Vectors
                 this.m_end = value;
                 this.m_cachedVector = ToVector(this.m_start, this.m_end);
             }
-        }
+        } // End Property End 
 
 
         public MyVector2D<T> Vector
@@ -622,7 +633,7 @@ namespace Vectors
             {
                 return m_cachedVector;
             }
-        }
+        } // End Property Vector 
 
 
         public MyPoint2D<T> MidPoint
@@ -638,16 +649,16 @@ namespace Vectors
                 MyPoint2D<T> ret = new MyPoint2D<T>(x, y);
                 return ret;
             }
-        }
+        } // End Property MidPoint 
 
 
         public override int GetHashCode()
         {
             return Start.GetHashCode() ^ End.GetHashCode();
-        }
-        
-        
-    }
-    
-    
-}
+        } // End Function GetHashCode 
+
+
+    } // End Class MyLine2D<T> 
+
+
+} // End Namespace Vectors 
