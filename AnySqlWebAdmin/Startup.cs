@@ -10,6 +10,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
+using Microsoft.AspNetCore.Rewrite;
+
 
 namespace AnySqlWebAdmin
 {
@@ -35,6 +37,8 @@ namespace AnySqlWebAdmin
             
             services.AddMvc(mvcOptions =>
             {
+                // mvcOptions.Filters.Add(new Microsoft.AspNetCore.Mvc.RequireHttpsAttribute());
+
                 mvcOptions.ValueProviderFactories.Add(new JsonValueProviderFactory());
                 mvcOptions.ValueProviderFactories.Add(new AnywhereValueProviderFactory());
             });
@@ -50,6 +54,10 @@ namespace AnySqlWebAdmin
             // app.UseStatusCodePages();
             app.UseErrorHandlingMiddleware();
 
+            // var options = new Microsoft.AspNetCore.Rewrite.RewriteOptions().AddRedirectToHttps(
+            //     Microsoft.AspNetCore.Http.StatusCodes.Status301MovedPermanently, 44384);
+            // app.UseRewriter(options);
+
 
             app.UseDefaultFiles(new DefaultFilesOptions()
             {
@@ -58,6 +66,11 @@ namespace AnySqlWebAdmin
                     "map.htm", "index.htm", "index.html", "slick.htm"
                 }
             });
+
+
+            // app.UseHsts(); // Microsoft.AspNetCore.HttpsPolicy.dll
+            // app.UseHsts(h => h.MaxAge(days: 365).preload());
+
 
             app.UseStaticFiles();
             // app.UseMiddleware<SqlMiddleware>();
