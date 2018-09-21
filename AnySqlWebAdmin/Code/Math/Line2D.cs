@@ -12,8 +12,8 @@ namespace Vectors
     {
         public T X;
         public T Y;
-
-
+        
+        
         public MyPoint2D(T x, T y)
         {
             this.X = x;

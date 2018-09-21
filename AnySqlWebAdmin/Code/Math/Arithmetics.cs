@@ -238,12 +238,15 @@ namespace Vectors
         {
             if (n < 0)
                 throw new System.ArgumentException("Expected n >= 0 | Actual: n < 0 ...");
-
+            
             if (n == 0)
                 return ONE;
-
+            
+            if (n < 0)
+                return Pow(Divide(ONE, num), -n);
+            
             T product = ONE;
-
+            
             for (long i = 0; i < n; ++i)
             {
                 product = Multiply(product, num);

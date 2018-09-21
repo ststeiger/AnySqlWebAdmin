@@ -35,28 +35,28 @@ namespace AnySqlWebAdmin
                 
                 
                 .UseKestrel(options => {
-
+                    
                     //options.UseHttps("certificate.pfx", "password");
-
+                    
                     //options.Listen(System.Net.IPAddress.Loopback, 443, listenOptions =>
                     //{
                     //    listenOptions.UseHttps("certificate.pfx", "password");
                     //});
-
+                    
                     // if a second address is specified it will assume that address is
                     // to be secured with the built-in developer cert, as such
-
+                    
                     options.Listen(System.Net.IPAddress.Loopback, 5080); //HTTP port
                     // options.Listen(System.Net.IPAddress.Loopback, 5443); //HTTPS port
-
+                    
+                    /*
                     options.Listen(System.Net.IPAddress.Loopback, 5443, listenOptions =>
                     {
                         listenOptions.UseHttps("certificate.pfx", "topsecret");
                     });
-
+                    */
                 })
                 
-
                 .UseIISIntegration()
                 .UseStartup<Startup>()
                 .Build();
