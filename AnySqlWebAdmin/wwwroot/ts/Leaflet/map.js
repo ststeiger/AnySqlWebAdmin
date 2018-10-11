@@ -712,7 +712,7 @@ function loadMarkers() {
                             direction: 'top'
                         })
                             .setContent(label);
-                        var contentString = category + "<br />" + label;
+                        var contentString = [category, label].filter(function (e) { return e; }).join("<br />");
                         var popup = new L.Popup()
                             .setLatLng(latlng)
                             .setContent(contentString);

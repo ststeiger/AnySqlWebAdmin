@@ -373,7 +373,55 @@ function polyFills()
     {
         return degrees * Math.PI / 180.0;
     };
-        
+
+
+
+    if (!Array.prototype.filter)
+    {
+        Array.prototype.filter = function (func, thisArg)
+        {
+            'use strict';
+            if (!((typeof func === 'Function' || typeof func === 'function') && this))
+                throw new TypeError();
+
+            var len = this.length >>> 0,
+                res = new Array(len), // preallocate array
+                t = this, c = 0, i = -1;
+            if (thisArg === undefined)
+            {
+                while (++i !== len)
+                {
+                    // checks to see if the key was set
+                    if (i in this)
+                    {
+                        if (func(t[i], i, t))
+                        {
+                            res[c++] = t[i];
+                        }
+                    }
+                }
+            }
+            else
+            {
+                while (++i !== len)
+                {
+                    // checks to see if the key was set
+                    if (i in this)
+                    {
+                        if (func.call(thisArg, t[i], i, t))
+                        {
+                            res[c++] = t[i];
+                        }
+                    }
+                }
+            }
+
+            res.length = c; // shrink down array to proper size
+            return res;
+        };
+    }
+
+
     // Polyfill for Function#name on browsers that do not support it (IE 11):
     if (!(function f() { }).name)
     {
@@ -1251,7 +1299,8 @@ async function loadMarkers()
         // marker.bindTooltip(tt);
 
 
-        let contentString = category + "<br />" + label;
+        // let contentString = category + "<br />" + label;
+        let contentString = [category, label].filter(function (e) { return e; }).join("<br />");
         // + "<br />GPS: " + latLongToString(latlng);
         // contentString = contentString + "<br />" + "Fl&auml;che: " + thousandSeparator(polygonArea(poly)) + " m<sup>2</sup>&nbsp;&nbsp;(+/-30m<sup>2</sup>)";
         let popup = new L.Popup()
