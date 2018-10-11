@@ -13,8 +13,8 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     function step(op) {
         if (f) throw new TypeError("Generator is already executing.");
         while (_) try {
-            if (f = 1, y && (t = y[op[0] & 2 ? "return" : op[0] ? "throw" : "next"]) && !(t = t.call(y, op[1])).done) return t;
-            if (y = 0, t) op = [0, t.value];
+            if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
+            if (y = 0, t) op = [op[0] & 2, t.value];
             switch (op[0]) {
                 case 0: case 1: t = op; break;
                 case 4: _.label++; return { value: op[1], done: false };
@@ -134,13 +134,21 @@ var TestFetch;
             fetch('viper.ogg')
                 .then(function (response) { return response.arrayBuffer(); })
                 .then(function (buffer) {
-                audioCtx.decodeAudioData(buffer, function (decodedData) {
-                    source.buffer = decodedData;
-                    source.connect(audioCtx.destination);
+                return __awaiter(this, void 0, void 0, function () {
+                    return __generator(this, function (_a) {
+                        switch (_a.label) {
+                            case 0: return [4, audioCtx.decodeAudioData(buffer, function (decodedData) {
+                                    source.buffer = decodedData;
+                                    source.connect(audioCtx.destination);
+                                })];
+                            case 1:
+                                _a.sent();
+                                return [2];
+                        }
+                    });
                 });
             });
         }
-        ;
         play.onclick = function () {
             getData();
             source.start(0);
@@ -170,15 +178,15 @@ var TestFetch;
     TestFetch.fetchJSON = fetchJSON;
     function fetchText() {
         var myArticle = document.querySelector('article');
-        var myLinks = document.querySelectorAll('ul a');
-        for (var i = 0; i <= myLinks.length - 1; i++) {
-            myLinks[i].onclick = function (e) {
+        var x = document.querySelectorAll('ul a');
+        for (var i = 0; i < x.length; ++i) {
+            var mylink = x.item(i);
+            mylink.onclick = function (e) {
                 e.preventDefault();
                 var linkData = e.target.getAttribute('data-page');
                 getData(linkData);
             };
         }
-        ;
         function getData(pageId) {
             console.log(pageId);
             var myRequest = new Request(pageId + '.txt');

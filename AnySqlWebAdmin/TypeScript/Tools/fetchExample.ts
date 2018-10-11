@@ -38,12 +38,12 @@ namespace TestFetch
             })
             .then(function (myBlob)
             {
-                var objectURL = URL.createObjectURL(myBlob);
+                let objectURL = URL.createObjectURL(myBlob);
                 myImage.src = objectURL;
             });
 
         let myBlob = new Blob();
-        let init = { "status": 200, "statusText": "SuperSmashingGreat!" }
+        let init = { "status": 200, "statusText": "SuperSmashingGreat!" };
         let myResponse = new Response(myBlob, init);
     }
 
@@ -131,32 +131,32 @@ namespace TestFetch
         function getData()
         {
             source = audioCtx.createBufferSource();
-
+            
             fetch('viper.ogg')
                 .then(function (response) { return response.arrayBuffer(); })
-                .then(function (buffer)
+                .then(async function (buffer)
                 {
-                    audioCtx.decodeAudioData(buffer, function (decodedData:any)
+                    await audioCtx.decodeAudioData(buffer, function (decodedData:any)
                     {
                         source.buffer = decodedData;
                         source.connect(audioCtx.destination);
                     });
                 });
-        };
-
+        }
+        
         // wire up buttons to stop and play audio
         play.onclick = function ()
         {
             getData();
             source.start(0);
             play.setAttribute('disabled', 'disabled');
-        }
+        };
 
         stop.onclick = function ()
         {
             source.stop(0);
             play.removeAttribute('disabled');
-        }
+        };
 
         // dump script to pre element
         pre.innerHTML = myScript.innerHTML;
@@ -186,17 +186,20 @@ namespace TestFetch
     export function fetchText()
     {
         let myArticle = document.querySelector('article');
-        let myLinks: HTMLAnchorElement[] = document.querySelectorAll<any>('ul a');
-        for (let i = 0; i <= myLinks.length - 1; i++)
+        let x = document.querySelectorAll<HTMLAnchorElement>('ul a');
+        
+        for(let i = 0; i < x.length; ++i)
         {
-            myLinks[i].onclick = function (e)
+            let mylink = x.item(i);
+            mylink.onclick = function (e)
             {
                 e.preventDefault();
                 let linkData = (<HTMLAnchorElement>e.target).getAttribute('data-page');
                 getData(linkData);
             }
-        };
-
+        }
+        
+        
         function getData(pageId:string)
         {
             console.log(pageId);

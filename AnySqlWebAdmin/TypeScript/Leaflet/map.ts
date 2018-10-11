@@ -378,15 +378,17 @@ function polyFills()
 
     if (!Array.prototype.filter)
     {
-        Array.prototype.filter = function (func, thisArg)
+        
+        Array.prototype.filter = function (func:Function, thisArg?:any)
         {
             'use strict';
-            if (!((typeof func === 'Function' || typeof func === 'function') && this))
+            if (!((typeof func === 'function') && this))
                 throw new TypeError();
-
-            var len = this.length >>> 0,
+            
+            let len = this.length >>> 0,
                 res = new Array(len), // preallocate array
                 t = this, c = 0, i = -1;
+            
             if (thisArg === undefined)
             {
                 while (++i !== len)
@@ -982,46 +984,46 @@ interface IWerbetafelMarkerTable
     longitude: number;
 }
 
-// TODO: lat/lng als Argumente überflüssig... lat?: any, lng?:any
+
 async function loadWerbetafeln()
 {
     let url = "../ajax/AnySelect.ashx?sql=Maps.Marker_Werbetafeln.sql";
     url = SetDefaultVariables(url);
-
+    
     let result = await getData(url);
     // console.log("loadWerbetafeln: success");
-
+    
     let table = result.tables[0];
     // console.log(table);
-
+    
     let index_uid:string = table.columns["OBJ_UID"].index;
     let index_latitude:number = table.columns["OBJ_Lat"].index;
     let index_longitude:number = table.columns["OBJ_Lng"].index;
-
+    
     for (let i = 0; i < table.rows.length; ++i)
     {
         let uid = table.rows[i][index_uid];
         let latitude = table.rows[i][index_latitude];
         let longitude = table.rows[i][index_longitude];
-
+        
         if (latitude == null || longitude == null)
             continue;
-
+        
         let werbetafel_icon = createWerbetafelIcon();
-
+        
         // let marker = L.marker([latitude, longitude]).addTo(map);
         let marker = L.marker([latitude, longitude], { icon: werbetafel_icon });
-
+        
         if (map.getZoom() > 16)
         {
             marker.addTo(map);
         }
-
+        
         marker.on("click", onMarkerClick.bind(this, uid)); // uid is now called uuid
         marker.on("contextmenu", onMarkerContextMenu.bind(this, uid)); // uid is now called uuid
         werbetafeln[uid] = marker;
-    } // Next i 
-
+    } // Next i
+    
 } // End Function loadWerbetafeln 
 
 
@@ -1265,8 +1267,13 @@ async function loadMarkers()
         //});
 
 
-        let houseImage = "<svg version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:svg=\"http://www.w3.org/2000/svg\" xml:space=\"preserve\"\n   viewBox=\"0 0 512 512\" width=\"22px\" height=\"22px\">\n<path\n d=\"M256,69.972L50,275.814h42.507v166.214h326.985V275.814H462L256,69.972z M374.492,397.028  h-73.768v-86.495h-89.451v86.495h-73.768V251.99L256,133.587l118.492,118.402V397.028z\"\n  fill=\"{@col1}\" />\n<path\n fill=\"{@col2}\" opacity=\"0.4\" \n d=\"M 137.505,251.99 256,133.587 374.492,251.989 v 145.039 h -73.768 v -86.495 h -89.451 v 86.495 h -73.768 z\" />\n</svg>";
-
+        let houseImage = `<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xml:space="preserve"
+   viewBox="0 0 512 512" width="22px" height="22px">
+    <path fill="{@col1}" d="M256,69.972L50,275.814h42.507v166.214h326.985V275.814H462L256,69.972z M374.492,397.028  h-73.768v-86.495h-89.451v86.495h-73.768V251.99L256,133.587l118.492,118.402V397.028z" />
+    <path fill="{@col2}" opacity="0.4" d="M 137.505,251.99 256,133.587 374.492,251.989 v 145.039 h -73.768 v -86.495 h -89.451 v 86.495 h -73.768 z" />
+</svg>`;
+        
+        
         let greenIcon = L.divIcon(
             {
                 className: "customIcon",
@@ -1504,7 +1511,7 @@ async function onBaumClick(uid:string, typ:string)
             await zoomIn(uid);
             break;
         case "gb":
-            zoomIn(uid);
+            await zoomIn(uid);
             if (markers != null && markers[uid] != null)
                 markers[uid].openPopup();
             break;
@@ -2017,9 +2024,10 @@ async function initMap()
         
     // console.log("init");
     let ml: HTMLElement = <HTMLElement>window.parent.document.querySelector('#iMenuLeft');
-
+    
     // Create a map
-    map = <any>L.map('swissMap', { zoomControl: false }).setView([47.317390, 8.520293], 18); // SwissRe Soodring 33, Adliswil
+    map = <L.Map & IMapWithZoom><any>L.map('swissMap', { zoomControl: false });
+    map.setView(new L.LatLng(47.317390, 8.520293), 18); // SwissRe Soodring 33, Adliswil
     map.zoomHome = function () { console.log("wrong instance"); };
     createZoomControl(map);
     
@@ -2028,10 +2036,10 @@ async function initMap()
     let southWest = new L.LatLng(45.802216, 5.920721);
     let northEast = new L.LatLng(47.968862, 10.769762);
     let bounds = new L.LatLngBounds(southWest, northEast);
-
+    
     // https://stackoverflow.com/questions/17187161/bounding-view-of-a-leaflet-image-map-to-a-landscape-viewport
     // http://leafletjs.com/reference-1.2.0.html#map-fitbounds
-        
+    
     // map.fitBounds(bounds, { padding: [] });
     map.fitBounds(bounds, null);
 
@@ -2318,11 +2326,11 @@ function drawTestPolygon(t:any)
 async function startMap()
 {
     polyFills();
-    loadLegend();
+    
     // initMap();
     window.setTimeout(initMap, 100);
     // loadApertureColors();
-
+    
     if (window.removeEventListener)
         window.removeEventListener("message", receiveMessage, false);
     else
@@ -2344,7 +2352,8 @@ async function startMap()
             window.attachEvent("onmessage", receiveMessage);
         }
     }
-
+    
+    await loadLegend();
 }
 
 startMap();
@@ -2439,7 +2448,8 @@ function boundsFomDistance(lat: number, lon: number, distanceInMeters: number): 
 function deg2rad(degrees: number)
 {
     return Math.PI * degrees / 180.0;
-};
+}
+
 // radians to degrees
 function rad2deg(radians: number)
 {

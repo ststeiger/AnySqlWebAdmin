@@ -1,8 +1,11 @@
 'use strict';
 var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    }
     return function (d, b) {
         extendStatics(d, b);
         function __() { this.constructor = d; }
@@ -24,8 +27,8 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     function step(op) {
         if (f) throw new TypeError("Generator is already executing.");
         while (_) try {
-            if (f = 1, y && (t = y[op[0] & 2 ? "return" : op[0] ? "throw" : "next"]) && !(t = t.call(y, op[1])).done) return t;
-            if (y = 0, t) op = [0, t.value];
+            if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
+            if (y = 0, t) op = [op[0] & 2, t.value];
             switch (op[0]) {
                 case 0: case 1: t = op; break;
                 case 4: _.label++; return { value: op[1], done: false };
@@ -194,6 +197,34 @@ function polyFills() {
     Math.radians = function (degrees) {
         return degrees * Math.PI / 180.0;
     };
+    if (!Array.prototype.filter) {
+        Array.prototype.filter = function (func, thisArg) {
+            'use strict';
+            if (!((typeof func === 'function') && this))
+                throw new TypeError();
+            var len = this.length >>> 0, res = new Array(len), t = this, c = 0, i = -1;
+            if (thisArg === undefined) {
+                while (++i !== len) {
+                    if (i in this) {
+                        if (func(t[i], i, t)) {
+                            res[c++] = t[i];
+                        }
+                    }
+                }
+            }
+            else {
+                while (++i !== len) {
+                    if (i in this) {
+                        if (func.call(thisArg, t[i], i, t)) {
+                            res[c++] = t[i];
+                        }
+                    }
+                }
+            }
+            res.length = c;
+            return res;
+        };
+    }
     if (!(function f() { }).name) {
         Object.defineProperty(Function.prototype, 'name', {
             get: function () {
@@ -699,7 +730,7 @@ function loadMarkers() {
                             return "continue";
                         var latlng = L.latLng(latitude, longitude);
                         allCoords.push(latlng);
-                        var houseImage = "<svg version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:svg=\"http://www.w3.org/2000/svg\" xml:space=\"preserve\"\n   viewBox=\"0 0 512 512\" width=\"22px\" height=\"22px\">\n<path\n d=\"M256,69.972L50,275.814h42.507v166.214h326.985V275.814H462L256,69.972z M374.492,397.028  h-73.768v-86.495h-89.451v86.495h-73.768V251.99L256,133.587l118.492,118.402V397.028z\"\n  fill=\"{@col1}\" />\n<path\n fill=\"{@col2}\" opacity=\"0.4\" \n d=\"M 137.505,251.99 256,133.587 374.492,251.989 v 145.039 h -73.768 v -86.495 h -89.451 v 86.495 h -73.768 z\" />\n</svg>";
+                        var houseImage = "<svg version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" xml:space=\"preserve\"\n   viewBox=\"0 0 512 512\" width=\"22px\" height=\"22px\">\n    <path fill=\"{@col1}\" d=\"M256,69.972L50,275.814h42.507v166.214h326.985V275.814H462L256,69.972z M374.492,397.028  h-73.768v-86.495h-89.451v86.495h-73.768V251.99L256,133.587l118.492,118.402V397.028z\" />\n    <path fill=\"{@col2}\" opacity=\"0.4\" d=\"M 137.505,251.99 256,133.587 374.492,251.989 v 145.039 h -73.768 v -86.495 h -89.451 v 86.495 h -73.768 z\" />\n</svg>";
                         var greenIcon = L.divIcon({
                             className: "customIcon",
                             iconAnchor: [12, 12],
@@ -830,25 +861,26 @@ function onBaumClick(uid, typ) {
                         case "ort": return [3, 1];
                         case "so": return [3, 1];
                         case "gb": return [3, 3];
-                        case "eg": return [3, 4];
-                        case "og": return [3, 4];
-                        case "ug": return [3, 4];
+                        case "eg": return [3, 5];
+                        case "og": return [3, 5];
+                        case "ug": return [3, 5];
                     }
-                    return [3, 5];
+                    return [3, 6];
                 case 1: return [4, zoomIn(uid)];
                 case 2:
                     _b.sent();
-                    return [3, 6];
-                case 3:
-                    zoomIn(uid);
+                    return [3, 7];
+                case 3: return [4, zoomIn(uid)];
+                case 4:
+                    _b.sent();
                     if (markers != null && markers[uid] != null)
                         markers[uid].openPopup();
-                    return [3, 6];
-                case 4: return [3, 6];
-                case 5:
+                    return [3, 7];
+                case 5: return [3, 7];
+                case 6:
                     console.log("Objekt nicht definiert.");
-                    _b.label = 6;
-                case 6: return [2];
+                    _b.label = 7;
+                case 7: return [2];
             }
         });
     });
@@ -1164,7 +1196,8 @@ function initMap() {
             switch (_a.label) {
                 case 0:
                     ml = window.parent.document.querySelector('#iMenuLeft');
-                    map = L.map('swissMap', { zoomControl: false }).setView([47.317390, 8.520293], 18);
+                    map = L.map('swissMap', { zoomControl: false });
+                    map.setView(new L.LatLng(47.317390, 8.520293), 18);
                     map.zoomHome = function () { console.log("wrong instance"); };
                     createZoomControl(map);
                     southWest = new L.LatLng(45.802216, 5.920721);
@@ -1307,24 +1340,29 @@ function drawTestPolygon(t) {
 function startMap() {
     return __awaiter(this, void 0, void 0, function () {
         return __generator(this, function (_a) {
-            polyFills();
-            loadLegend();
-            window.setTimeout(initMap, 100);
-            if (window.removeEventListener)
-                window.removeEventListener("message", receiveMessage, false);
-            else
-                window.detachEvent("onmessage", receiveMessage);
-            if (!window['postMessage'])
-                alert("oh crap");
-            else {
-                if (window.addEventListener) {
-                    window.addEventListener("message", receiveMessage, false);
-                }
-                else {
-                    window.attachEvent("onmessage", receiveMessage);
-                }
+            switch (_a.label) {
+                case 0:
+                    polyFills();
+                    window.setTimeout(initMap, 100);
+                    if (window.removeEventListener)
+                        window.removeEventListener("message", receiveMessage, false);
+                    else
+                        window.detachEvent("onmessage", receiveMessage);
+                    if (!window['postMessage'])
+                        alert("oh crap");
+                    else {
+                        if (window.addEventListener) {
+                            window.addEventListener("message", receiveMessage, false);
+                        }
+                        else {
+                            window.attachEvent("onmessage", receiveMessage);
+                        }
+                    }
+                    return [4, loadLegend()];
+                case 1:
+                    _a.sent();
+                    return [2];
             }
-            return [2];
         });
     });
 }
@@ -1367,7 +1405,6 @@ function boundsFomDistance(lat, lon, distanceInMeters) {
 function deg2rad(degrees) {
     return Math.PI * degrees / 180.0;
 }
-;
 function rad2deg(radians) {
     return 180.0 * radians / Math.PI;
 }
