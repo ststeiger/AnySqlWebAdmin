@@ -186,12 +186,12 @@ namespace TestFetch
     export function fetchText()
     {
         let myArticle = document.querySelector('article');
-        let x = document.querySelectorAll<HTMLAnchorElement>('ul a');
+        let x = <NodeListOf<HTMLAnchorElement>>document.querySelectorAll('ul a');
         
         for(let i = 0; i < x.length; ++i)
         {
             let mylink = x.item(i);
-            mylink.onclick = function (e)
+            mylink.onclick = function (e:MouseEvent)
             {
                 e.preventDefault();
                 let linkData = (<HTMLAnchorElement>e.target).getAttribute('data-page');
