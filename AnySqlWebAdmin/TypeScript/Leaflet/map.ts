@@ -1265,8 +1265,8 @@ async function loadMarkers()
         //    // popupAnchor: [0, -36],
         //    html: "<span style=\"" + markerHtmlStyles + "\" />"
         //});
-
-
+        
+        // private static async Task DelayAsync()
         let houseImage = `<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xml:space="preserve"
    viewBox="0 0 512 512" width="22px" height="22px">
     <path fill="{@col1}" d="M256,69.972L50,275.814h42.507v166.214h326.985V275.814H462L256,69.972z M374.492,397.028  h-73.768v-86.495h-89.451v86.495h-73.768V251.99L256,133.587l118.492,118.402V397.028z" />
@@ -1287,7 +1287,7 @@ async function loadMarkers()
                 html: houseImage.replace("{@col1}", color).replace("{@col2}", color)
             }
         );
-
+        
         // https://jsfiddle.net/guspersson/393ehmsq/
         // let marker = L.marker([latitude, longitude]).addTo(map);
         let marker = L.marker([latitude, longitude], { icon: greenIcon }).addTo(map);
@@ -1355,13 +1355,13 @@ async function loadMarkers()
 
         if (poly == null)
             continue;
-
-        poly = toCounterClockWise(poly); // OSM is COUNTER-clockwise ! 
-
+        
+        poly = toCounterClockWise(poly); // OSM is COUNTER-clockwise !
+        
         let polygon = L.polygon(poly);
         addTextLabel(map, poly, label);
-
-
+        
+        
         /*
         polygon.setStyle({
         fillColor: '#FF00FF'
@@ -1376,28 +1376,28 @@ async function loadMarkers()
         polygon.addTo(map)
             //.bindPopup(popupString)
             //.openPopup()
-            ;
+        ;
         
         // polygon.on("dblclick", function (uuid, e)
         polygon.on("click", function (uuid: string, e: L.LeafletMouseEvent)
         {
             let t = "{@basic}gebaeude.aspx?uid={@obj}&muid=@GB&env=ov&ro=false&proc={@BE_Hash}";
             t = SetDefaultVariables(t);
-
+            
             //navigateTo(uuid);
             let ml = <HTMLIFrameElement>window.parent.document.querySelector('#frameDWGForm');
-
+            
             if (ml)
                 ml.src = t.replace("{@obj}", uuid);
-
+            
             observeIframe();
         }.bind(this, uid));
-            
+        
         polygons[uid] = marker;
     } // next i
-        
+    
     let initialBounds: L.LatLngBounds = null;
-
+    
     if (allCoords && allCoords.length > 0)
         initialBounds = L.latLngBounds(allCoords);
     else
@@ -1436,38 +1436,37 @@ async function zoomIn(uid:string)
     // console.log("zoomIn", uid);
     let boundsUrl = "../ajax/AnySelect.ashx?sql=Maps.ObjectBounds.sql&obj_uid=";
     boundsUrl = SetDefaultVariables(boundsUrl);
-
+    
     let result = await getData(boundsUrl);
     // console.log(result);
-
+    
     let table = result.tables[0];
     // console.log(table.columns);
     // console.log(table.columns["OBJ_Label"].index);
-
+    
     let index_objt = table.columns["OBJT_UID"].index;
     let index_uid = table.columns["OBJ_UID"].index;
-
+    
     let index_latitude = table.columns["OBJ_Lat"].index;
     let index_longitude = table.columns["OBJ_Lng"].index;
-
+    
     let index_minLat = table.columns["OBJ_Min_Lat"].index;
     let index_minLng = table.columns["OBJ_Min_Long"].index;
     let index_maxLat = table.columns["OBJ_Max_Lat"].index;
     let index_maxLng = table.columns["OBJ_Max_Lng"].index;
-
+    
     for (let i = 0; i < table.rows.length; ++i)
     {
         let code:string = table.rows[i][index_objt];
         let uid:string = table.rows[i][index_uid];
         let latitude: number = table.rows[i][index_latitude];
         let longitude: number = table.rows[i][index_longitude];
-
-
+        
         let minLat: number= table.rows[i][index_minLat];
         let minLng: number= table.rows[i][index_minLng];
         let maxLat: number= table.rows[i][index_maxLat];
         let maxLng: number= table.rows[i][index_maxLng];
-
+        
         if (minLat != null && minLng != null && maxLat != null && maxLng != null)
         {
             let zoomBounds = L.latLngBounds([[minLat, minLng], [maxLat, maxLng]]);
@@ -1478,8 +1477,8 @@ async function zoomIn(uid:string)
             map.setView([latitude, longitude], 18, { animate: true });
             // Zoom coordinates
         }
-    }
-
+    } // Next i 
+    
 } // End Function ZoomIn
     
     
