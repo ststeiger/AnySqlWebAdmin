@@ -1664,8 +1664,8 @@ async function loadLegend()
 
         // console.log(uid, kurz, lang, color);
         gk_legend.appendChild(addRow(color, lang));
-    } // Next i 
-
+    } // Next i
+    
 } // End Function loadLegend
 
 
