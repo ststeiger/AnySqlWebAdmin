@@ -8,6 +8,14 @@ namespace AnySqlWebAdmin
 {
 
 
+    // https://stackoverflow.com/questions/35715015/where-is-the-typescript-tools-version-set-in-an-asp-net-5-project
+    //<TypeScriptToolsVersion>3.1.3</TypeScriptToolsVersion>
+    //<!--
+    //<TscToolPath Condition = "'$(TscToolPath)' == ''" >$(MSBuildProgramFiles32)\Microsoft SDKs\TypeScript</TscToolPath>
+    //-->
+    //<TscToolPath>D:\Programme\LessPortableApps\dotnet\TypeScript</TscToolPath>
+    //<TscToolExe>D:\Programme\LessPortableApps\dotnet\TypeScript\3.1.3\tsc.exe</TscToolExe>
+    //<TscYieldDuringToolExecution Condition = "'$(TscYieldDuringToolExecution)' == ''" > true </ TscYieldDuringToolExecution >
     public class Program
     {
 
