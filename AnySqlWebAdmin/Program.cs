@@ -104,7 +104,12 @@ namespace AnySqlWebAdmin
                     // C) Trust root-certificate
                     // D) Import root-certificate into firefox 
                     
-                    options.Listen(System.Net.IPAddress.Loopback, 5443, listenOptions =>
+                    
+                    
+                    
+                    // options.Listen(System.Net.IPAddress.Loopback, 5443, listenOptions =>
+                    // options.Listen(System.Net.IPAddress.Any, 5443, listenOptions =>
+                    options.Listen(System.Net.IPAddress.Parse("127.0.0.1"), 5443, listenOptions =>
                          {
                         //listenOptions.UseHttps(@"D:\lol\certificate.pfx", "topsecret");
                         
@@ -116,6 +121,9 @@ namespace AnySqlWebAdmin
 
                              pfxLocation = "/root/.dotnet/corefx/cryptography/x509stores/my/015B78912250D3A1DD277787B59036CFF0213744.pfx";
                              pfxLocation = "/root/sources/tracker/localhost.pfx";
+
+                             pfxLocation = "/root/github/RedmineMailService/RedmineMailService/obelix.pfx";
+                             password = "";
                              
                              listenOptions.UseHttps(pfxLocation, password);
                          });

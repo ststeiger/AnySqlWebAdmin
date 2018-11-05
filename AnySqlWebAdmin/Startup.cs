@@ -34,7 +34,9 @@ namespace AnySqlWebAdmin
         {
             services.AddSingleton(new SqlService());
             services.AddMvc();
+            // services.AddHsts();
             
+                
             services.AddMvc(mvcOptions =>
             {
                 // mvcOptions.Filters.Add(new Microsoft.AspNetCore.Mvc.RequireHttpsAttribute());
@@ -71,6 +73,7 @@ namespace AnySqlWebAdmin
             // app.UseHsts(); // Microsoft.AspNetCore.HttpsPolicy.dll
             // app.UseHsts(h => h.MaxAge(days: 365).preload());
 
+            // app.UseHsts();
 
             app.UseStaticFiles();
             // app.UseMiddleware<SqlMiddleware>();
