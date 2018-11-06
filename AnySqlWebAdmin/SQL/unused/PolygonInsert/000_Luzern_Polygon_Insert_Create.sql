@@ -5,6 +5,29 @@
 
 
 /*
+SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME LIKE '%wgs84%' 
+
+-- 47.054033, 8.295894
+-- 47.053937, 8.296084
+
+;WITH CTE AS 
+(
+	SELECT 
+		 GB_UID
+		,GB_SO_UID
+		,GB_GM_Lat
+		,GB_GM_Lng 
+		,GB_Nr 
+		,GB_Bezeichnung 
+	FROM T_AP_Gebaeude 
+	WHERE GB_UID = '36010390-a224-4a46-a3ae-e31c6118190d' 
+	-- Sentimatt 1, 6003 Luzern
+)
+SELECT * FROM CTE 
+-- UPDATE CTE SET GB_GM_Lat = 47.054033, GB_GM_Lng = 8.295894
+
+
+
 SELECT 
 	 T_AP_Standort.SO_UID
 	,T_AP_Standort.SO_Nr
