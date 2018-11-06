@@ -2,14 +2,18 @@
   "iisSettings": {
     "windowsAuthentication": false,
     "anonymousAuthentication": true,
+    "iis": {
+      "applicationUrl": "http://localhost/AnySqlWebAdmin",
+      "sslPort": 0
+    },
     "iisExpress": {
       "applicationUrl": "http://localhost:59799/",
-      "sslPort": 59801
+      "sslPort": 44399
     }
   },
   "profiles": {
     "IIS Express": {
-      "commandName": "IISExpress",
+      "commandName": "Project",
       "launchBrowser": true,
       "launchUrl": "api/values",
       "environmentVariables": {
@@ -23,7 +27,7 @@
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
-      "applicationUrl": "http://localhost:59800/"
+      "applicationUrl": "http://localhost:5080/"
     }
   }
 }
