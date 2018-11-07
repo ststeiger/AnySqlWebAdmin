@@ -129,7 +129,15 @@ namespace AnySqlWebAdmin
                             // pfxLocation = @"D:\username\Documents\Visual Studio 2017\Projects\rlipscombe\bouncy-castle-csharp\CreateCertificate\bin\Debug\subject.pfx";
                             // password = "password";
                             
-                            listenOptions.UseHttps(pfxLocation, password);
+                            
+                            System.Security.Cryptography.X509Certificates.X509Certificate2 cert = 
+                                new System.Security.Cryptography.X509Certificates.X509Certificate2(
+                                      pfxLocation
+                                    , password);
+                            
+                            // https://docs.microsoft.com/en-us/aspnet/core/fundamentals/servers/kestrel?view=aspnetcore-2.1
+                            // listenOptions.UseHttps(pfxLocation, password);
+                            listenOptions.UseHttps(cert);
                         });
                 })
                 
