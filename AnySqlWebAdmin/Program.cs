@@ -115,20 +115,20 @@ namespace AnySqlWebAdmin
 
                             string pfxLocation = @"D:\lol\certificate.pfx";
                             string password = "";
-
-
+                            
+                            
                             if (System.Environment.OSVersion.Platform == System.PlatformID.Unix)
                                 pfxLocation = "/root/certs/certificate.pfx";
-
+                            
                             pfxLocation = "/root/.dotnet/corefx/cryptography/x509stores/my/015B78912250D3A1DD277787B59036CFF0213744.pfx";
                             pfxLocation = "/root/sources/tracker/localhost.pfx";
-
+                            
                             pfxLocation = "/root/github/RedmineMailService/RedmineMailService/obelix.pfx";
                             // pfxLocation = @"C:\Users\Administrator\Documents\Visual Studio 2017\Projects\RedmineMailService\RedmineMailService\obelix.pfx";
                             // pfxLocation = @"D:\username\Documents\visual studio 2017\Projects\RedmineMailService\RedmineMailService\obelix.pfx";
                             // pfxLocation = @"D:\username\Documents\Visual Studio 2017\Projects\rlipscombe\bouncy-castle-csharp\CreateCertificate\bin\Debug\subject.pfx";
                             // password = "password";
-
+                            
                             listenOptions.UseHttps(pfxLocation, password);
                         });
                 })
