@@ -135,6 +135,7 @@ namespace AnySqlWebAdmin
                                       pfxLocation
                                     , password);
                             
+                            // https://major.io/2013/05/14/changing-your-ssh-servers-port-from-the-default-is-it-worth-it/
                             // https://docs.microsoft.com/en-us/aspnet/core/fundamentals/servers/kestrel?view=aspnetcore-2.1
                             // listenOptions.UseHttps(pfxLocation, password);
                             listenOptions.UseHttps(cert);
