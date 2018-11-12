@@ -43,30 +43,47 @@ namespace AnySqlWebAdmin
         public static IWebHost BuildWebHost(string[] args)
         {
             // Microsoft.Extensions.Configuration.CommandLineConfigurationExtensions.AddCommandLine()
-            
+
             // Microsoft.Extensions.Configuration.IConfigurationRoot configuration = 
             //      new Microsoft.Extensions.Configuration.ConfigurationBuilder()
             //     .AddCommandLine(args).Build();
-            
+
+#if true
+            // https://stackoverflow.com/questions/32057441/disable-application-insights-in-debug
+            Microsoft.ApplicationInsights.Extensibility.TelemetryConfiguration.Active.DisableTelemetry = true;
+            Microsoft.ApplicationInsights.Extensibility.Implementation.TelemetryDebugWriter.IsTracingDisabled = true;
+#else
+            Microsoft.ApplicationInsights.Extensibility.TelemetryConfiguration.Active.InstrumentationKey = "AppSettings.TelemetryInstrumentationKey";
+#endif
+
             return new WebHostBuilder()
                 .UseContentRoot(System.IO.Directory.GetCurrentDirectory())
                 //.UseConfiguration(configuration)
                 //.UseUrls("http://localhost:59799/")
                 //.UseKestrel()
-                
-                
+
+                // https://docs.microsoft.com/en-us/aspnet/core/host-and-deploy/linux-nginx?view=aspnetcore-2.1
+                // https://docs.microsoft.com/en-us/aspnet/core/fundamentals/servers/kestrel?view=aspnetcore-2.1
                 .UseKestrel(options =>
                 {
-                    //options.UseHttps("certificate.pfx", "password");
+
+                    // The maximum number of connections is unlimited (null) by default.
+                    // options.Limits.MaxConcurrentConnections = 100;
+
+                    // The default maximum request body size is 30,000,000 bytes, which is approximately 28.6 MB.
+                    // options.Limits.MaxRequestBodySize = 30000000; // bytes
                     
+
+                    //options.UseHttps("certificate.pfx", "password");
+
                     //options.Listen(System.Net.IPAddress.Loopback, 443, listenOptions =>
                     //{
                     //    listenOptions.UseHttps("certificate.pfx", "password");
                     //});
-                    
+
                     // if a second address is specified it will assume that address is
                     // to be secured with the built-in developer cert, as such
-                    
+
                     options.Listen(System.Net.IPAddress.Loopback, 5080); //HTTP port
                                                                          // options.Listen(System.Net.IPAddress.Loopback, 5443); //HTTPS port
 
@@ -113,6 +130,9 @@ namespace AnySqlWebAdmin
                         {
                             // listenOptions.UseHttps(@"D:\lol\certificate.pfx", "topsecret");
 
+                            
+                            
+
                             string pfxLocation = @"D:\lol\certificate.pfx";
                             string password = "";
                             
@@ -125,7 +145,7 @@ namespace AnySqlWebAdmin
                             
                             pfxLocation = "/root/github/RedmineMailService/RedmineMailService/obelix.pfx";
                             // pfxLocation = @"C:\Users\Administrator\Documents\Visual Studio 2017\Projects\RedmineMailService\RedmineMailService\obelix.pfx";
-                            // pfxLocation = @"D:\username\Documents\visual studio 2017\Projects\RedmineMailService\RedmineMailService\obelix.pfx";
+                            pfxLocation = @"D:\username\Documents\visual studio 2017\Projects\RedmineMailService\RedmineMailService\obelix.pfx";
                             // pfxLocation = @"D:\username\Documents\Visual Studio 2017\Projects\rlipscombe\bouncy-castle-csharp\CreateCertificate\bin\Debug\subject.pfx";
                             // password = "password";
                             

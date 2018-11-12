@@ -32,6 +32,12 @@ namespace AnySqlWebAdmin
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.Configure<ForwardedHeadersOptions>(options =>
+            {
+                // TODO: Add configurable proxy list
+                // options.KnownProxies.Add(IPAddress.Parse("10.0.0.100"));
+            });
+
             services.AddSingleton(new SqlService());
             services.AddMvc();
             // services.AddHsts();
@@ -51,8 +57,18 @@ namespace AnySqlWebAdmin
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
+            app.UseForwardedHeaders(new ForwardedHeadersOptions
+            {
+                ForwardedHeaders = Microsoft.AspNetCore.HttpOverrides.ForwardedHeaders.XForwardedFor 
+                | Microsoft.AspNetCore.HttpOverrides.ForwardedHeaders.XForwardedProto
+            });
+
+
+            // app.UseAuthentication();
+
+
             // if (env.IsDevelopment()) { app.UseDeveloperExceptionPage(); }
-            
+
             // app.UseStatusCodePages();
             app.UseErrorHandlingMiddleware();
 
