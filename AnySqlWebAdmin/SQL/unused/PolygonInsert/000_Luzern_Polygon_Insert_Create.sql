@@ -75,8 +75,15 @@ DECLARE @GB_UID uniqueidentifier
 SET @SO_UID = NULL 
 SET @GB_UID = '36010390-A224-4A46-A3AE-E31C6118190D' -- oberes: 'St. Alban-Anlage 38' 
 
-DELETE FROM T_ZO_Objekt_Wgs84Polygon WHERE T_ZO_Objekt_Wgs84Polygon.ZO_OBJ_WGS84_SO_UID = @SO_UID; 
-DELETE FROM T_ZO_Objekt_Wgs84Polygon WHERE T_ZO_Objekt_Wgs84Polygon.ZO_OBJ_WGS84_GB_UID = @GB_UID; 
+-- DELETE FROM T_ZO_Objekt_Wgs84Polygon WHERE T_ZO_Objekt_Wgs84Polygon.ZO_OBJ_WGS84_SO_UID = @SO_UID; 
+-- DELETE FROM T_ZO_Objekt_Wgs84Polygon WHERE T_ZO_Objekt_Wgs84Polygon.ZO_OBJ_WGS84_GB_UID = @GB_UID; 
+
+
+SELECT * 
+FROM (
+		      SELECT 'DELETE FROM T_ZO_Objekt_Wgs84Polygon WHERE T_ZO_Objekt_Wgs84Polygon.ZO_OBJ_WGS84_SO_UID = ''' + CAST(@SO_UID AS varchar(36)) + '''' AS delStmt   
+	UNION ALL SELECT 'DELETE FROM T_ZO_Objekt_Wgs84Polygon WHERE T_ZO_Objekt_Wgs84Polygon.ZO_OBJ_WGS84_GB_UID = ''' + CAST(@GB_UID AS varchar(36)) + '''' AS delStmt 
+) AS t WHERE delStmt IS NOT NULL 
 
 
 -- 
