@@ -1,8 +1,11 @@
 'use strict';
 var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    }
     return function (d, b) {
         extendStatics(d, b);
         function __() { this.constructor = d; }
@@ -24,8 +27,8 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     function step(op) {
         if (f) throw new TypeError("Generator is already executing.");
         while (_) try {
-            if (f = 1, y && (t = y[op[0] & 2 ? "return" : op[0] ? "throw" : "next"]) && !(t = t.call(y, op[1])).done) return t;
-            if (y = 0, t) op = [0, t.value];
+            if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
+            if (y = 0, t) op = [op[0] & 2, t.value];
             switch (op[0]) {
                 case 0: case 1: t = op; break;
                 case 4: _.label++; return { value: op[1], done: false };
@@ -657,24 +660,17 @@ function get_polygon_centroid(pts) {
 }
 function addTextLabel(map, poly, label) {
     var centroid = get_polygon_centroid(poly);
-    var span = document.createElement("span");
-    var labeltexts = label.split("<br />");
-    for (var l = 0; l < labeltexts.length; ++l) {
-        if (l != 0)
-            span.appendChild(document.createElement("br"));
-        span.appendChild(document.createTextNode(labeltexts[l]));
-    }
-    span.style.display = "hidden";
-    document.body.appendChild(span);
-    var ow = span.offsetWidth;
-    var oh = span.offsetHeight;
-    span.parentElement.removeChild(span);
+    label.style.display = "hidden";
+    document.body.appendChild(label);
+    var ow = label.offsetWidth;
+    var oh = label.offsetHeight;
+    label.parentElement.removeChild(label);
     var textIcon = L.divIcon({
         className: "customTextIcon",
         iconSize: [ow, oh],
         iconAnchor: [ow / 2, oh / 2],
         popupAnchor: [0, 0],
-        html: span.outerHTML
+        html: label.outerHTML
     });
     var textMarker = L.marker(centroid, { icon: textIcon }).addTo(map);
 }
@@ -719,7 +715,6 @@ function loadMarkers() {
                         var category = table.rows[i][index_category];
                         var color = table.rows[i][index_color];
                         var polyString = table.rows[i][index_poly];
-                        label = label.replace(/(?:\r\n|\r|\n)/g, '<br />');
                         var poly = null;
                         if (polyString != null)
                             poly = polyString.split(",").map(function (x) { var z = x.split(' '); return new L.LatLng(Number(z[0]), Number(z[1])); });
@@ -735,31 +730,13 @@ function loadMarkers() {
                             html: houseImage.replace("{@col1}", color).replace("{@col2}", color)
                         });
                         var marker = L.marker([latitude, longitude], { icon: greenIcon }).addTo(map);
+                        var tooltipContent = createBuildingContentDiv(uid, null, label);
                         var tt = L.tooltip({
                             permanent: true,
                             direction: 'top'
                         })
-                            .setContent(label);
-                        var popupContent = document.createElement("div");
-                        if (category != null) {
-                            var pspan1 = document.createElement("span");
-                            pspan1.appendChild(document.createTextNode(category));
-                            popupContent.appendChild(pspan1);
-                            popupContent.appendChild(document.createElement("br"));
-                        }
-                        if (label != null) {
-                            var labelParts = label.split(/<br\s*[\/]?>/gi);
-                            for (var lin = 0; lin < labelParts.length; ++lin) {
-                                var pspan2 = document.createElement("span");
-                                pspan2.appendChild(document.createTextNode(labelParts[lin]));
-                                popupContent.appendChild(pspan2);
-                                popupContent.appendChild(document.createElement("br"));
-                            }
-                        }
-                        if (uid != null) {
-                            popupContent.appendChild(document.createComment("GB: " + uid));
-                        }
-                        var contentString = [category, label].filter(function (e) { return e; }).join("<br />");
+                            .setContent(tooltipContent);
+                        var popupContent = createBuildingContentDiv(uid, category, label);
                         var popup = new L.Popup()
                             .setLatLng(latlng)
                             .setContent(popupContent);
@@ -781,8 +758,17 @@ function loadMarkers() {
                             return "continue";
                         poly = toCounterClockWise(poly);
                         var polygon = L.polygon(poly);
-                        addTextLabel(map, poly, label);
-                        var popupString = "Fl&auml;che: " + thousandSeparator(polygonArea(poly)) + " m<sup>2</sup>";
+                        var polygonStamp = createBuildingContentDiv(null, null, label);
+                        addTextLabel(map, poly, polygonStamp);
+                        var dd = document.createElement("div");
+                        var spn = document.createElement("span");
+                        spn.appendChild(document.createTextNode("Fläche" + ": "));
+                        spn.appendChild(document.createTextNode(thousandSeparator(polygonArea(poly))));
+                        spn.appendChild(document.createTextNode(" m"));
+                        var sup2 = document.createElement("sup");
+                        sup2.appendChild(document.createTextNode("2"));
+                        spn.appendChild(sup2);
+                        dd.appendChild(spn);
                         polygon.addTo(map);
                         polygon.on("click", function (uuid, e) {
                             var t = "{@basic}gebaeude.aspx?uid={@obj}&muid=@GB&env=ov&ro=false&proc={@BE_Hash}";
@@ -812,6 +798,28 @@ function loadMarkers() {
             }
         });
     });
+}
+function createBuildingContentDiv(uid, category, label) {
+    var popupContent = document.createElement("div");
+    if (category != null) {
+        var pspan1 = document.createElement("span");
+        pspan1.appendChild(document.createTextNode(category));
+        popupContent.appendChild(pspan1);
+        popupContent.appendChild(document.createElement("br"));
+    }
+    if (label != null) {
+        var labelParts = label.split(/(?:\r\n|\r|\n)/g);
+        for (var lin = 0; lin < labelParts.length; ++lin) {
+            var pspan2 = document.createElement("span");
+            pspan2.appendChild(document.createTextNode(labelParts[lin]));
+            popupContent.appendChild(pspan2);
+            popupContent.appendChild(document.createElement("br"));
+        }
+    }
+    if (uid != null) {
+        popupContent.appendChild(document.createComment("GB: " + uid));
+    }
+    return popupContent;
 }
 function zoomIn(uid) {
     return __awaiter(this, void 0, void 0, function () {

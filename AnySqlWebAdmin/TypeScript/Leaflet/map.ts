@@ -1127,35 +1127,23 @@ function get_polygon_centroid(pts: L.LatLng[])
 }
 
 
-function addTextLabel(map: L.Map, poly: L.LatLng[], label: string)
+function addTextLabel(map: L.Map, poly: L.LatLng[], label: HTMLElement)
 {
     let centroid = get_polygon_centroid(poly);
-
-    let span = document.createElement("span");
-    let labeltexts = label.split("<br />");
+    label.style.display = "hidden";
+    document.body.appendChild(label);
+    let ow = label.offsetWidth;
+    let oh = label.offsetHeight;
+    label.parentElement.removeChild(label);
     
-    for (let l = 0; l < labeltexts.length; ++l)
-    {
-        if (l != 0)
-            span.appendChild(document.createElement("br"));
-
-        span.appendChild(document.createTextNode(labeltexts[l]));
-    } // Next l 
-
-
-    span.style.display = "hidden";
-    document.body.appendChild(span);
-    let ow = span.offsetWidth;
-    let oh = span.offsetHeight;
-    span.parentElement.removeChild(span);
-
+    
     let textIcon = L.divIcon(
         {
             className: "customTextIcon",
             iconSize: [ow, oh],
             iconAnchor: [ow / 2, oh / 2],
             popupAnchor: [0, 0],
-            html: span.outerHTML
+            html: label.outerHTML
         }
     );
 
@@ -1240,7 +1228,7 @@ async function loadMarkers()
         // console.log(longitude);
         // console.log(poly);
 
-        label = label.replace(/(?:\r\n|\r|\n)/g, '<br />');
+        // label = label.replace(/(?:\r\n|\r|\n)/g, '<br />');
         // console.log(label);
 
         //let poly: string[][] = null;
@@ -1291,6 +1279,8 @@ async function loadMarkers()
         // https://jsfiddle.net/guspersson/393ehmsq/
         // let marker = L.marker([latitude, longitude]).addTo(map);
         let marker = L.marker([latitude, longitude], { icon: greenIcon }).addTo(map);
+        let tooltipContent = createBuildingContentDiv(uid, null, label);
+        
         
         let tt = L.tooltip(
             {
@@ -1301,51 +1291,16 @@ async function loadMarkers()
                 // , _anchor: [0, -110]
             }
         )
-        .setContent(label);
+        //.setContent(label);
+        .setContent(tooltipContent);
         
         // marker.bindTooltip(tt);
-
-
-
-        let popupContent = document.createElement("div");
-
-        if (category != null)
-        { 
-            let pspan1 = document.createElement("span");
-            pspan1.appendChild(document.createTextNode(category));
-            popupContent.appendChild(pspan1);
-            popupContent.appendChild(document.createElement("br"));
-        }
-
-        if (label != null)
-        {
-            // console.log("lbl", "\"" + label + "\"");
-            // label = label.replace(/<br\s*[\/]?>/gi, "\n");
-            // console.log("lbl2", "\"" + label + "\"");
-            let labelParts: string[] = label.split(/<br\s*[\/]?>/gi);
-            
-            for (let lin = 0; lin < labelParts.length; ++lin)
-            {
-                let pspan2 = document.createElement("span");
-                pspan2.appendChild(document.createTextNode(labelParts[lin]));
-                popupContent.appendChild(pspan2);    
-                popupContent.appendChild(document.createElement("br"));
-            }
-
-        }
-
-        if (uid != null)
-        {
-            popupContent.appendChild(document.createComment("GB: " + uid));
-        }
         
         
-
-        
-
-
+        let popupContent = createBuildingContentDiv(uid, category, label);
+        // label = label.replace(/(?:\r\n|\r|\n)/g, '<br />');
         // let contentString = category + "<br />" + label;
-        let contentString = [category, label].filter(function (e) { return e; }).join("<br />");
+        // let contentString = [category, label].filter(function (e) { return e; }).join("<br />");
         // + "<br />GPS: " + latLongToString(latlng);
         // contentString = contentString + "<br />" + "Fl&auml;che: " + thousandSeparator(polygonArea(poly)) + " m<sup>2</sup>&nbsp;&nbsp;(+/-30m<sup>2</sup>)";
         let popup = new L.Popup()
@@ -1359,8 +1314,7 @@ async function loadMarkers()
             .bindPopup(popup)
             .addTo(map)
             ;
-
-
+        
         // console.log(uid);
         marker.on("click", function (uuid: string, e: L.LeafletMouseEvent) // uid is now called uuid
         {
@@ -1368,7 +1322,7 @@ async function loadMarkers()
             map.setView(e.latlng, 18, { animate: true });
             if (marker && marker.popup)
                 marker.popup();
-
+            
             let ml = window.parent.document.querySelector('#iMenuLeft');
             if (ml)
             {
@@ -1398,8 +1352,8 @@ async function loadMarkers()
         poly = toCounterClockWise(poly); // OSM is COUNTER-clockwise !
         
         let polygon = L.polygon(poly);
-        addTextLabel(map, poly, label);
-        
+        let polygonStamp = createBuildingContentDiv(null, null, label);
+        addTextLabel(map, poly, polygonStamp);
         
         /*
         polygon.setStyle({
@@ -1411,9 +1365,21 @@ async function loadMarkers()
         });
         */
         
-        let popupString = "Fl&auml;che: " + thousandSeparator(polygonArea(poly)) + " m<sup>2</sup>";
+        let dd = document.createElement("div");
+        let spn = document.createElement("span");
+        spn.appendChild(document.createTextNode("Fläche" + ": "));
+        spn.appendChild(document.createTextNode(thousandSeparator(polygonArea(poly))));
+        spn.appendChild(document.createTextNode(" m"));
+
+        let sup2 = document.createElement("sup");
+        sup2.appendChild(document.createTextNode("2"));
+        spn.appendChild(sup2);
+        dd.appendChild(spn);
+        
+        // let popupString = "Fl&auml;che: " + thousandSeparator(polygonArea(poly)) + " m<sup>2</sup>";
         polygon.addTo(map)
             //.bindPopup(popupString)
+            //.bindPopup(dd)
             //.openPopup()
         ;
         
@@ -1453,6 +1419,47 @@ async function loadMarkers()
     map.zoomHome();
     // console.log("leaving loadMarkers");
 } // End Function loadMarkers 
+
+
+function createBuildingContentDiv(uid:string, category:string, label:string)
+{
+    let popupContent = document.createElement("div");
+
+    if (category != null)
+    {
+        let pspan1 = document.createElement("span");
+        pspan1.appendChild(document.createTextNode(category));
+        popupContent.appendChild(pspan1);
+        popupContent.appendChild(document.createElement("br"));
+    }
+
+    if (label != null)
+    {
+        // console.log("lbl", "\"" + label + "\"");
+        // label = label.replace(/(?:\r\n|\r|\n)/g, '<br />');
+        // label = label.replace(/<br\s*[\/]?>/gi, "\n");
+        // console.log("lbl2", "\"" + label + "\"");
+        // let labelParts: string[] = label.split(/<br\s*[\/]?>/gi);
+        let labelParts: string[] = label.split(/(?:\r\n|\r|\n)/g);
+        // console.log(labelParts);
+        
+        for (let lin = 0; lin < labelParts.length; ++lin)
+        {
+            let pspan2 = document.createElement("span");
+            pspan2.appendChild(document.createTextNode(labelParts[lin]));
+            popupContent.appendChild(pspan2);
+            popupContent.appendChild(document.createElement("br"));
+        }
+
+    }
+
+    if (uid != null)
+    {
+        popupContent.appendChild(document.createComment("GB: " + uid));
+    }
+    
+    return popupContent;
+}
 
 
 

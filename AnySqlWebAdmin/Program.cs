@@ -145,7 +145,7 @@ namespace AnySqlWebAdmin
                             
                             pfxLocation = "/root/github/RedmineMailService/RedmineMailService/obelix.pfx";
                             // pfxLocation = @"C:\Users\Administrator\Documents\Visual Studio 2017\Projects\RedmineMailService\RedmineMailService\obelix.pfx";
-                            pfxLocation = @"D:\username\Documents\visual studio 2017\Projects\RedmineMailService\RedmineMailService\obelix.pfx";
+                            // pfxLocation = @"D:\username\Documents\visual studio 2017\Projects\RedmineMailService\RedmineMailService\obelix.pfx";
                             // pfxLocation = @"D:\username\Documents\Visual Studio 2017\Projects\rlipscombe\bouncy-castle-csharp\CreateCertificate\bin\Debug\subject.pfx";
                             // password = "password";
                             
