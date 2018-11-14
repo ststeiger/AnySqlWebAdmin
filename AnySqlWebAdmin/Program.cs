@@ -9,58 +9,6 @@ namespace AnySqlWebAdmin
 {
 
 
-    public class MemoryStreamExtensions
-        : System.IO.MemoryStream
-    {
-        
-        
-        public MemoryStreamExtensions()
-            :base()
-        { }
-        
-        
-        public MemoryStreamExtensions(int length)
-            :base(length)
-        { }
-        
-        
-        public byte[] array()
-        {
-            return this.ToArray();
-        }
-        
-        
-        public void Clear()
-        {
-            this.SetLength(0);
-        }
-        
-        
-        public void put(byte[] buffer, int offset, int length)
-        {
-            this.Write(buffer, offset, length);
-        }
-        
-        
-        public long Remaining()
-        {
-            return (this.Length - this.Position);
-        }
-        
-        
-        public static MemoryStreamExtensions allocate(int length)
-        {
-            return new MemoryStreamExtensions(length);
-        }
-        
-        // https://github.com/ststeiger/HyperTableSharp
-        // https://github.com/mono/sharpen
-        // https://github.com/arimus/jmimemagic/
-        // https://www.tangiblesoftwaresolutions.com/product_details/java_to_csharp_converter.html
-    }
-    
-    
-    
     // https://stackoverflow.com/questions/35715015/where-is-the-typescript-tools-version-set-in-an-asp-net-5-project
     //<TypeScriptToolsVersion>3.1.3</TypeScriptToolsVersion>
     //<!--
