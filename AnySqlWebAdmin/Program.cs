@@ -23,6 +23,8 @@ namespace AnySqlWebAdmin
 
         public static void Main(string[] args)
         {
+            AnySqlWebAdmin.TestCassandra.Test();
+            
             BuildWebHost(args).Run();
         } // End Sub Main 
 

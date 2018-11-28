@@ -12,6 +12,69 @@ namespace AnySqlWebAdmin
         public string Name { get; set; }
     }
 
+    
+    /*     
+
+
+
+INFO  16:51:25 Cassandra version: 3.9
+INFO  16:51:25 Thrift API version: 20.1.0
+Starting Messaging Service on localhost/127.0.0.1:7000 (lo)
+CQL supported versions: 3.4.2 (default: 3.4.2)
+
+
+system_auth.resource_role_permissons_index
+system_auth.role_members
+system_auth.role_permissions
+system_auth.roles
+
+
+system_distributed.parent_repair_history
+system_distributed.repair_history
+system_distributed.view_build_status
+
+
+system.IndexInfo
+system.batches
+system.paxos
+system.local
+system.peers
+system.peer_events
+system.range_xfers
+system.compaction_history
+system.sstable_activity
+system.size_estimates
+system.available_ranges
+system.views_builds_in_progress
+system.built_views
+system.hints
+system.batchlog
+system.schema_keyspaces
+system.schema_columnfamilies
+system.schema_columns
+system.schema_triggers
+system.schema_usertypes
+system.schema_functions
+system.schema_aggregates
+
+
+
+
+system_traces.events
+system_traces.sessions     
+     
+     
+system_schema.keyspaces
+system_schema.tables
+system_schema.columns
+system_schema.triggers
+system_schema.dropped_columns
+system_schema.views
+system_schema.types
+system_schema.functions
+system_schema.aggregates
+system_schema.indexes
+     */
 
 
     // https://datastax.github.io/csharp-driver/features/components/mapper/
@@ -78,7 +141,7 @@ namespace AnySqlWebAdmin
                     // https://docs.datastax.com/en/developer/csharp-driver/3.6/features/parametrized-queries/
                     // https://docs.datastax.com/en/developer/java-driver/3.1/faq/
                     // https://docs.datastax.com/en/developer/csharp-driver/3.2/
-                    Cassandra.PreparedStatement statement = session.Prepare("SELECT * FROM table where a = :a and b = :b");
+                    // Cassandra.PreparedStatement statement = session.Prepare("SELECT * FROM table where a = :a and b = :b");
                     // Bind by name using anonymous types 
                     // session.Execute(statement.Bind(new { a = "aValue", b = "bValue" }));
 
