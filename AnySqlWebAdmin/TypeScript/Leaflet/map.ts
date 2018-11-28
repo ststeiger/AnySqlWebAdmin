@@ -831,13 +831,32 @@ async function addWerbetafel(lat: number, lng:number)
         let werbetafel_icon = createWerbetafelIcon();
 
         // let marker = L.marker([latitude, longitude]).addTo(map);
-        let marker = L.marker([latitude, longitude], { icon: werbetafel_icon }).addTo(map);
+        // let marker = L.marker([latitude, longitude], { icon: werbetafel_icon }).addTo(map);
+        let marker = L.marker([latitude, longitude], {
+              icon: werbetafel_icon
+            , draggable: true
+        }).addTo(map);
+
         marker.on("click", onMarkerClick.bind(this, uid)); // uid is now called uuid
         marker.on("contextmenu", onMarkerContextMenu.bind(this, uid)); // uid is now called uuid
+        marker.on('dragend', moveWerbetafel.bind(this, uid, marker));
+        
         werbetafeln[uid] = marker;
     } // Next i 
 
 } // End Function addWerbetafel 
+
+
+async function moveWerbetafel(uuid:string, marker:L.Marker, event:L.LeafletEvent)
+{
+    console.log("move werbetafel ", uuid);
+    // https://g.co/chrome/symantecpkicerts
+
+    let position: L.LatLng = marker.getLatLng();
+    marker.setLatLng(position);
+    map.panTo(position);
+    // TODO: SQL-Update position
+}
 
 
 async function deleteWerbetafel(uuid:string)
@@ -1012,8 +1031,13 @@ async function loadWerbetafeln()
         let werbetafel_icon = createWerbetafelIcon();
         
         // let marker = L.marker([latitude, longitude]).addTo(map);
-        let marker = L.marker([latitude, longitude], { icon: werbetafel_icon });
-        
+        // let marker = L.marker([latitude, longitude], { icon: werbetafel_icon });
+
+        let marker = L.marker([latitude, longitude], {
+             icon: werbetafel_icon 
+            ,draggable: true 
+        });
+
         if (map.getZoom() > 16)
         {
             marker.addTo(map);
@@ -1021,6 +1045,7 @@ async function loadWerbetafeln()
         
         marker.on("click", onMarkerClick.bind(this, uid)); // uid is now called uuid
         marker.on("contextmenu", onMarkerContextMenu.bind(this, uid)); // uid is now called uuid
+        marker.on('dragend', moveWerbetafel.bind(this, uid, marker));
         werbetafeln[uid] = marker;
     } // Next i
     

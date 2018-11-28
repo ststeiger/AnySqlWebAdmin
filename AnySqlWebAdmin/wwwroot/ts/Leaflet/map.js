@@ -1,11 +1,8 @@
 'use strict';
 var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    }
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
     return function (d, b) {
         extendStatics(d, b);
         function __() { this.constructor = d; }
@@ -27,8 +24,8 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     function step(op) {
         if (f) throw new TypeError("Generator is already executing.");
         while (_) try {
-            if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
-            if (y = 0, t) op = [op[0] & 2, t.value];
+            if (f = 1, y && (t = y[op[0] & 2 ? "return" : op[0] ? "throw" : "next"]) && !(t = t.call(y, op[1])).done) return t;
+            if (y = 0, t) op = [0, t.value];
             switch (op[0]) {
                 case 0: case 1: t = op; break;
                 case 4: _.label++; return { value: op[1], done: false };
@@ -445,13 +442,29 @@ function addWerbetafel(lat, lng) {
                         if (latitude == null || longitude == null)
                             continue;
                         werbetafel_icon = createWerbetafelIcon();
-                        marker = L.marker([latitude, longitude], { icon: werbetafel_icon }).addTo(map);
+                        marker = L.marker([latitude, longitude], {
+                            icon: werbetafel_icon,
+                            draggable: true
+                        }).addTo(map);
                         marker.on("click", onMarkerClick.bind(this, uid));
                         marker.on("contextmenu", onMarkerContextMenu.bind(this, uid));
+                        marker.on('dragend', moveWerbetafel.bind(this, uid, marker));
                         werbetafeln[uid] = marker;
                     }
                     return [2];
             }
+        });
+    });
+}
+function moveWerbetafel(uuid, marker, event) {
+    return __awaiter(this, void 0, void 0, function () {
+        var position;
+        return __generator(this, function (_a) {
+            console.log("move werbetafel ", uuid);
+            position = marker.getLatLng();
+            marker.setLatLng(position);
+            map.panTo(position);
+            return [2];
         });
     });
 }
@@ -570,12 +583,16 @@ function loadWerbetafeln() {
                         if (latitude == null || longitude == null)
                             continue;
                         werbetafel_icon = createWerbetafelIcon();
-                        marker = L.marker([latitude, longitude], { icon: werbetafel_icon });
+                        marker = L.marker([latitude, longitude], {
+                            icon: werbetafel_icon,
+                            draggable: true
+                        });
                         if (map.getZoom() > 16) {
                             marker.addTo(map);
                         }
                         marker.on("click", onMarkerClick.bind(this, uid));
                         marker.on("contextmenu", onMarkerContextMenu.bind(this, uid));
+                        marker.on('dragend', moveWerbetafel.bind(this, uid, marker));
                         werbetafeln[uid] = marker;
                     }
                     return [2];
