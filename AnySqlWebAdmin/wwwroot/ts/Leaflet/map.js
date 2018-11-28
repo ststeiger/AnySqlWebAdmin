@@ -458,19 +458,37 @@ function addWerbetafel(lat, lng) {
 }
 function moveWerbetafel(uuid, marker, event) {
     return __awaiter(this, void 0, void 0, function () {
-        var position;
+        var position, url, result, ex_3;
         return __generator(this, function (_a) {
-            console.log("move werbetafel ", uuid);
-            position = marker.getLatLng();
-            marker.setLatLng(position);
-            map.panTo(position);
-            return [2];
+            switch (_a.label) {
+                case 0:
+                    console.log("move werbetafel ", uuid);
+                    position = marker.getLatLng();
+                    marker.setLatLng(position);
+                    map.panTo(position);
+                    url = "../ajax/AnySelect.ashx?sql=Maps.UpdateWerbetafelLocation.sql&al_uid=" + uuid + "&lat=" + position.lat + "&lng=" + position.lng;
+                    url = SetDefaultVariables(url);
+                    result = null;
+                    _a.label = 1;
+                case 1:
+                    _a.trys.push([1, 3, , 4]);
+                    return [4, getData(url)];
+                case 2:
+                    result = _a.sent();
+                    console.log("finished moving werbetafel ", uuid, result);
+                    return [3, 4];
+                case 3:
+                    ex_3 = _a.sent();
+                    console.log(ex_3);
+                    return [3, 4];
+                case 4: return [2];
+            }
         });
     });
 }
 function deleteWerbetafel(uuid) {
     return __awaiter(this, void 0, void 0, function () {
-        var url, result, ex_3;
+        var url, result, ex_4;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
@@ -489,8 +507,8 @@ function deleteWerbetafel(uuid) {
                     delete werbetafeln[uuid];
                     return [3, 4];
                 case 3:
-                    ex_3 = _a.sent();
-                    console.log(ex_3);
+                    ex_4 = _a.sent();
+                    console.log(ex_4);
                     return [3, 4];
                 case 4:
                     map.closePopup();
@@ -1120,7 +1138,7 @@ function createZoomControl(map) {
 }
 function getXml(url, data) {
     return __awaiter(this, void 0, void 0, function () {
-        var req, xml, obj, ex1, ex2, ex3, myHeaders, options, ex_4, ex_5;
+        var req, xml, obj, ex1, ex2, ex3, myHeaders, options, ex_5, ex_6;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
@@ -1162,9 +1180,9 @@ function getXml(url, data) {
                     req = _a.sent();
                     return [3, 4];
                 case 3:
-                    ex_4 = _a.sent();
-                    console.log(ex_4);
-                    ex1 = ex_4;
+                    ex_5 = _a.sent();
+                    console.log(ex_5);
+                    ex1 = ex_5;
                     return [3, 4];
                 case 4:
                     _a.trys.push([4, 7, , 8]);
@@ -1175,9 +1193,9 @@ function getXml(url, data) {
                     _a.label = 6;
                 case 6: return [3, 8];
                 case 7:
-                    ex_5 = _a.sent();
-                    console.log(ex_5);
-                    ex2 = ex_5;
+                    ex_6 = _a.sent();
+                    console.log(ex_6);
+                    ex2 = ex_6;
                     return [3, 8];
                 case 8:
                     try {

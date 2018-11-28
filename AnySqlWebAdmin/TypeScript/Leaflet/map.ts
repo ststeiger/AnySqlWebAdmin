@@ -855,7 +855,23 @@ async function moveWerbetafel(uuid:string, marker:L.Marker, event:L.LeafletEvent
     let position: L.LatLng = marker.getLatLng();
     marker.setLatLng(position);
     map.panTo(position);
+
+    let url = "../ajax/AnySelect.ashx?sql=Maps.UpdateWerbetafelLocation.sql&al_uid=" + uuid + "&lat=" + position.lat + "&lng=" + position.lng;
+    url = SetDefaultVariables(url);
     // TODO: SQL-Update position
+
+    let result = null;
+
+    try
+    {
+        result = await getData(url);
+        console.log("finished moving werbetafel ", uuid, result);
+        // console.log(result);
+    }
+    catch (ex)
+    {
+        console.log(ex);
+    }
 }
 
 
