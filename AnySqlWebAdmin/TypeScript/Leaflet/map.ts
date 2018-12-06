@@ -282,6 +282,7 @@ async function getData(url:string, data?: any)
         // "headers": new Headers({ 'Accept': 'application/json', 'Content-Type': 'application/json' }), 
          "headers": myHeaders 
         // ,"mode": "no-cors" 
+        , credentials: 'same-origin' // the default would be same-origin, but there's an exciting Edge-bug ...
         ,"body": <any>null
     };
 

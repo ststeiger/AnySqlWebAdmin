@@ -124,6 +124,7 @@ function getData(url, data) {
                     options = {
                         "method": "POST",
                         "headers": myHeaders,
+                        credentials: 'same-origin',
                         "body": null
                     };
                     if (data != null) {

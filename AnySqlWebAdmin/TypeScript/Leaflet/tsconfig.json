@@ -18,12 +18,12 @@
     // "module": "none", // Object.defineProperty, require
     // "module": "commonjs",
     "lib": [
-      "dom", 
-      // "webworker", 
-      // "scripthost", 
+      "dom",
+      // "webworker",
+      // "scripthost",
       "es5",
       //"es6",
-      "es2015.promise" 
+      "es2015.promise"
       // "es2015.core",
       // "es2015.proxy",
       // "es2015.iterable"
