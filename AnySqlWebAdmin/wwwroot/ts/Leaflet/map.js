@@ -121,6 +121,8 @@ function getData(url, data) {
                     myHeaders = new Headers();
                     myHeaders.append("Accept", "application/json");
                     myHeaders.append("Content-Type", "application/json");
+                    myHeaders.append("pragma", "no-cache");
+                    myHeaders.append("cache-control", "no-cache");
                     options = {
                         "method": "POST",
                         "headers": myHeaders,

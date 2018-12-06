@@ -1,4 +1,4 @@
-let Portal = {
+var Portal = {
     Debug: {
         Feedback: {
             Send: function (h, m) {
@@ -33,9 +33,9 @@ let Portal = {
         },
         receiveMessage: function (event) {
             if (event && event.data) {
-                let tData = (typeof event.data === 'string') ? JSON.parse(event.data) : event.data;
+                var tData = (typeof event.data === 'string') ? JSON.parse(event.data) : event.data;
                 if (tData && tData.Action) {
-                    for (let tL = document.querySelectorAll('iframe'), i = 0, j = tL.length; i < j; i++) {
+                    for (var tL = document.querySelectorAll('iframe'), i = 0, j = tL.length; i < j; i++) {
                         try {
                             (typeof tL[i].contentWindow.postMessage === 'function') && tL[i].contentWindow.postMessage(JSON.stringify(tData), '*');
                         }
@@ -46,7 +46,7 @@ let Portal = {
             }
         },
         spreadMessage: function (obj) {
-            let tWindow = window.top;
+            var tWindow = window.top;
             if (tWindow.addEventListener) {
                 tWindow.top.removeEventListener('message', tWindow.Portal.Global.receiveMessage, false);
                 tWindow.top.addEventListener('message', tWindow.Portal.Global.receiveMessage, false);
@@ -60,13 +60,13 @@ let Portal = {
     },
     Frameset: {
         focusFrameByWindow: function (window) {
-            let _Log = function (o, f) {
+            var _Log = function (o, f) {
                 (typeof Portal.Debug === 'object') ?
                     Portal.Debug.Throw('w8', f + ': ' + o) : (typeof console === 'object'
                     && typeof console.log !== 'undefined')
                     && console.log('w8', f + ': ' + o);
             };
-            let _Remove = function (e) {
+            var _Remove = function (e) {
                 this._Trace('_Remove');
                 try {
                     e && e.parentNode.removeChild(e);
@@ -75,7 +75,7 @@ let Portal = {
                     this._Log(err, '_Remove');
                 }
             };
-            let showFrame = function (e, unusedC) {
+            var showFrame = function (e, unusedC) {
                 this._Trace('showFrame');
                 try {
                     e.style.display = 'block';
@@ -85,7 +85,7 @@ let Portal = {
                 }
             };
             if (window) {
-                for (let tL = document.querySelectorAll('iframe'), i = 0, j = tL.length; i < j; i++) {
+                for (var tL = document.querySelectorAll('iframe'), i = 0, j = tL.length; i < j; i++) {
                     try {
                         (tL[i].contentWindow === window) && this.showFrame(tL[i]);
                     }

@@ -266,6 +266,9 @@ async function getData(url:string, data?: any)
     let myHeaders = new Headers();
     myHeaders.append("Accept", "application/json");
     myHeaders.append("Content-Type", "application/json");
+    myHeaders.append("pragma", "no-cache");
+    myHeaders.append("cache-control", "no-cache");
+    // myHeaders.append("Upgrade-Insecure-Requests", "1");
     
 
     // https://stackoverflow.com/questions/37668282/unable-to-fetch-post-without-no-cors-in-header
@@ -1975,6 +1978,7 @@ async function getXml(url:string, data?: any)
     myHeaders.append("accept", "*/*");
     myHeaders.append("pragma", "no-cache");
     myHeaders.append("cache-control", "no-cache");
+    // myHeaders.append("Upgrade-Insecure-Requests", "1");
     
     // myHeaders.append("Content-Type", "application/json");
     
