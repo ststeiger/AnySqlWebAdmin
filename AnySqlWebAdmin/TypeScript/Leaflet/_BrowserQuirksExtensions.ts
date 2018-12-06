@@ -2,8 +2,10 @@
 interface Window
 {
     CustomEvent: any;
-    attachEvent: any;
-    detachEvent: any;
+    // attachEvent: any;
+    // detachEvent: any;
+    attachEvent(eventName: string, callback: (event: any) => void): void;
+    detachEvent(eventName: string, callback: (event: any) => void): void;
     
     getStackTrace: any;
     AudioContext: any;
@@ -12,7 +14,12 @@ interface Window
 
 interface Document
 {
-    attachEvent: any;
+    // attachEvent: any;
+    // detachEvent: any;
+
+    attachEvent(eventName: string, callback: (event: any) => void): void;
+    detachEvent(eventName: string, callback: (event: any) => void): void;
+
     attachCustomEvent: any;
 }
 
