@@ -9,6 +9,7 @@ namespace AnySqlWebAdmin
 {
 
 
+
     // https://stackoverflow.com/questions/35715015/where-is-the-typescript-tools-version-set-in-an-asp-net-5-project
     //<TypeScriptToolsVersion>3.1.3</TypeScriptToolsVersion>
     //<!--
@@ -23,8 +24,9 @@ namespace AnySqlWebAdmin
 
         public static void Main(string[] args)
         {
+            AnySqlWebAdmin.OSM.TileCoordinates.Test();
+
             // AnySqlWebAdmin.TestCassandra.Test();
-            
             BuildWebHost(args).Run();
         } // End Sub Main 
 

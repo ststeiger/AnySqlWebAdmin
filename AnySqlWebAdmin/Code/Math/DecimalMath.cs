@@ -326,6 +326,67 @@ namespace System
         }
 
 
+        // https://gist.github.com/jvranish/2485500
+        // https://en.wikipedia.org/wiki/Inverse_trigonometric_functions#Infinite_series
+        public static double bogus_arctan1(double z)
+        {
+            double previousValue = 100;
+            double sum = 0.0;
+
+            int n = 0;
+            do
+            {
+                previousValue = sum;
+                double numerator = Math.Pow(-1, n) * Math.Pow(z, 2 * n + 1);
+                sum = sum + numerator / ((double)(2 * n + 1));
+
+                n++;
+            } while (Math.Abs(previousValue - sum) > double.Epsilon);
+
+
+            return sum;
+        }
+
+
+        // asec(x) = acos(1 / x)
+        // acsc(x) = asin(1 / x)
+        // acot(x) = atan(1 / x)
+        // https://stackoverflow.com/questions/40077693/arctan-taylor-series-in-c
+        // https://math.stackexchange.com/questions/113993/taylor-series-expansion-of-arctanx-around-the-point-0
+        public static double bogus_arctan(double x)
+        {
+            // x−x3/3+x5/5−x7/7+…?
+
+            double previousValue = 100;
+            double sum = x;
+
+            int n = 1;
+            do
+            {
+                previousValue = sum;
+
+                int k = 2 * n + 1;
+                double dk = (double)k;
+
+                double numerator = System.Math.Pow(x, k);
+                double term = numerator / dk;
+                if (n % 2 == 1)
+                    term *= -1.0;
+
+                sum += term;
+                n++;
+            } while (Math.Abs(previousValue - sum) > double.Epsilon);
+
+
+            return sum;
+        }
+
+
+        public static decimal Atan(decimal z)
+        {
+            return (decimal)System.Math.Atan((double)z);
+        }
+
         public static double sine_taylor(double x)
         {
             // useful to pre-calculate
