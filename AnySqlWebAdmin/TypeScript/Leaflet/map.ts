@@ -882,18 +882,18 @@ async function moveWerbetafel(uuid:string, marker:L.Marker, event:L.LeafletEvent
 async function deleteWerbetafel(uuid:string)
 {
     console.log("delete werbetafel ", uuid);
-
+    
     //let url = "../ajax/Data.ashx?sql=Maps.DeleteWerbetafel.sql&obj_uid=" + uuid;
     let url = "../ajax/AnySelect.ashx?sql=Maps.DeleteWerbetafel.sql&obj_uid=" + uuid;
     url = SetDefaultVariables(url);
-
+    
     let result = null;
     
     try
     {
         result = await getData(url);
         console.log("finished deleting werbetafel ", uuid);
-
+        
         // console.log(result);
         werbetafeln[uuid].remove();
         delete werbetafeln[uuid];
@@ -902,7 +902,7 @@ async function deleteWerbetafel(uuid:string)
     {
         console.log(ex);
     }
-
+    
     map.closePopup();
 } // End Function deleteWerbetafel 
 
@@ -912,12 +912,12 @@ function getParamNames(func: Function): RegExpMatchArray
 {
     const STRIP_COMMENTS = /((\/\/.*$)|(\/\*[\s\S]*?\*\/))/mg;
     const ARGUMENT_NAMES = /([^\s,]+)/g;
-
+    
     let fnStr = func.toString().replace(STRIP_COMMENTS, '');
     let result = fnStr.slice(fnStr.indexOf('(') + 1, fnStr.indexOf(')')).match(ARGUMENT_NAMES);
     if (result === null)
         result = [];
-
+    
     return result;
 } // End Function getParamNames 
 
@@ -934,7 +934,7 @@ function logParams(args:IArguments)
         else
             x[pn[i]] = args[i];
     }
-
+    
     function resolveCaller(a: Function):string
     {
         if (a == null)
@@ -945,7 +945,7 @@ function logParams(args:IArguments)
             
         return "'anonymous function' in " + resolveCaller(a.caller);
     }
-        
+    
     // console.log(resolveCaller(args.callee), "called with", x);
 } // End Function logParams 
 
@@ -955,19 +955,19 @@ function onMarkerContextMenu(uuid: string, e: L.LeafletMouseEvent) // uid is now
     // console.log("onMarkerContextMenu", e)
     // e.originalEvent.target.parentElement.remove()
     // e.target._leaflet_id
-
+    
     function addPosition(latlng: L.LatLng)
     {
         return ' data-position="' + latlng.lat + ' ' + latlng.lng + '" ';
     }
-
+    
     let container = <HTMLElement> <any>document.createDocumentFragment();
     let title = document.createElement("span");
     title.setAttribute("style", "font-weight: bold;");
     title.appendChild( document.createTextNode("Hier können Sie") );
     container.appendChild(title);
     container.appendChild(document.createElement("br"));
-
+    
     let menuOption = document.createElement("a");
     menuOption.addEventListener("click", deleteWerbetafel.bind(this, uuid) );
     
@@ -975,14 +975,14 @@ function onMarkerContextMenu(uuid: string, e: L.LeafletMouseEvent) // uid is now
     container.appendChild(menuOption);
     // let contextMenu = container.innerHTML;
     // console.log(contextMenu);
-
+    
     let popup = new L.Popup({ closeButton: true, autoClose: true })
         .setLatLng(e.latlng)
         //.setContent(contextMenu)
         .setContent(container)
         //.openOn(map)
     ;
-
+    
     popup.openOn(map);
 } // End Function onMarkerContextMenu 
 
@@ -993,10 +993,10 @@ function onMarkerClick(uuid: string, e: L.LeafletMouseEvent)
     t = SetDefaultVariables(t);
     // console.log(t);
     // navigateTo(uuid);
-
+    
     let ml = <HTMLIFrameElement>window.parent.document.querySelector('#frameDWGForm');
     if (ml) ml.src = t.replace("{@obj}", uuid);
-
+    
     observeIframe();
 } // End Function onMarkerClick 
 
@@ -1011,7 +1011,7 @@ function createWerbetafelIcon()
             html: "<img src=\"../leaflet/images/helvetia23.png\" />"
         }
     );
-
+    
     return icon;
 } // End Function createWerbetafelIcon 
 
@@ -1052,12 +1052,12 @@ async function loadWerbetafeln()
         
         // let marker = L.marker([latitude, longitude]).addTo(map);
         // let marker = L.marker([latitude, longitude], { icon: werbetafel_icon });
-
+        
         let marker = L.marker([latitude, longitude], {
              icon: werbetafel_icon 
             ,draggable: true 
         });
-
+        
         if (map.getZoom() > 16)
         {
             marker.addTo(map);
@@ -1082,8 +1082,8 @@ async function onWerbetafelChange()
             werbetafeln[uid].remove();
             delete werbetafeln[uid];
         }
-    } // Next uid 
-
+    } // Next uid
+    
     await loadWerbetafeln();
 } // End Function onWerbetafelChange 
 
@@ -1095,10 +1095,10 @@ function observeIframe()
     let blocker = window.parent.document.querySelector('#frameDWGForm');
     if (blocker == null)
         return;
-
+    
     let timoutHandle:number = null;
     let timoutHandle2:number = null;
-
+    
     try
     {
         // Our mutation observer, which we attach to blocker later
@@ -1141,8 +1141,6 @@ function observeIframe()
 } // End Function observeIframe
 
 
-
-
 // https://en.wikipedia.org/wiki/Centroid#Centroid_of_a_polygon
 // https://stackoverflow.com/questions/9692448/how-can-you-find-the-centroid-of-a-concave-irregular-polygon-in-javascript
 // https://math.stackexchange.com/questions/3177/why-doesnt-a-simple-mean-give-the-position-of-a-centroid-in-a-polygon
@@ -1151,12 +1149,12 @@ function get_polygon_centroid(pts: L.LatLng[])
     let first = pts[0], last = pts[pts.length - 1];
     if (first.lat != last.lat || first.lng != last.lng)
         pts.push(first);
-
+    
     let twicearea = 0,
         x = 0, y = 0,
         nPts = pts.length,
         p1, p2, f;
-
+    
     for (let i = 0, j = nPts - 1; i < nPts; j = i++)
     {
         p1 = pts[i]; p2 = pts[j];
@@ -1166,7 +1164,7 @@ function get_polygon_centroid(pts: L.LatLng[])
         y += (p1.lng + p2.lng) * f;
     }
     f = twicearea * 3;
-
+    
     // return { x: x / f, y: y / f };
     return new L.LatLng(x / f, y / f);
 }
@@ -1191,7 +1189,7 @@ function addTextLabel(map: L.Map, poly: L.LatLng[], label: HTMLElement)
             html: label.outerHTML
         }
     );
-
+    
     let textMarker = L.marker(centroid, { icon: textIcon }).addTo(map);
 }
 
@@ -1214,14 +1212,14 @@ async function loadMarkers()
     let markerUrl = "../ajax/AnySelect.ashx?sql=Maps.Marker_GB.sql";
     markerUrl = SetDefaultVariables(markerUrl);
     // console.log("markerUrl", markerUrl);
-
+    
     let result = await getData(markerUrl);
     // console.log(result);
-
+    
     let table = result.tables[0];
     // console.log(table.columns);
     // console.log(table.columns["OBJ_Label"].index);
-
+    
     let index_uid = table.columns["OBJ_UID"].index;
     let index_code = table.columns["OBJT_Code"].index;
     let index_label = table.columns["OBJ_Label"].index;
@@ -1230,18 +1228,18 @@ async function loadMarkers()
     let index_category = table.columns["OBJ_Kategorie"].index;
     let index_color = table.columns["OBJ_Color"].index;
     let index_poly = table.columns["OBJ_Polygon"].index;
-
+    
     let allCoords: L.LatLng[] = [];
-
+    
     // Singapur
     // table.rows.push(["uid", "code", "label", 1.345733633103394 , 103.83649706840517, null ]);
-
-
+    
+    
     // let markerHtmlStyles = "background-color: #583470;\n  width: 16px;\n  height: 16px;\n  display: block;\n  left: -8px;\n  top: -8px;\n  position: relative;\n  border-radius: 16px 16px 0;\n transform: rotate(45deg); \n  border: 1px solid #FFFFFF";
     // let markerHtmlStyles = "background-color: #583470;\n  width: 16px;\n  height: 16px;\n  display: block;\n  left: -8px;\n  top: -8px;\n  position: relative;\n  border-radius: 16px 16px 0;\n transform: rotate(45deg); \n  border: 1px solid #FFFFFF";
     let markerHtmlStyles = "display: block; margin-left: -15px; margin-top: -15px; width: 0; \n  height: 0; \n  border-left: 20px solid transparent;\n  border-right: 20px solid transparent;\n  \n  border-top: 20px solid #f00;\n  ";
-
-
+    
+    
     let options = {
         iconUrl: 'marker-icon.png',
         iconRetinaUrl: 'marker-icon-2x.png',
@@ -1252,8 +1250,8 @@ async function loadMarkers()
         tooltipAnchor: [16, -228],
         shadowSize: [41, 41]
     };
-
-
+    
+    
     for (let i = 0; i < table.rows.length; ++i)
     {
         let uid:string = table.rows[i][index_uid];
@@ -1264,33 +1262,33 @@ async function loadMarkers()
         let category: string = table.rows[i][index_category];
         let color:string = table.rows[i][index_color];
         let polyString:string = table.rows[i][index_poly];
-
-
+        
+        
         // console.log(uid);
         // console.log(code);
         // console.log(label);
         // console.log(latitude);
         // console.log(longitude);
         // console.log(poly);
-
+        
         // label = label.replace(/(?:\r\n|\r|\n)/g, '<br />');
         // console.log(label);
-
+        
         //let poly: string[][] = null;
         let poly: L.LatLng[] = null;
         if (polyString != null)
             poly = polyString.split(",").map(function (x) { let z = x.split(' '); return new L.LatLng(Number(z[0]), Number(z[1]))});
             // poly = polyString.split(',').map(function (x:string) { return x.split(' ') });
-            
+        
         if (latitude == null || longitude == null)
             continue;
-
-
+        
+        
         // allCoords.push([latitude, longitude]);
         let latlng = L.latLng(latitude, longitude);
         allCoords.push(latlng);
-
-
+        
+        
         // let nongreenIcon = L.divIcon({
         //    className: "MapElement",
         //    // iconAnchor: [0, 24],
@@ -1376,11 +1374,11 @@ async function loadMarkers()
                 ignoreThisNavigation = true;
                 navigateTo(uuid);
             }
-
+            
         }.bind(this, uid));
         markers[uid] = marker;
-
-
+        
+        
         /*
         let circle = L.circle(latlng,
         {
@@ -1390,7 +1388,7 @@ async function loadMarkers()
         , radius: 15
         }).addTo(map);
         */
-
+        
         if (poly == null)
             continue;
         
@@ -1415,7 +1413,7 @@ async function loadMarkers()
         spn.appendChild(document.createTextNode("Fläche" + ": "));
         spn.appendChild(document.createTextNode(thousandSeparator(polygonArea(poly))));
         spn.appendChild(document.createTextNode(" m"));
-
+        
         let sup2 = document.createElement("sup");
         sup2.appendChild(document.createTextNode("2"));
         spn.appendChild(sup2);
@@ -1469,7 +1467,7 @@ async function loadMarkers()
 function createBuildingContentDiv(uid:string, category:string, label:string)
 {
     let popupContent = document.createElement("div");
-
+    
     if (category != null)
     {
         let pspan1 = document.createElement("span");
@@ -1477,7 +1475,7 @@ function createBuildingContentDiv(uid:string, category:string, label:string)
         popupContent.appendChild(pspan1);
         popupContent.appendChild(document.createElement("br"));
     }
-
+    
     if (label != null)
     {
         // console.log("lbl", "\"" + label + "\"");
@@ -1495,9 +1493,9 @@ function createBuildingContentDiv(uid:string, category:string, label:string)
             popupContent.appendChild(pspan2);
             popupContent.appendChild(document.createElement("br"));
         }
-
+        
     }
-
+    
     if (uid != null)
     {
         popupContent.appendChild(document.createComment("GB: " + uid));
@@ -1520,8 +1518,8 @@ interface IObjectBoundsTable
     maxLat: number;
     maxLng: number;
 }
-    
-    
+
+
 async function zoomIn(uid:string)
 {
     // console.log("zoomIn", uid);
@@ -1577,22 +1575,22 @@ async function zoomIn(uid:string)
 async function onBaumClick(uid:string, typ:string)
 {
     typ = (typ || "").toLowerCase();
-
+    
     if (ignoreThisNavigation)
     {
         if (typ == "so")
             ignoreThisNavigation = false;
-
+        
         return;
     }
-
+    
     if (typ === "gs")
     {
         return;
     }
-
+    
     window.top.Portal.Frameset.focusFrameByWindow(window);
-        
+    
     switch (typ)
     {
         case "ld":
@@ -1613,7 +1611,7 @@ async function onBaumClick(uid:string, typ:string)
         default:
             console.log("Objekt nicht definiert.");
     } // End Switch
-
+    
 } // End Function onBaumClick
 
 
