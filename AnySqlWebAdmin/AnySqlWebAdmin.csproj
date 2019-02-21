@@ -35,6 +35,9 @@
     <None Include="TypeScript\Tools\_BrowserQuirksExtensions.ts" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\DotSpatial.Projections\DotSpatial.Projections.csproj" />
+  </ItemGroup>
+  <ItemGroup>
     <TypeScriptCompile Include="TypeScript\Tools\test.ts" />
     <TypeScriptCompile Include="TypeScript\Tools\urlModifier.ts" />
   </ItemGroup>

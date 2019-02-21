@@ -5,6 +5,8 @@ VisualStudioVersion = 15.0.26730.12
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AnySqlWebAdmin", "AnySqlWebAdmin\AnySqlWebAdmin.csproj", "{7408A639-C454-454A-8424-D1662FFD2211}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotSpatial.Projections", "DotSpatial.Projections\DotSpatial.Projections.csproj", "{7ADA5EE7-3291-4DC3-87A5-6A5615718AF8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{7408A639-C454-454A-8424-D1662FFD2211}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7408A639-C454-454A-8424-D1662FFD2211}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7408A639-C454-454A-8424-D1662FFD2211}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7ADA5EE7-3291-4DC3-87A5-6A5615718AF8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7ADA5EE7-3291-4DC3-87A5-6A5615718AF8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7ADA5EE7-3291-4DC3-87A5-6A5615718AF8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7ADA5EE7-3291-4DC3-87A5-6A5615718AF8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
