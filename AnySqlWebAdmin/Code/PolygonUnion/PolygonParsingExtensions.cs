@@ -9,7 +9,7 @@ namespace TestTransform
 
         public static bool IsClockwise(System.Collections.Generic.List<Wgs84Coordinates> poly)
         {
-            double sum = 0;
+            decimal sum = 0;
 
             for (int i = 0; i < poly.Count - 1; i++)
             {
@@ -21,7 +21,7 @@ namespace TestTransform
         } // End Function isClockwise 
 
 
-        // MSSQL is CLOCKWISE (MS-SQL polygon wants the points clockwise) 
+        // MSSQL is CLOCKWISE (MS-SQL wants the polygon points in clockwise sequence) 
         public static System.Collections.Generic.List<Wgs84Coordinates> ToClockWise(System.Collections.Generic.List<Wgs84Coordinates> poly)
         {
             if (!IsClockwise(poly))
@@ -31,7 +31,7 @@ namespace TestTransform
         } // End Function toClockWise 
 
 
-        // OSM is COUNTER-clockwise
+        // OSM is COUNTER-clockwise  (OSM wants the polygon points in counterclockwise sequence) 
         public static System.Collections.Generic.List<Wgs84Coordinates> ToCounterClockWise(System.Collections.Generic.List<Wgs84Coordinates> poly)
         {
             if (IsClockwise(poly))
@@ -61,8 +61,8 @@ namespace TestTransform
             {
                 string[] pointComponents = allPoints[i].Split(' ');
                 ls.Add(new Wgs84Coordinates(
-                      double.Parse(pointComponents[1], System.Globalization.CultureInfo.InvariantCulture)
-                    , double.Parse(pointComponents[0], System.Globalization.CultureInfo.InvariantCulture)
+                      decimal.Parse(pointComponents[1], System.Globalization.CultureInfo.InvariantCulture)
+                    , decimal.Parse(pointComponents[0], System.Globalization.CultureInfo.InvariantCulture)
                     )
                 );
                 // ls.Add(new Wgs84Coordinates(double.Parse(pointComponents[0]), double.Parse(pointComponents[1])));

@@ -7,15 +7,15 @@ namespace TestTransform
     {
 
 
-        public static GeoAPI.Geometries.Coordinate FromWgs84(double lat, double lon) //, int zoom)
+        public static GeoAPI.Geometries.Coordinate FromWgs84(decimal lat, decimal lon) //, int zoom)
         {
             GeoAPI.Geometries.Coordinate coord = new GeoAPI.Geometries.Coordinate();
 
-            coord.X = (lon + 180.0) / 360.0; // * System.Math.Pow(2, zoom);
+            coord.X = ((double)lon + 180.0) / 360.0; // * System.Math.Pow(2, zoom);
             coord.Y =
                     (1 - System.Math.Log(
-                         System.Math.Tan(lat * System.Math.PI / 180)
-                         + 1 / System.Math.Cos(lat * System.Math.PI / 180)
+                         System.Math.Tan((double)lat * System.Math.PI / 180)
+                         + 1 / System.Math.Cos((double)lat * System.Math.PI / 180)
                         )
                         / System.Math.PI
                      ) / 2
@@ -34,12 +34,12 @@ namespace TestTransform
             // coord.ZoomLevel = z;
 
             // coord.Longitude = (decimal)(x / System.Math.Pow(2, z) * 360 - 180);
-            coord.Longitude = x * 360.0 - 180.0;
+            coord.Longitude = (decimal) x * 360.0M - 180.0M;
 
             //double n = System.Math.PI - 2 * System.Math.PI * y / System.Math.Pow(2, z);
             double n = System.Math.PI - 2 * System.Math.PI * y;
 
-            coord.Latitude = (double)(180.0 / System.Math.PI * System.Math.Atan(0.5 *
+            coord.Latitude = (decimal)(180.0 / System.Math.PI * System.Math.Atan(0.5 *
                     (System.Math.Exp(n) - System.Math.Exp(-n))
                 ))
             ;
@@ -68,7 +68,7 @@ namespace TestTransform
             for (int i = 0; i < coords.Length; ++i)
             {
                 // coordinates[i]= FromWgs84(coords[0]);
-                coordinates[i] = new GeoAPI.Geometries.Coordinate(coords[i].Latitude, coords[i].Longitude, 0.0);
+                coordinates[i] = new GeoAPI.Geometries.Coordinate((double)coords[i].Latitude, (double)coords[i].Longitude, 0.0);
             }
 
             return coordinates;

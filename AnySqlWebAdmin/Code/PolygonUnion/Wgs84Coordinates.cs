@@ -5,12 +5,12 @@ namespace TestTransform
 
     public class Wgs84Coordinates 
     {
-        public double Latitude;
-        public double Longitude;
+        public decimal Latitude;
+        public decimal Longitude;
         public int ZoomLevel;
 
 
-        public Wgs84Coordinates(double lat, double lng, int zoom)
+        public Wgs84Coordinates(decimal lat, decimal lng, int zoom)
         {
             this.Latitude = lat;
             this.Longitude = lng;
@@ -18,7 +18,7 @@ namespace TestTransform
         } // End Constructor 
 
 
-        public Wgs84Coordinates(double lat, double lng)
+        public Wgs84Coordinates(decimal lat, decimal lng)
             : this(lat, lng, 0)
         { } // End Constructor 
 

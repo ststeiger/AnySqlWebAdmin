@@ -2352,7 +2352,7 @@ function isClockwise(poly: L.LatLng[])
 } // End Function isClockwise 
 
 
-// MSSQL is CLOCKWISE (MS-SQL polygon wants the points clockwise) 
+// MSSQL is CLOCKWISE (MS-SQL wants the polygon points in clockwise sequence) 
 function toClockWise(poly: L.LatLng[])
 {
     if (!isClockwise(poly))
@@ -2362,7 +2362,7 @@ function toClockWise(poly: L.LatLng[])
 } // End Function toClockWise 
 
 
-// OSM is COUNTER-clockwise
+// OSM is COUNTER-clockwise  (OSM wants the polygon points in counterclockwise sequence) 
 function toCounterClockWise(poly: L.LatLng[])
 {
     if (isClockwise(poly))
