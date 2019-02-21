@@ -47,7 +47,23 @@ namespace TestTransform
             return (lhs.Latitude != rhs.Latitude && lhs.Longitude != rhs.Longitude);
         } // End Operator != 
 
+        public override bool Equals(object obj)
+        {
+            if(!object.ReferenceEquals(typeof(Wgs84Coordinates), obj.GetType()))
+                return false;
 
+            Wgs84Coordinates wgsObj = (Wgs84Coordinates) obj;
+            
+            return this == wgsObj;
+        }
+        
+        
+        public override int GetHashCode()
+        {
+            return unchecked(this.Latitude.GetHashCode()) ^ ((int)(this.Longitude.GetHashCode() >> 32));  
+        }
+        
+        
     } // End Class Wgs84Coordinates 
 
 
