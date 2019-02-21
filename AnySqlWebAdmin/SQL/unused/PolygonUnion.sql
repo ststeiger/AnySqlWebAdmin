@@ -28,3 +28,83 @@ SELECT
 
 
 
+-- ----------------------------------------------------------------
+-- Extract points from geography/geometry
+-- ----------------------------------------------------------------
+
+-- https://gis.stackexchange.com/questions/66142/trying-to-convert-geometry-to-geography-keep-failing-in-mssql-2012
+-- https://spatialdbadvisor.com/sql_server_blog/267/extract-elements-of-sql-server-spatial-geometry-object
+
+
+DECLARE @geo1 GEOGRAPHY
+DECLARE @geo2 GEOGRAPHY
+SET @geo1 = geography::STPolyFromText('POLYGON((7.5999034 47.5506347,7.6001195 47.550805,7.5999759 47.5508885,7.5998959 47.5508256,7.5997595 47.5507183,7.5999034 47.5506347))', 4326)
+SET @geo2 = geography::STPolyFromText('POLYGON((7.6003356 47.5509754,7.6001926 47.551059,7.6000322 47.5509328,7.5999759 47.5508885,7.6001195 47.550805,7.6003356 47.5509754))', 4326)
+
+
+DECLARE @geom1 GEOMETRY
+DECLARE @geom2 GEOMETRY
+SET @geom1 = geometry::STPolyFromText('POLYGON((7.5999034 47.5506347,7.6001195 47.550805,7.5999759 47.5508885,7.5998959 47.5508256,7.5997595 47.5507183,7.5999034 47.5506347))', 4326)
+SET @geom2 = geometry::STPolyFromText('POLYGON((7.6003356 47.5509754,7.6001926 47.551059,7.6000322 47.5509328,7.5999759 47.5508885,7.6001195 47.550805,7.6003356 47.5509754))', 4326)
+
+
+-- SELECT @geo1.STSrid, @geom1.STSrid
+-- SELECT @geom1.STCentroid().ToString()
+-- SELECT @geo1.STNumPoints(),  @geom1.STNumPoints()
+
+-- SELECT @geo1.STPointN(2).ToString();  
+-- SELECT @geo1.STPointN(2).Lat, @geo1.STPointN(2).Long
+-- SELECT @geom1.STPointN(2).STX, @geom1.STPointN(2).STY;  
+
+;WITH CTE AS
+        (
+          SELECT @geo1.STNumPoints() AS l, 1 AS i, @geo1.STNumPoints() AS OsmSort WHERE 0 < @geo1.STNumPoints()
+          UNION ALL
+          SELECT CTE.l AS l, i+1 AS i, CTE.OsmSort-1 AS OsmSort
+          FROM CTE WHERE CTE.i < CTE.l
+        )
+ SELECT
+   i
+      ,OsmSort
+      ,@geo1.STPointN(i).ToString() AS pt
+      ,@geo1.STPointN(i).Lat AS lat
+      ,@geo1.STPointN(i).Long AS lng
+ FROM CTE
+
+;WITH CTE AS
+        (
+          SELECT @geom1.STNumPoints() AS l, 1 AS i, @geom1.STNumPoints() AS OsmSort WHERE 0 < @geom1.STNumPoints()
+          UNION ALL
+          SELECT CTE.l AS l, i+1 AS i, CTE.OsmSort-1 AS OsmSort
+          FROM CTE WHERE CTE.i < CTE.l
+        )
+ SELECT
+   i
+      ,OsmSort
+      ,@geom1.STPointN(i).ToString() AS pt
+      ,@geom1.STPointN(i).STX AS X
+      ,@geom1.STPointN(i).STY AS Y
+ FROM CTE
+
+
+
+
+-- SELECT @geom1.STNumInteriorRing()
+-- SELECT @geom1.STNumInteriorRing()
+-- SELECT @geom1.STExteriorRing().STExteriorRing().STNumInteriorRing()
+
+-- SELECT @geom1.STExteriorRing().STAsText()
+-- SELECT geography::Point(47.65100,-122.34720, 4326);
+-- SELECT geometry::Point(47.65100,-122.34720, 4326);
+-- SELECT geography::STPointFromText('POINT(' + CAST([Longitude] AS VARCHAR(20)) + ' ' + CAST([Latitude] AS VARCHAR(20)) + ')', 4326)
+-- SELECT location.STDistance(@DistanceFromPoint)
+
+
+-- SELECT @geo1.STUnion(@geo2).STAsText() 
+
+
+-- SELECT @geo1.STArea(), @geom1.STArea()
+
+-- SELECT @geom2.starea()
+-- SELECT @geo1.()
+-- SELECT CAST(@geo1 AS geometry)
