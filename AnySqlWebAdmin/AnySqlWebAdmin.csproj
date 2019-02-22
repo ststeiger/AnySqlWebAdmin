@@ -10,8 +10,22 @@
     <Compile Remove="Code\Math\cVector_3d.cs" />
     <Compile Remove="Code\SqlServiceJsonHelperAssociative.cs" />
   </ItemGroup>
+  
+  
+  <ItemGroup>
+    <Content Remove="wwwroot\ts\SpatialDistance\test.ts" />
+  </ItemGroup>
   <ItemGroup>
     <None Remove="TypeScript\fetch.ts" />
+    <None Remove="TypeScript\SpatialDistance\Distance.ts" />
+    <None Remove="TypeScript\SpatialDistance\DistanceUnit.ts" />
+    <None Remove="TypeScript\SpatialDistance\Ellipsoid.ts" />
+    <None Remove="TypeScript\SpatialDistance\Latitude.ts" />
+    <None Remove="TypeScript\SpatialDistance\Longitude.ts" />
+    <None Remove="TypeScript\SpatialDistance\Position.ts" />
+    <None Remove="TypeScript\SpatialDistance\Radian.ts" />
+    <None Remove="TypeScript\SpatialDistance\Speed.ts" />
+    <None Remove="TypeScript\SpatialDistance\SpeedUnit.ts" />
     <None Remove="TypeScript\Tools\test.ts" />
     <None Remove="TypeScript\urlModifier.ts" />
   </ItemGroup>
@@ -39,6 +53,15 @@
     <ProjectReference Include="..\DotSpatial.Projections\DotSpatial.Projections.csproj" />
   </ItemGroup>
   <ItemGroup>
+    <TypeScriptCompile Include="TypeScript\SpatialDistance\Distance.ts" />
+    <TypeScriptCompile Include="TypeScript\SpatialDistance\DistanceUnit.ts" />
+    <TypeScriptCompile Include="TypeScript\SpatialDistance\Ellipsoid.ts" />
+    <TypeScriptCompile Include="TypeScript\SpatialDistance\Latitude.ts" />
+    <TypeScriptCompile Include="TypeScript\SpatialDistance\Longitude.ts" />
+    <TypeScriptCompile Include="TypeScript\SpatialDistance\Position.ts" />
+    <TypeScriptCompile Include="TypeScript\SpatialDistance\Radian.ts" />
+    <TypeScriptCompile Include="TypeScript\SpatialDistance\Speed.ts" />
+    <TypeScriptCompile Include="TypeScript\SpatialDistance\SpeedUnit.ts" />
     <TypeScriptCompile Include="TypeScript\Tools\test.ts" />
     <TypeScriptCompile Include="TypeScript\Tools\urlModifier.ts" />
   </ItemGroup>

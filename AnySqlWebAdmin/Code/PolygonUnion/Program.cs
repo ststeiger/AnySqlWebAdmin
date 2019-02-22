@@ -161,7 +161,7 @@ namespace TestTransform
             var sg = new DotSpatial.Positioning.Position(sglat, sglng);
 
             DotSpatial.Positioning.Distance dist = fab.DistanceTo(sg);
-            
+
             return dist.ToMeters().Value;
         } // End Function SpatialDistanceBetweenPlaces
 
