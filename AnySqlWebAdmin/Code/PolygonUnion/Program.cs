@@ -149,7 +149,6 @@ namespace TestTransform
         }
 
 
-        // Almost the same as SQL-Server 
         public static double SpatialDistanceBetweenPlaces(Wgs84Coordinates a, Wgs84Coordinates b)
         {
             var fablat = new DotSpatial.Positioning.Latitude((double)a.Latitude);
@@ -164,7 +163,7 @@ namespace TestTransform
             DotSpatial.Positioning.Distance dist = fab.DistanceTo(sg);
             
             return dist.ToMeters().Value;
-        } // End Function SpatialDistanceBetweenPlaces 
+        } // End Function SpatialDistanceBetweenPlaces
 
 
         // TestTransform.LOLdistance.Test();
