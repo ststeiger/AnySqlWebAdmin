@@ -35,6 +35,7 @@
     <None Include="TypeScript\Tools\_BrowserQuirksExtensions.ts" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\DotSpatial.Positioning\DotSpatial.Positioning.csproj" />
     <ProjectReference Include="..\DotSpatial.Projections\DotSpatial.Projections.csproj" />
   </ItemGroup>
   <ItemGroup>

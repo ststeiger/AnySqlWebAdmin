@@ -24,6 +24,7 @@ namespace AnySqlWebAdmin
 
         public static void Main(string[] args)
         {
+            TestTransform.LOLdistance.Test();
             TestTransform.TestNetTopology.PolygonArea();
             TestTransform.TestNetTopology.TestComputeArea();
             AnySqlWebAdmin.OSM.TileCoordinates.Test();
