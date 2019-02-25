@@ -81,6 +81,8 @@ a == b
 
 https://stackoverflow.com/questions/2667748/how-do-i-combine-complex-polygons 
 https://blogs.msdn.microsoft.com/davidlean/2008/10/25/sql-2008-spatial-samples-part-6-of-9-geometric-set-theory-methods/ 
+https://gis.stackexchange.com/questions/219156/how-reliable-is-postgiss-st-distance
+
 
 -- ==< Sample: STUnion >=== 
 DECLARE @a GEOMETRY = 'POLYGON((1 0, 1 8, 6 4, 1 0))'

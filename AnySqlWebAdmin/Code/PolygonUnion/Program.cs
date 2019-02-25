@@ -1,4 +1,7 @@
 ﻿
+using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
+using Vectors;
+
 namespace TestTransform
 {
 
@@ -71,10 +74,12 @@ namespace TestTransform
             return 12742.0 * System.Math.Asin(System.Math.Sqrt(a)); // 2 * R; R = 6371 km
         }
     }
-
-
+    
+    
     public static class LOLdistance
     {
+        
+        
         public static double DistanceBetweenPlaces(double lat1
             , double lon1
             , double lat2
@@ -83,7 +88,7 @@ namespace TestTransform
             // new GeoAPI.Geometries.Coordinate((double)coords[i].Latitude, (double)coords[i].Longitude, 0.0);
             var pointACoordinate = new GeoAPI.Geometries.Coordinate(lat1, lon1, 0.0);
             var pointBCoordinate = new GeoAPI.Geometries.Coordinate(lat2, lon2, 0.0);
-
+            
             return pointACoordinate.Distance(pointBCoordinate);
         }
 
@@ -94,10 +99,7 @@ namespace TestTransform
         {
             var pointACoordinate = new GeoAPI.Geometries.Coordinate(lat1, lon1, 0.0);
             var pointBCoordinate = new GeoAPI.Geometries.Coordinate(lat2, lon2, 0.0);
-
-
-
-
+            
             return pointACoordinate.Distance3D(pointBCoordinate);
         }
 
@@ -111,11 +113,17 @@ namespace TestTransform
             projTo = DotSpatial.Projections.KnownCoordinateSystems.Projected.World.EquidistantConicworld;
             // projTo = DotSpatial.Projections.KnownCoordinateSystems.Projected.World.EquidistantCylindricalworld;
 
-
-
+            projTo = DotSpatial.Projections.KnownCoordinateSystems.Projected.WorldSpheroid.Mercatorsphere;
+            projTo = DotSpatial.Projections.KnownCoordinateSystems.Projected.WorldSpheroid.EckertVsphere; // Exception
+            projTo = DotSpatial.Projections.KnownCoordinateSystems.Projected.WorldSpheroid.MillerCylindricalsphere;
+            projTo = DotSpatial.Projections.KnownCoordinateSystems.Projected.WorldSpheroid.EquidistantCylindricalsphere;
+            projTo = DotSpatial.Projections.KnownCoordinateSystems.Projected.WorldSpheroid.EquidistantConicsphere;
+            projTo = DotSpatial.Projections.KnownCoordinateSystems.Projected.SpheroidBased.Lambert2;
+            
+            
             double[] latLonPoints = new double[mycoordinates.Length * 2];
             double[] z = new double[mycoordinates.Length];
-
+            
             // dotspatial takes the x,y in a single array, and z in a separate array.  I'm sure there's a 
             // reason for this, but I don't know what it is.
             for (int i = 0; i < mycoordinates.Length; i++)
@@ -124,13 +132,13 @@ namespace TestTransform
                 latLonPoints[i * 2 + 1] = (double)mycoordinates[i].Latitude;
                 z[i] = 0;
             } // Next i 
-
+            
             // prepare for ReprojectPoints (it's mutate array)
             DotSpatial.Projections.Reproject.ReprojectPoints(
                 latLonPoints, z, projFrom, projTo
                 , 0, latLonPoints.Length / 2
             );
-
+            
             // assemblying new points array to create polygon
             GeoAPI.Geometries.Coordinate[] polyPoints = new GeoAPI.Geometries.Coordinate[latLonPoints.Length / 2];
 
@@ -144,7 +152,20 @@ namespace TestTransform
 
             var line = new NetTopologySuite.Geometries.LineString(polyPoints);
             // var line = new NetTopologySuite.Geometries.LineSegment(polyPoints[0], polyPoints[1]);
+            line.SRID = 4326;
 
+
+            GeoAPI.Geometries.Coordinate[] unprojPoints = new GeoAPI.Geometries.Coordinate[]
+            {
+                new GeoAPI.Geometries.Coordinate((double)a.Latitude, (double)a.Longitude, 0),
+                new GeoAPI.Geometries.Coordinate((double)b.Latitude, (double)b.Longitude, 0)
+            };
+            var unprojline = new NetTopologySuite.Geometries.LineString(unprojPoints);
+            unprojline.SRID = 4326;
+            
+            System.Console.WriteLine(unprojline.Length);
+            
+            
             return line.Length;
         }
 
