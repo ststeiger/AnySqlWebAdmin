@@ -58,9 +58,27 @@ namespace TestTransform
         {
             return ToWgs84(coord.X, coord.Y);
         } // End Function ToWgs84 
-        
-        
-        public static GeoAPI.Geometries.Coordinate[] ToNetTopologyCoordinates(this Wgs84Coordinates[] coords) //, int z)
+
+
+
+
+        public static double[] ToDoubleArray(this Wgs84Coordinates[] mycoordinates)
+        {
+            double[] latLonPoints = new double[mycoordinates.Length * 2];
+            
+            // dotspatial takes the x,y in a single array, and z in a separate array.  I'm sure there's a 
+            // reason for this, but I don't know what it is.
+            for (int i = 0; i < mycoordinates.Length; i++)
+            {
+                latLonPoints[i * 2] = (double)mycoordinates[i].Longitude;
+                latLonPoints[i * 2 + 1] = (double)mycoordinates[i].Latitude;
+            } // Next i 
+
+            return latLonPoints;
+        }
+
+
+            public static GeoAPI.Geometries.Coordinate[] ToNetTopologyCoordinates(this Wgs84Coordinates[] coords) //, int z)
         {
             GeoAPI.Geometries.Coordinate[] coordinates = new GeoAPI.Geometries.Coordinate[coords.Length];
             

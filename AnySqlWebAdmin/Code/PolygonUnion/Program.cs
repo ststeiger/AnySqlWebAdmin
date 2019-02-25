@@ -113,14 +113,17 @@ namespace TestTransform
             projTo = DotSpatial.Projections.KnownCoordinateSystems.Projected.World.EquidistantConicworld;
             // projTo = DotSpatial.Projections.KnownCoordinateSystems.Projected.World.EquidistantCylindricalworld;
 
+            // projTo = DotSpatial.Projections.KnownCoordinateSystems.Projected.World.WebMercator;
             projTo = DotSpatial.Projections.KnownCoordinateSystems.Projected.WorldSpheroid.Mercatorsphere;
             projTo = DotSpatial.Projections.KnownCoordinateSystems.Projected.WorldSpheroid.EckertVsphere; // Exception
             projTo = DotSpatial.Projections.KnownCoordinateSystems.Projected.WorldSpheroid.MillerCylindricalsphere;
             projTo = DotSpatial.Projections.KnownCoordinateSystems.Projected.WorldSpheroid.EquidistantCylindricalsphere;
-            projTo = DotSpatial.Projections.KnownCoordinateSystems.Projected.WorldSpheroid.EquidistantConicsphere;
+            // projTo = DotSpatial.Projections.KnownCoordinateSystems.Projected.WorldSpheroid.EquidistantConicsphere;
             projTo = DotSpatial.Projections.KnownCoordinateSystems.Projected.SpheroidBased.Lambert2;
-            
-            
+            // projTo = DotSpatial.Projections.KnownCoordinateSystems.Projected.SpheroidBased.Lambert2Wide;
+            // projTo = DotSpatial.Projections.KnownCoordinateSystems.Projected.WorldSpheroid.EckertIVsphere;
+            // projTo = DotSpatial.Projections.KnownCoordinateSystems.Projected.Europe.EuropeEquidistantConic;
+
             double[] latLonPoints = new double[mycoordinates.Length * 2];
             double[] z = new double[mycoordinates.Length];
             
@@ -164,8 +167,13 @@ namespace TestTransform
             unprojline.SRID = 4326;
             
             System.Console.WriteLine(unprojline.Length);
-            
-            
+
+            double dist = polyPoints[0].Distance(polyPoints[1]);
+            System.Console.WriteLine(dist);
+
+            // SELECT geography::Point(47.552063, 9.226081, 4326).STDistance(geography::Point(47.374487, 9.556946, 4326))
+            // 31813.1626618977
+
             return line.Length;
         }
 
@@ -490,6 +498,39 @@ namespace TestTransform
         } // End Function CalculateArea 
 
 
+        public static double CalculateArea2(Wgs84Coordinates[] mycoordinates)
+        {
+            double[] pointsArray = mycoordinates.ToDoubleArray();
+            var z = new double[mycoordinates.Length];
+
+            // public static double[] ToDoubleArray(this Wgs84Coordinates[] mycoordinates)
+
+
+            // source projection is WGS1984
+            var projFrom = DotSpatial.Projections.KnownCoordinateSystems.Geographic.World.WGS1984;
+            // most complicated problem - you have to find most suitable projection
+            var projTo = DotSpatial.Projections.KnownCoordinateSystems.Projected.UtmWgs1984.WGS1984UTMZone37N;
+            projTo = DotSpatial.Projections.KnownCoordinateSystems.Projected.Europe.EuropeAlbersEqualAreaConic; 
+            projTo = DotSpatial.Projections.KnownCoordinateSystems.Projected.WorldSpheroid.CylindricalEqualAreasphere;
+            projTo = DotSpatial.Projections.KnownCoordinateSystems.Projected.World.CylindricalEqualAreaworld; 
+
+
+            DotSpatial.Projections.Reproject.ReprojectPoints(pointsArray, z, projFrom, projTo, 0, pointsArray.Length / 2);
+
+            // assemblying new points array to create polygon
+            var points = new System.Collections.Generic.List<GeoAPI.Geometries.Coordinate>(pointsArray.Length / 2);
+            for (int i = 0; i < pointsArray.Length / 2; i++)
+                points.Add(new GeoAPI.Geometries.Coordinate(pointsArray[i * 2], pointsArray[i * 2 + 1]));
+
+            NetTopologySuite.Geometries.LinearRing lr =
+                new NetTopologySuite.Geometries.LinearRing(points.ToArray());
+
+            GeoAPI.Geometries.IPolygon poly = new NetTopologySuite.Geometries.Polygon(lr);
+            return poly.Area;
+        }
+
+
+
         public static void Test()
         {
             string s1 = "POLYGON((7.5999034 47.5506347,7.5997595 47.5507183,7.5998959 47.5508256,7.5999759 47.5508885,7.6001195 47.550805,7.5999034 47.5506347))";
@@ -520,6 +561,7 @@ namespace TestTransform
             GeoAPI.Geometries.IPolygon poly2 = geomFactory.CreatePolygon(coords2.ToNetTopologyCoordinates());
 
 
+
             /*
             GeoAPI.Geometries.IPolygon poly1 = (GeoAPI.Geometries.IPolygon)wr.Read(s1);
             GeoAPI.Geometries.IPolygon poly2 = (GeoAPI.Geometries.IPolygon)wr.Read(s2);
@@ -527,6 +569,15 @@ namespace TestTransform
 
             poly1.SRID = 4326;
             poly2.SRID = 4326;
+
+
+
+            CalculateArea2(coords1);
+            CalculateArea2(coords2);
+
+
+            System.Console.WriteLine(poly1.Area);
+            System.Console.WriteLine(poly2.Area);
 
 
             GeoAPI.Geometries.IPolygon poly3quick = (GeoAPI.Geometries.IPolygon)poly1.Union(poly2);
