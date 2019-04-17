@@ -20,21 +20,22 @@ namespace AnySqlWebAdmin
     //<TscYieldDuringToolExecution Condition = "'$(TscYieldDuringToolExecution)' == ''" > true </ TscYieldDuringToolExecution >
     public class Program
     {
-        
-        
+
+
         public static void Main(string[] args)
         {
+            /*
             TestTransform.LOLdistance.Test();
             TestTransform.TestNetTopology.Test();
             TestTransform.TestNetTopology.PolygonArea();
             TestTransform.TestNetTopology.TestComputeArea();
             AnySqlWebAdmin.OSM.TileCoordinates.Test();
-            
+            */
+
             // AnySqlWebAdmin.TestCassandra.Test();
             BuildWebHost(args).Run();
         } // End Sub Main 
-        
-        
+
         //  .pfx: Personal Information Exchange (.pfx) file.
         // https://stackoverflow.com/questions/808669/convert-a-cert-pem-certificate-to-a-pfx-certificate
         // I need.pfx file to install https on website on IIS.
@@ -49,7 +50,7 @@ namespace AnySqlWebAdmin
 
         // If you have a root CA and intermediate certs, then include them as well using multiple -in params
         // openssl pkcs12 -export -out domain.name.pfx -inkey domain.name.key -in domain.name.crt -in intermediate.crt -in rootca.crt
-        
+
         public static IWebHost BuildWebHost(string[] args)
         {
             // Microsoft.Extensions.Configuration.CommandLineConfigurationExtensions.AddCommandLine()
