@@ -1,4 +1,9 @@
 ﻿
+interface Element
+{
+    msMatchesSelector(selectors: string): boolean;
+}
+
 interface Window
 {
     CustomEvent: any;

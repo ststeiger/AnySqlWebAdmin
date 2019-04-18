@@ -30,7 +30,6 @@
     <None Remove="TypeScript\urlModifier.ts" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="TypeScript\DataList" />
     <Folder Include="TypeScript\Math\" />
   </ItemGroup>
   <ItemGroup>

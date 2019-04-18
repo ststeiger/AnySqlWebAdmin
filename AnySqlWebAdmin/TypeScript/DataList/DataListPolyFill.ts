@@ -1,6 +1,13 @@
 ﻿
 'use strict';
 
+
+interface Element
+{
+    msMatchesSelector(selectors: string): boolean;
+}
+
+
 // FU IE 11
 if (!Element.prototype.matches)
     Element.prototype.matches = Element.prototype.msMatchesSelector ||
