@@ -447,21 +447,21 @@ namespace TestTransform
             // projTo = DotSpatial.Projections.KnownCoordinateSystems.Projected.WorldSpheroid.EckertIVsphere; // 6377.26664171461
             // projTo = DotSpatial.Projections.KnownCoordinateSystems.Projected.World.EckertIVworld; // 6391.5626849671826
             projTo = DotSpatial.Projections.KnownCoordinateSystems.Projected.World.CylindricalEqualAreaworld; // 6350.6506013739854
-                                                                                                              /*
-                                                                                                              projTo = DotSpatial.Projections.KnownCoordinateSystems.Projected.WorldSpheroid.CylindricalEqualAreasphere; // 6377.2695087222382
-                                                                                                              projTo = DotSpatial.Projections.KnownCoordinateSystems.Projected.WorldSpheroid.EquidistantCylindricalsphere; // 6448.6818862780929
-                                                                                                              projTo = DotSpatial.Projections.KnownCoordinateSystems.Projected.World.Polyconicworld; // 8483.7701716953889
-                                                                                                              projTo = DotSpatial.Projections.KnownCoordinateSystems.Projected.World.EquidistantCylindricalworld; // 6463.1380225215107
-                                                                                                              projTo = DotSpatial.Projections.KnownCoordinateSystems.Projected.World.EquidistantConicworld; // 8197.4427198320627
-                                                                                                              projTo = DotSpatial.Projections.KnownCoordinateSystems.Projected.World.VanderGrintenIworld; // 6537.3942984174937
-                                                                                                              projTo = DotSpatial.Projections.KnownCoordinateSystems.Projected.World.WebMercator; // 6535.5119516421109
-                                                                                                              projTo = DotSpatial.Projections.KnownCoordinateSystems.Projected.World.Mercatorworld; // 6492.7180733950809
-                                                                                                              projTo = DotSpatial.Projections.KnownCoordinateSystems.Projected.SpheroidBased.Lambert2; // 9422.0631835013628
-                                                                                                              projTo = DotSpatial.Projections.KnownCoordinateSystems.Projected.SpheroidBased.Lambert2Wide; // 9422.0614012926817
-                                                                                                              projTo = DotSpatial.Projections.KnownCoordinateSystems.Projected.TransverseMercator.WGS1984lo33; // 6760.01638841012
-                                                                                                              projTo = DotSpatial.Projections.KnownCoordinateSystems.Projected.Europe.EuropeAlbersEqualAreaConic; // 6350.9772005155683
-                                                                                                              projTo = DotSpatial.Projections.KnownCoordinateSystems.Projected.UtmOther.EuropeanDatum1950UTMZone37N; // 6480.7883094931021
-                                                                                                              */
+            /*
+            projTo = DotSpatial.Projections.KnownCoordinateSystems.Projected.WorldSpheroid.CylindricalEqualAreasphere; // 6377.2695087222382
+            projTo = DotSpatial.Projections.KnownCoordinateSystems.Projected.WorldSpheroid.EquidistantCylindricalsphere; // 6448.6818862780929
+            projTo = DotSpatial.Projections.KnownCoordinateSystems.Projected.World.Polyconicworld; // 8483.7701716953889
+            projTo = DotSpatial.Projections.KnownCoordinateSystems.Projected.World.EquidistantCylindricalworld; // 6463.1380225215107
+            projTo = DotSpatial.Projections.KnownCoordinateSystems.Projected.World.EquidistantConicworld; // 8197.4427198320627
+            projTo = DotSpatial.Projections.KnownCoordinateSystems.Projected.World.VanderGrintenIworld; // 6537.3942984174937
+            projTo = DotSpatial.Projections.KnownCoordinateSystems.Projected.World.WebMercator; // 6535.5119516421109
+            projTo = DotSpatial.Projections.KnownCoordinateSystems.Projected.World.Mercatorworld; // 6492.7180733950809
+            projTo = DotSpatial.Projections.KnownCoordinateSystems.Projected.SpheroidBased.Lambert2; // 9422.0631835013628
+            projTo = DotSpatial.Projections.KnownCoordinateSystems.Projected.SpheroidBased.Lambert2Wide; // 9422.0614012926817
+            projTo = DotSpatial.Projections.KnownCoordinateSystems.Projected.TransverseMercator.WGS1984lo33; // 6760.01638841012
+            projTo = DotSpatial.Projections.KnownCoordinateSystems.Projected.Europe.EuropeAlbersEqualAreaConic; // 6350.9772005155683
+            projTo = DotSpatial.Projections.KnownCoordinateSystems.Projected.UtmOther.EuropeanDatum1950UTMZone37N; // 6480.7883094931021
+            */
 
 
             // ST_Area(g, false)     6379.25032051953
