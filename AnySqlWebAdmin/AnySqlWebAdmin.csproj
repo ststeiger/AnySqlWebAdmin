@@ -48,10 +48,6 @@
     <None Include="TypeScript\Tools\_BrowserQuirksExtensions.ts" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\DotSpatial.Positioning\DotSpatial.Positioning.csproj" />
-    <ProjectReference Include="..\DotSpatial.Projections\DotSpatial.Projections.csproj" />
-  </ItemGroup>
-  <ItemGroup>
     <TypeScriptCompile Include="TypeScript\SpatialDistance\Distance.ts" />
     <TypeScriptCompile Include="TypeScript\SpatialDistance\DistanceUnit.ts" />
     <TypeScriptCompile Include="TypeScript\SpatialDistance\Ellipsoid.ts" />
@@ -63,5 +59,9 @@
     <TypeScriptCompile Include="TypeScript\SpatialDistance\SpeedUnit.ts" />
     <TypeScriptCompile Include="TypeScript\Tools\test.ts" />
     <TypeScriptCompile Include="TypeScript\Tools\urlModifier.ts" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\DotSpatial.Positioning\DotSpatial.Positioning.csproj" />
+    <ProjectReference Include="..\DotSpatial.Projections\DotSpatial.Projections.csproj" />
   </ItemGroup>
 </Project>
