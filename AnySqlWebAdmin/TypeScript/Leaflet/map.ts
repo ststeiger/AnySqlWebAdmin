@@ -6,54 +6,54 @@
 
 
 // declare global {
-    
-    interface IPortalSession
-    {
-        ID: () => string;
-    }
-    
-    interface IPortalGlobal
-    {
-        spreadMessage: (object: any) => void;
-        receiveMessage: (event: MessageEvent) => void;
-    }
 
-    interface IFrameset
-    {
-        focusFrameByWindow: (window: any) => void;
-    }
+interface IPortalSession
+{
+    ID: () => string;
+}
 
-    interface IPortal
-    {
-        basicLink: string;
-        Session: IPortalSession;
-        Global: IPortalGlobal;
-        Frameset: IFrameset;
-    }
+interface IPortalGlobal
+{
+    spreadMessage: (object: any) => void;
+    receiveMessage: (event: MessageEvent) => void;
+}
 
-    interface ISettings
-    {
-        basicLink: string;
-    }
+interface IFrameset
+{
+    focusFrameByWindow: (window: any) => void;
+}
 
-    interface Window
-    {
-        Settings: ISettings;
-        Portal: IPortal;
-    }
+interface IPortal
+{
+    basicLink: string;
+    Session: IPortalSession;
+    Global: IPortalGlobal;
+    Frameset: IFrameset;
+}
 
+interface ISettings
+{
+    basicLink: string;
+}
 
-    interface Math
-    {
-        trunc: (x: number) => number;
-        radians: (x: number) => number;
-    }
+interface Window
+{
+    Settings: ISettings;
+    Portal: IPortal;
+}
 
 
-    interface Function 
-    {
-        name: string;
-    }
+interface Math
+{
+    trunc: (x: number) => number;
+    radians: (x: number) => number;
+}
+
+
+interface Function 
+{
+    name: string;
+}
 
 
 // }
@@ -117,7 +117,7 @@ class HttpRequestError extends BaseError
 interface Object
 {
     // Object.setPrototypeOf() is in ECMAScript 2015 
-    setPrototypeOf(obj: any, prototype: any):any;
+    setPrototypeOf(obj: any, prototype: any): any;
 }
 
 
@@ -222,14 +222,14 @@ DELETE FROM T_AP_Anlage WHERE (1=1) AND T_AP_Anlage.AL_AK_UID = 'ED49E68B-AB6A-4
 
 
 // let url = "http://localhost:59799/sql?sql=Maps.Gebaeudekategorie.sql&BE_Hash=12435&format=" + badDataTable.toString();
-async function getData(url:string, data?: any)
+async function getData(url: string, data?: any)
 {
     if (url == null)
     {
         throw Error("URL is NULL...");
     }
-    
-    
+
+
     // https://developer.mozilla.org/en-US/docs/Web/API/NavigatorOnLine/Online_and_offline_events
     // window.addEventListener('online', updateOnlineStatus);
     // window.addEventListener('offline', updateOnlineStatus);
@@ -254,7 +254,7 @@ async function getData(url:string, data?: any)
 
     if (url.indexOf("no_cache") == -1)
         url += "&no_cache=" + (new Date()).getTime();
-    
+
     let req: Response = null;
     let json: string = null;
     let obj: any = null;
@@ -269,13 +269,13 @@ async function getData(url:string, data?: any)
     myHeaders.append("pragma", "no-cache");
     myHeaders.append("cache-control", "no-cache");
     // myHeaders.append("Upgrade-Insecure-Requests", "1");
-    
+
 
     // https://stackoverflow.com/questions/37668282/unable-to-fetch-post-without-no-cors-in-header
 
     // https://davidwalsh.name/fetch
     let options: any = {
-        "method": "POST", 
+        "method": "POST",
         // "headers": { 'auth': '1234','content-type': 'application/json'},
         // https://stackoverflow.com/questions/38156239/how-to-set-the-content-type-of-request-header-when-using-fetch-api
         // "headers": new Headers({ 'content-type': 'application/json' })
@@ -283,10 +283,10 @@ async function getData(url:string, data?: any)
         // "headers": new Headers({ 'Content-Type': 'application/json' }) 
         // "headers": { 'Accept': 'application/json', 'Content-Type': 'application/json' },
         // "headers": new Headers({ 'Accept': 'application/json', 'Content-Type': 'application/json' }), 
-         "headers": myHeaders 
+        "headers": myHeaders
         // ,"mode": "no-cors" 
         , credentials: 'same-origin' // the default would be same-origin, but there's an exciting Edge-bug ...
-        ,"body": <any>null
+        , "body": <any>null
     };
 
 
@@ -295,9 +295,9 @@ async function getData(url:string, data?: any)
         if (typeof data === 'string' || data instanceof String)
             options["body"] = data;
         else
-            options["body"] = JSON.stringify( { "id": 123 } );
+            options["body"] = JSON.stringify({ "id": 123 });
     }
-    
+
     try
     {
         // let result = <any>await fetch(url, options).then(function (response) { return response.json(); });
@@ -311,7 +311,7 @@ async function getData(url:string, data?: any)
 
     try
     {
-        if(req != null)
+        if (req != null)
             json = await req.text();
     }
     catch (ex)
@@ -330,25 +330,25 @@ async function getData(url:string, data?: any)
         ex3 = ex;
         console.log(ex);
     }
-    
+
 
     if (obj == null)
     {
         throw new HttpRequestError(500, 'Server Error');
     }
-    
+
     // console.log(obj);
     return obj;
 }
-    
-    
-    
-    
+
+
+
+
 let ignoreThisNavigation = false;
 let map: L.Map & IMapWithZoom = null;
-let polygons:any = [];
+let polygons: any = [];
 let markers: any = [];
-let werbetafeln :any= [];
+let werbetafeln: any = [];
 
 
 
@@ -365,8 +365,8 @@ function polyFills()
                 alert(source);
         }
     } // End if (debug_ipad) 
-        
-        
+
+
     Math.trunc = Math.trunc || function (x)
     {
         let n = x - x % 1;
@@ -382,17 +382,17 @@ function polyFills()
 
     if (!Array.prototype.filter)
     {
-        
-        Array.prototype.filter = function (func:Function, thisArg?:any)
+
+        Array.prototype.filter = function (func: Function, thisArg?: any)
         {
             'use strict';
             if (!((typeof func === 'function') && this))
                 throw new TypeError();
-            
+
             let len = this.length >>> 0,
                 res = new Array(len), // preallocate array
                 t = this, c = 0, i = -1;
-            
+
             if (thisArg === undefined)
             {
                 while (++i !== len)
@@ -444,9 +444,9 @@ function polyFills()
     } // End if (!(function f() { }).name) 
 
 } // End Function polyFills 
-    
-    
-function SetDefaultVariables(url:string)
+
+
+function SetDefaultVariables(url: string)
 {
     if (window.parent.Settings)
     {
@@ -464,7 +464,7 @@ function SetDefaultVariables(url:string)
 } // End Function SetDefaultVariables 
 
 
-function spreadMessage(object:any)
+function spreadMessage(object: any)
 {
     let inFrame = (function ()
     {
@@ -492,7 +492,7 @@ function bracketDevicePixelRatio()
 {
     let brackets = [1, 1.3, 1.5, 2, 2.6, 3],
         baseRatio = window.devicePixelRatio || 1;
-        
+
     for (let i = 0; i < brackets.length; i++)
     {
         let scale = brackets[i];
@@ -501,11 +501,11 @@ function bracketDevicePixelRatio()
             return scale;
         }
     }
-        
+
     return brackets[brackets.length - 1];
 } // End Function bracketDevicePixelRatio
-    
-    
+
+
 function testNaviSO()
 {
     let msg =
@@ -574,7 +574,7 @@ function testFilterChange()
 } // End Function testFilterChange 
 
 
-function navigateTo(uuid:string)
+function navigateTo(uuid: string)
 {
     spreadMessage(
         {
@@ -601,7 +601,7 @@ function polygonAreaOld(poly2: Number[]): string
     }
 
     if (len > 2)
-    { 
+    {
         for (let i = 0; i < len - 1; i++)
         {
             let p1 = poly[i];
@@ -662,7 +662,7 @@ function polygonArea(poly2: L.LatLng[]): number
     {
         poly.push(
             new L.LatLng(
-                  Math.radians(poly2[q].lat)
+                Math.radians(poly2[q].lat)
                 , Math.radians(poly2[q].lng)
             )
         );
@@ -672,12 +672,12 @@ function polygonArea(poly2: L.LatLng[]): number
     if (poly[0].lat != poly[poly.length - 1].lat || poly[0].lng != poly[poly.length - 1].lng)
     {
         poly.push(new L.LatLng(
-              poly[0].lat
+            poly[0].lat
             , poly[0].lng
         ));
     } // End if (poly[0].lat != poly[poly.length - 1].lat || poly[0].lng != poly[poly.length - 1].lng) 
 
-    let len:number = poly.length;
+    let len: number = poly.length;
     for (let i = 0; i < len; i++)
     {
 
@@ -774,7 +774,7 @@ function latLongToString(latlng: IGeoPoint)
 
 
 // PRE: x= integer - Works only with natural numbers 
-function thousandSeparator(x:number | string): string
+function thousandSeparator(x: number | string): string
 {
     if (x == null)
         return "";
@@ -804,7 +804,7 @@ interface IWerbetafelTable
 }
 
 
-async function addWerbetafel(lat: number, lng:number)
+async function addWerbetafel(lat: number, lng: number)
 {
     map.closePopup();
     let url = "../ajax/AnySelect.ashx?sql=Maps.InsertWerbetafel.sql&lat={@lat}&lng={@lng}";
@@ -825,9 +825,9 @@ async function addWerbetafel(lat: number, lng:number)
 
     for (let i = 0; i < table.rows.length; ++i)
     {
-        let uid:string = table.rows[i][index_uid];
-        let latitude:number = table.rows[i][index_latitude];
-        let longitude:number = table.rows[i][index_longitude];
+        let uid: string = table.rows[i][index_uid];
+        let latitude: number = table.rows[i][index_latitude];
+        let longitude: number = table.rows[i][index_longitude];
 
         if (latitude == null || longitude == null)
             continue;
@@ -837,21 +837,21 @@ async function addWerbetafel(lat: number, lng:number)
         // let marker = L.marker([latitude, longitude]).addTo(map);
         // let marker = L.marker([latitude, longitude], { icon: werbetafel_icon }).addTo(map);
         let marker = L.marker([latitude, longitude], {
-              icon: werbetafel_icon
+            icon: werbetafel_icon
             , draggable: true
         }).addTo(map);
 
         marker.on("click", onMarkerClick.bind(this, uid)); // uid is now called uuid
         marker.on("contextmenu", onMarkerContextMenu.bind(this, uid)); // uid is now called uuid
         marker.on('dragend', moveWerbetafel.bind(this, uid, marker));
-        
+
         werbetafeln[uid] = marker;
     } // Next i 
 
 } // End Function addWerbetafel 
 
 
-async function moveWerbetafel(uuid:string, marker:L.Marker, event:L.LeafletEvent)
+async function moveWerbetafel(uuid: string, marker: L.Marker, event: L.LeafletEvent)
 {
     console.log("move werbetafel ", uuid);
     // https://g.co/chrome/symantecpkicerts
@@ -879,21 +879,21 @@ async function moveWerbetafel(uuid:string, marker:L.Marker, event:L.LeafletEvent
 }
 
 
-async function deleteWerbetafel(uuid:string)
+async function deleteWerbetafel(uuid: string)
 {
     console.log("delete werbetafel ", uuid);
-    
+
     //let url = "../ajax/Data.ashx?sql=Maps.DeleteWerbetafel.sql&obj_uid=" + uuid;
     let url = "../ajax/AnySelect.ashx?sql=Maps.DeleteWerbetafel.sql&obj_uid=" + uuid;
     url = SetDefaultVariables(url);
-    
+
     let result = null;
-    
+
     try
     {
         result = await getData(url);
         console.log("finished deleting werbetafel ", uuid);
-        
+
         // console.log(result);
         werbetafeln[uuid].remove();
         delete werbetafeln[uuid];
@@ -902,7 +902,7 @@ async function deleteWerbetafel(uuid:string)
     {
         console.log(ex);
     }
-    
+
     map.closePopup();
 } // End Function deleteWerbetafel 
 
@@ -912,21 +912,21 @@ function getParamNames(func: Function): RegExpMatchArray
 {
     const STRIP_COMMENTS = /((\/\/.*$)|(\/\*[\s\S]*?\*\/))/mg;
     const ARGUMENT_NAMES = /([^\s,]+)/g;
-    
+
     let fnStr = func.toString().replace(STRIP_COMMENTS, '');
     let result = fnStr.slice(fnStr.indexOf('(') + 1, fnStr.indexOf(')')).match(ARGUMENT_NAMES);
     if (result === null)
         result = [];
-    
+
     return result;
 } // End Function getParamNames 
 
 
-function logParams(args:IArguments)
+function logParams(args: IArguments)
 {
     let pn = getParamNames(args.callee);
     let x: object & { [key: string]: any; } = {};
-        
+
     for (let i = 0; i < args.length; ++i)
     {
         if (i >= pn.length)
@@ -934,18 +934,18 @@ function logParams(args:IArguments)
         else
             x[pn[i]] = args[i];
     }
-    
-    function resolveCaller(a: Function):string
+
+    function resolveCaller(a: Function): string
     {
         if (a == null)
             return "'window/global'";
-            
+
         if (a.name != null && a.name != "")
             return a.name;
-            
+
         return "'anonymous function' in " + resolveCaller(a.caller);
     }
-    
+
     // console.log(resolveCaller(args.callee), "called with", x);
 } // End Function logParams 
 
@@ -955,34 +955,34 @@ function onMarkerContextMenu(uuid: string, e: L.LeafletMouseEvent) // uid is now
     // console.log("onMarkerContextMenu", e)
     // e.originalEvent.target.parentElement.remove()
     // e.target._leaflet_id
-    
+
     function addPosition(latlng: L.LatLng)
     {
         return ' data-position="' + latlng.lat + ' ' + latlng.lng + '" ';
     }
-    
-    let container = <HTMLElement> <any>document.createDocumentFragment();
+
+    let container = <HTMLElement><any>document.createDocumentFragment();
     let title = document.createElement("span");
     title.setAttribute("style", "font-weight: bold;");
-    title.appendChild( document.createTextNode("Hier können Sie") );
+    title.appendChild(document.createTextNode("Hier können Sie"));
     container.appendChild(title);
     container.appendChild(document.createElement("br"));
-    
+
     let menuOption = document.createElement("a");
-    menuOption.addEventListener("click", deleteWerbetafel.bind(this, uuid) );
-    
+    menuOption.addEventListener("click", deleteWerbetafel.bind(this, uuid));
+
     menuOption.appendChild(document.createTextNode("eine Leuchtreklame entfernen"));
     container.appendChild(menuOption);
     // let contextMenu = container.innerHTML;
     // console.log(contextMenu);
-    
+
     let popup = new L.Popup({ closeButton: true, autoClose: true })
         .setLatLng(e.latlng)
         //.setContent(contextMenu)
         .setContent(container)
         //.openOn(map)
-    ;
-    
+        ;
+
     popup.openOn(map);
 } // End Function onMarkerContextMenu 
 
@@ -993,10 +993,10 @@ function onMarkerClick(uuid: string, e: L.LeafletMouseEvent)
     t = SetDefaultVariables(t);
     // console.log(t);
     // navigateTo(uuid);
-    
+
     let ml = <HTMLIFrameElement>window.parent.document.querySelector('#frameDWGForm');
     if (ml) ml.src = t.replace("{@obj}", uuid);
-    
+
     observeIframe();
 } // End Function onMarkerClick 
 
@@ -1011,7 +1011,7 @@ function createWerbetafelIcon()
             html: "<img src=\"../leaflet/images/helvetia23.png\" />"
         }
     );
-    
+
     return icon;
 } // End Function createWerbetafelIcon 
 
@@ -1028,47 +1028,47 @@ async function loadWerbetafeln()
 {
     let url = "../ajax/AnySelect.ashx?sql=Maps.Marker_Werbetafeln.sql";
     url = SetDefaultVariables(url);
-    
+
     let result = await getData(url);
     // console.log("loadWerbetafeln: success");
-    
+
     let table = result.tables[0];
     // console.log(table);
-    
-    let index_uid:string = table.columns["OBJ_UID"].index;
-    let index_latitude:number = table.columns["OBJ_Lat"].index;
-    let index_longitude:number = table.columns["OBJ_Lng"].index;
-    
+
+    let index_uid: string = table.columns["OBJ_UID"].index;
+    let index_latitude: number = table.columns["OBJ_Lat"].index;
+    let index_longitude: number = table.columns["OBJ_Lng"].index;
+
     for (let i = 0; i < table.rows.length; ++i)
     {
         let uid = table.rows[i][index_uid];
         let latitude = table.rows[i][index_latitude];
         let longitude = table.rows[i][index_longitude];
-        
+
         if (latitude == null || longitude == null)
             continue;
-        
+
         let werbetafel_icon = createWerbetafelIcon();
-        
+
         // let marker = L.marker([latitude, longitude]).addTo(map);
         // let marker = L.marker([latitude, longitude], { icon: werbetafel_icon });
-        
+
         let marker = L.marker([latitude, longitude], {
-             icon: werbetafel_icon 
-            ,draggable: true 
+            icon: werbetafel_icon
+            , draggable: true
         });
-        
+
         if (map.getZoom() > 16)
         {
             marker.addTo(map);
         }
-        
+
         marker.on("click", onMarkerClick.bind(this, uid)); // uid is now called uuid
         marker.on("contextmenu", onMarkerContextMenu.bind(this, uid)); // uid is now called uuid
         marker.on('dragend', moveWerbetafel.bind(this, uid, marker));
         werbetafeln[uid] = marker;
     } // Next i
-    
+
 } // End Function loadWerbetafeln 
 
 
@@ -1083,7 +1083,7 @@ async function onWerbetafelChange()
             delete werbetafeln[uid];
         }
     } // Next uid
-    
+
     await loadWerbetafeln();
 } // End Function onWerbetafelChange 
 
@@ -1095,10 +1095,10 @@ function observeIframe()
     let blocker = window.parent.document.querySelector('#frameDWGForm');
     if (blocker == null)
         return;
-    
-    let timoutHandle:number = null;
-    let timoutHandle2:number = null;
-    
+
+    let timoutHandle: number = null;
+    let timoutHandle2: number = null;
+
     try
     {
         // Our mutation observer, which we attach to blocker later
@@ -1123,7 +1123,7 @@ function observeIframe()
                 }
 
                 // Was it the style attribute that changed? (Maybe a classname or other attribute change could do this too? You might want to remove the attribute condition) Is display set to 'none'?
-                if (mutation.attributeName === 'style' && cs.getPropertyValue('display') !== 'none' )
+                if (mutation.attributeName === 'style' && cs.getPropertyValue('display') !== 'none')
                 {
                     window.clearTimeout(timoutHandle2);
                     timoutHandle2 = window.setTimeout(function ()
@@ -1133,7 +1133,7 @@ function observeIframe()
                 }
             });
         });
-            
+
         // Attach the mutation observer to blocker, and only when attribute values change
         observer.observe(blocker, { attributes: true });
     }
@@ -1149,12 +1149,12 @@ function get_polygon_centroid(pts: L.LatLng[])
     let first = pts[0], last = pts[pts.length - 1];
     if (first.lat != last.lat || first.lng != last.lng)
         pts.push(first);
-    
+
     let twicearea = 0,
         x = 0, y = 0,
         nPts = pts.length,
         p1, p2, f;
-    
+
     for (let i = 0, j = nPts - 1; i < nPts; j = i++)
     {
         p1 = pts[i]; p2 = pts[j];
@@ -1164,7 +1164,7 @@ function get_polygon_centroid(pts: L.LatLng[])
         y += (p1.lng + p2.lng) * f;
     }
     f = twicearea * 3;
-    
+
     // return { x: x / f, y: y / f };
     return new L.LatLng(x / f, y / f);
 }
@@ -1178,8 +1178,8 @@ function addTextLabel(map: L.Map, poly: L.LatLng[], label: HTMLElement)
     let ow = label.offsetWidth;
     let oh = label.offsetHeight;
     label.parentElement.removeChild(label);
-    
-    
+
+
     let textIcon = L.divIcon(
         {
             className: "customTextIcon",
@@ -1189,7 +1189,7 @@ function addTextLabel(map: L.Map, poly: L.LatLng[], label: HTMLElement)
             html: label.outerHTML
         }
     );
-    
+
     let textMarker = L.marker(centroid, { icon: textIcon }).addTo(map);
 }
 
@@ -1212,14 +1212,14 @@ async function loadMarkers()
     let markerUrl = "../ajax/AnySelect.ashx?sql=Maps.Marker_GB.sql";
     markerUrl = SetDefaultVariables(markerUrl);
     // console.log("markerUrl", markerUrl);
-    
+
     let result = await getData(markerUrl);
     // console.log(result);
-    
+
     let table = result.tables[0];
     // console.log(table.columns);
     // console.log(table.columns["OBJ_Label"].index);
-    
+
     let index_uid = table.columns["OBJ_UID"].index;
     let index_code = table.columns["OBJT_Code"].index;
     let index_label = table.columns["OBJ_Label"].index;
@@ -1228,18 +1228,18 @@ async function loadMarkers()
     let index_category = table.columns["OBJ_Kategorie"].index;
     let index_color = table.columns["OBJ_Color"].index;
     let index_poly = table.columns["OBJ_Polygon"].index;
-    
+
     let allCoords: L.LatLng[] = [];
-    
+
     // Singapur
     // table.rows.push(["uid", "code", "label", 1.345733633103394 , 103.83649706840517, null ]);
-    
-    
+
+
     // let markerHtmlStyles = "background-color: #583470;\n  width: 16px;\n  height: 16px;\n  display: block;\n  left: -8px;\n  top: -8px;\n  position: relative;\n  border-radius: 16px 16px 0;\n transform: rotate(45deg); \n  border: 1px solid #FFFFFF";
     // let markerHtmlStyles = "background-color: #583470;\n  width: 16px;\n  height: 16px;\n  display: block;\n  left: -8px;\n  top: -8px;\n  position: relative;\n  border-radius: 16px 16px 0;\n transform: rotate(45deg); \n  border: 1px solid #FFFFFF";
     let markerHtmlStyles = "display: block; margin-left: -15px; margin-top: -15px; width: 0; \n  height: 0; \n  border-left: 20px solid transparent;\n  border-right: 20px solid transparent;\n  \n  border-top: 20px solid #f00;\n  ";
-    
-    
+
+
     let options = {
         iconUrl: 'marker-icon.png',
         iconRetinaUrl: 'marker-icon-2x.png',
@@ -1250,45 +1250,45 @@ async function loadMarkers()
         tooltipAnchor: [16, -228],
         shadowSize: [41, 41]
     };
-    
-    
+
+
     for (let i = 0; i < table.rows.length; ++i)
     {
-        let uid:string = table.rows[i][index_uid];
-        let code:string = table.rows[i][index_code];
-        let label:string = table.rows[i][index_label] || "";
-        let latitude:number = table.rows[i][index_latitude];
-        let longitude:number = table.rows[i][index_longitude];
+        let uid: string = table.rows[i][index_uid];
+        let code: string = table.rows[i][index_code];
+        let label: string = table.rows[i][index_label] || "";
+        let latitude: number = table.rows[i][index_latitude];
+        let longitude: number = table.rows[i][index_longitude];
         let category: string = table.rows[i][index_category];
-        let color:string = table.rows[i][index_color];
-        let polyString:string = table.rows[i][index_poly];
-        
-        
+        let color: string = table.rows[i][index_color];
+        let polyString: string = table.rows[i][index_poly];
+
+
         // console.log(uid);
         // console.log(code);
         // console.log(label);
         // console.log(latitude);
         // console.log(longitude);
         // console.log(poly);
-        
+
         // label = label.replace(/(?:\r\n|\r|\n)/g, '<br />');
         // console.log(label);
-        
+
         //let poly: string[][] = null;
         let poly: L.LatLng[] = null;
         if (polyString != null)
-            poly = polyString.split(",").map(function (x) { let z = x.split(' '); return new L.LatLng(Number(z[0]), Number(z[1]))});
-            // poly = polyString.split(',').map(function (x:string) { return x.split(' ') });
-        
+            poly = polyString.split(",").map(function (x) { let z = x.split(' '); return new L.LatLng(Number(z[0]), Number(z[1])) });
+        // poly = polyString.split(',').map(function (x:string) { return x.split(' ') });
+
         if (latitude == null || longitude == null)
             continue;
-        
-        
+
+
         // allCoords.push([latitude, longitude]);
         let latlng = L.latLng(latitude, longitude);
         allCoords.push(latlng);
-        
-        
+
+
         // let nongreenIcon = L.divIcon({
         //    className: "MapElement",
         //    // iconAnchor: [0, 24],
@@ -1296,15 +1296,15 @@ async function loadMarkers()
         //    // popupAnchor: [0, -36],
         //    html: "<span style=\"" + markerHtmlStyles + "\" />"
         //});
-        
+
         // private static async Task DelayAsync()
         let houseImage = `<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xml:space="preserve"
    viewBox="0 0 512 512" width="22px" height="22px">
     <path fill="{@col1}" d="M256,69.972L50,275.814h42.507v166.214h326.985V275.814H462L256,69.972z M374.492,397.028  h-73.768v-86.495h-89.451v86.495h-73.768V251.99L256,133.587l118.492,118.402V397.028z" />
     <path fill="{@col2}" opacity="0.4" d="M 137.505,251.99 256,133.587 374.492,251.989 v 145.039 h -73.768 v -86.495 h -89.451 v 86.495 h -73.768 z" />
 </svg>`;
-        
-        
+
+
         let greenIcon = L.divIcon(
             {
                 className: "customIcon",
@@ -1318,13 +1318,13 @@ async function loadMarkers()
                 html: houseImage.replace("{@col1}", color).replace("{@col2}", color)
             }
         );
-        
+
         // https://jsfiddle.net/guspersson/393ehmsq/
         // let marker = L.marker([latitude, longitude]).addTo(map);
         let marker = L.marker([latitude, longitude], { icon: greenIcon }).addTo(map);
         let tooltipContent = createBuildingContentDiv(uid, null, label);
-        
-        
+
+
         let tt = L.tooltip(
             {
                 permanent: true,
@@ -1334,12 +1334,12 @@ async function loadMarkers()
                 // , _anchor: [0, -110]
             }
         )
-        //.setContent(label);
-        .setContent(tooltipContent);
-        
+            //.setContent(label);
+            .setContent(tooltipContent);
+
         // marker.bindTooltip(tt);
-        
-        
+
+
         let popupContent = createBuildingContentDiv(uid, category, label);
         // label = label.replace(/(?:\r\n|\r|\n)/g, '<br />');
         // let contentString = category + "<br />" + label;
@@ -1357,7 +1357,7 @@ async function loadMarkers()
             .bindPopup(popup)
             .addTo(map)
             ;
-        
+
         // console.log(uid);
         marker.on("click", function (uuid: string, e: L.LeafletMouseEvent) // uid is now called uuid
         {
@@ -1365,7 +1365,7 @@ async function loadMarkers()
             map.setView(e.latlng, 18, { animate: true });
             if (marker && marker.popup)
                 marker.popup();
-            
+
             let ml = window.parent.document.querySelector('#iMenuLeft');
             if (ml)
             {
@@ -1374,11 +1374,11 @@ async function loadMarkers()
                 ignoreThisNavigation = true;
                 navigateTo(uuid);
             }
-            
+
         }.bind(this, uid));
         markers[uid] = marker;
-        
-        
+
+
         /*
         let circle = L.circle(latlng,
         {
@@ -1388,16 +1388,16 @@ async function loadMarkers()
         , radius: 15
         }).addTo(map);
         */
-        
+
         if (poly == null)
             continue;
-        
+
         poly = toCounterClockWise(poly); // OSM is COUNTER-clockwise !
-        
+
         let polygon = L.polygon(poly);
         let polygonStamp = createBuildingContentDiv(null, null, label);
         addTextLabel(map, poly, polygonStamp);
-        
+
         /*
         polygon.setStyle({
         fillColor: '#FF00FF'
@@ -1407,67 +1407,67 @@ async function loadMarkers()
         ,opacity: 1
         });
         */
-        
+
         let dd = document.createElement("div");
         let spn = document.createElement("span");
         spn.appendChild(document.createTextNode("Fläche" + ": "));
         spn.appendChild(document.createTextNode(thousandSeparator(polygonArea(poly))));
         spn.appendChild(document.createTextNode(" m"));
-        
+
         let sup2 = document.createElement("sup");
         sup2.appendChild(document.createTextNode("2"));
         spn.appendChild(sup2);
         dd.appendChild(spn);
-        
+
         // let popupString = "Fl&auml;che: " + thousandSeparator(polygonArea(poly)) + " m<sup>2</sup>";
         polygon.addTo(map)
             //.bindPopup(popupString)
             //.bindPopup(dd)
             //.openPopup()
-        ;
-        
+            ;
+
         // polygon.on("dblclick", function (uuid, e)
         polygon.on("click", function (uuid: string, e: L.LeafletMouseEvent)
         {
             let t = "{@basic}gebaeude.aspx?uid={@obj}&muid=@GB&env=ov&ro=false&proc={@BE_Hash}";
             t = SetDefaultVariables(t);
-            
+
             //navigateTo(uuid);
             let ml = <HTMLIFrameElement>window.parent.document.querySelector('#frameDWGForm');
-            
+
             if (ml)
                 ml.src = t.replace("{@obj}", uuid);
-            
+
             observeIframe();
         }.bind(this, uid));
-        
+
         polygons[uid] = marker;
     } // next i
-    
+
     let initialBounds: L.LatLngBounds = null;
-    
+
     if (allCoords && allCoords.length > 0)
         initialBounds = L.latLngBounds(allCoords);
     else
-    { 
+    {
         // Be neutral - assume Switzerland ;) 
         initialBounds = L.latLngBounds(new L.LatLng(45.77694774030000246512, 6.02260949058999983663), new L.LatLng(47.83082754170000328031, 10.44270145019999951330));
     }
-    
+
     map.zoomHome = function (homeView?: L.LatLngBoundsExpression)
     {
         map.fitBounds(homeView);
     }.bind(this, initialBounds);
-        
+
     map.zoomHome();
     // console.log("leaving loadMarkers");
 } // End Function loadMarkers 
 
 
-function createBuildingContentDiv(uid:string, category:string, label:string)
+function createBuildingContentDiv(uid: string, category: string, label: string)
 {
     let popupContent = document.createElement("div");
-    
+
     if (category != null)
     {
         let pspan1 = document.createElement("span");
@@ -1475,7 +1475,7 @@ function createBuildingContentDiv(uid:string, category:string, label:string)
         popupContent.appendChild(pspan1);
         popupContent.appendChild(document.createElement("br"));
     }
-    
+
     if (label != null)
     {
         // console.log("lbl", "\"" + label + "\"");
@@ -1485,7 +1485,7 @@ function createBuildingContentDiv(uid:string, category:string, label:string)
         // let labelParts: string[] = label.split(/<br\s*[\/]?>/gi);
         let labelParts: string[] = label.split(/(?:\r\n|\r|\n)/g);
         // console.log(labelParts);
-        
+
         for (let lin = 0; lin < labelParts.length; ++lin)
         {
             let pspan2 = document.createElement("span");
@@ -1493,14 +1493,14 @@ function createBuildingContentDiv(uid:string, category:string, label:string)
             popupContent.appendChild(pspan2);
             popupContent.appendChild(document.createElement("br"));
         }
-        
+
     }
-    
+
     if (uid != null)
     {
         popupContent.appendChild(document.createComment("GB: " + uid));
     }
-    
+
     return popupContent;
 }
 
@@ -1520,42 +1520,42 @@ interface IObjectBoundsTable
 }
 
 
-async function zoomIn(uid:string)
+async function zoomIn(uid: string)
 {
     // console.log("zoomIn", uid);
     let boundsUrl = "../ajax/AnySelect.ashx?sql=Maps.ObjectBounds.sql&obj_uid=";
     boundsUrl = SetDefaultVariables(boundsUrl);
-    
+
     let result = await getData(boundsUrl);
     // console.log(result);
-    
+
     let table = result.tables[0];
     // console.log(table.columns);
     // console.log(table.columns["OBJ_Label"].index);
-    
+
     let index_objt = table.columns["OBJT_UID"].index;
     let index_uid = table.columns["OBJ_UID"].index;
-    
+
     let index_latitude = table.columns["OBJ_Lat"].index;
     let index_longitude = table.columns["OBJ_Lng"].index;
-    
+
     let index_minLat = table.columns["OBJ_Min_Lat"].index;
     let index_minLng = table.columns["OBJ_Min_Long"].index;
     let index_maxLat = table.columns["OBJ_Max_Lat"].index;
     let index_maxLng = table.columns["OBJ_Max_Lng"].index;
-    
+
     for (let i = 0; i < table.rows.length; ++i)
     {
-        let code:string = table.rows[i][index_objt];
-        let uid:string = table.rows[i][index_uid];
+        let code: string = table.rows[i][index_objt];
+        let uid: string = table.rows[i][index_uid];
         let latitude: number = table.rows[i][index_latitude];
         let longitude: number = table.rows[i][index_longitude];
-        
-        let minLat: number= table.rows[i][index_minLat];
-        let minLng: number= table.rows[i][index_minLng];
-        let maxLat: number= table.rows[i][index_maxLat];
-        let maxLng: number= table.rows[i][index_maxLng];
-        
+
+        let minLat: number = table.rows[i][index_minLat];
+        let minLng: number = table.rows[i][index_minLng];
+        let maxLat: number = table.rows[i][index_maxLat];
+        let maxLng: number = table.rows[i][index_maxLng];
+
         if (minLat != null && minLng != null && maxLat != null && maxLng != null)
         {
             let zoomBounds = L.latLngBounds([[minLat, minLng], [maxLat, maxLng]]);
@@ -1567,30 +1567,30 @@ async function zoomIn(uid:string)
             // Zoom coordinates
         }
     } // Next i 
-    
+
 } // End Function ZoomIn
-    
-    
+
+
 // target: typ (ld, ort, so, gb)
-async function onBaumClick(uid:string, typ:string)
+async function onBaumClick(uid: string, typ: string)
 {
     typ = (typ || "").toLowerCase();
-    
+
     if (ignoreThisNavigation)
     {
         if (typ == "so")
             ignoreThisNavigation = false;
-        
+
         return;
     }
-    
+
     if (typ === "gs")
     {
         return;
     }
-    
+
     window.top.Portal.Frameset.focusFrameByWindow(window);
-    
+
     switch (typ)
     {
         case "ld":
@@ -1611,11 +1611,11 @@ async function onBaumClick(uid:string, typ:string)
         default:
             console.log("Objekt nicht definiert.");
     } // End Switch
-    
+
 } // End Function onBaumClick
 
 
-async function receiveMessage(event:MessageEvent)
+async function receiveMessage(event: MessageEvent)
 {
     // console.log("receiveMessage");
     if (event == null || event.data == null)
@@ -1623,8 +1623,8 @@ async function receiveMessage(event:MessageEvent)
         console.log("no event or no data", event);
         return;
     }
-        
-        
+
+
     // let message;
     //if (event.origin !== "http://robertnyman.com")
     // if (false)
@@ -1694,7 +1694,7 @@ interface IGebaeudeKategorieLegendeTable
     kurz: string;
     lang: string;
     color: string;
-    sort:number;
+    sort: number;
 }
 
 
@@ -1725,7 +1725,7 @@ async function loadLegend()
         gk_legend.removeChild(gk_legend.lastChild);
     } // Whend
 
-    function addRow(color:string, text:string)
+    function addRow(color: string, text: string)
     {
 
         let tr = document.createElement("tr");
@@ -1745,16 +1745,16 @@ async function loadLegend()
 
     for (let i = 0; i < table.rows.length; ++i)
     {
-        let uid:string = table.rows[i][index_uid];
-        let kurz:string = table.rows[i][index_kurz];
-        let lang:string = table.rows[i][index_lang];
-        let color:string = table.rows[i][index_color];
+        let uid: string = table.rows[i][index_uid];
+        let kurz: string = table.rows[i][index_kurz];
+        let lang: string = table.rows[i][index_lang];
+        let color: string = table.rows[i][index_color];
         //let sort:number = table.rows[i][index_sort];
 
         // console.log(uid, kurz, lang, color);
         gk_legend.appendChild(addRow(color, lang));
     } // Next i
-    
+
 } // End Function loadLegend
 
 
@@ -1763,7 +1763,7 @@ interface IApertureColorTable
 {
     uid: string;
     color: string;
-    sort:number;
+    sort: number;
 }
 
 
@@ -1872,9 +1872,9 @@ function getUserLanguage()
     return getBrowserLanguage("de");
 } // End Function getUserLanguage 
 
-    
-    
-function createZoomControl(map:L.Map & IMapWithZoom)
+
+
+function createZoomControl(map: L.Map & IMapWithZoom)
 {
     let zoomControl = document.createElement("div");
     zoomControl.setAttribute("class", "zoomControl");
@@ -1888,10 +1888,10 @@ function createZoomControl(map:L.Map & IMapWithZoom)
     {
         map.zoomHome();
     }, false);
-        
+
     zoomControl.appendChild(homeZoom);
     let clearHomeZoom = document.createElement("div");
-    clearHomeZoom.setAttribute("style","clear: both;");
+    clearHomeZoom.setAttribute("style", "clear: both;");
     zoomControl.appendChild(clearHomeZoom);
 
 
@@ -1906,32 +1906,32 @@ function createZoomControl(map:L.Map & IMapWithZoom)
     {
         map.zoomIn();
     }, false);
-        
+
     zoomControl.appendChild(plusZoom);
 
     let clearPlusZoom = document.createElement("div");
-    clearPlusZoom.setAttribute("style","clear: both;");
+    clearPlusZoom.setAttribute("style", "clear: both;");
     zoomControl.appendChild(clearPlusZoom);
-    
-    
+
+
     let minusZoom = document.createElement("div");
     minusZoom.setAttribute("class", "mp");
-    minusZoom.setAttribute("style","border-bottom-left-radius: 5mm; border-bottom-right-radius: 5mm;");
+    minusZoom.setAttribute("style", "border-bottom-left-radius: 5mm; border-bottom-right-radius: 5mm;");
     minusZoom.appendChild(document.createTextNode("-"));
-    
+
     minusZoom.addEventListener("click", function ()
     {
         map.zoomOut();
     }, false);
-        
+
     zoomControl.appendChild(minusZoom);
-        
-        
+
+
     let clearMinusZoom = document.createElement("div");
-    clearMinusZoom.setAttribute("style","clear: both;");
+    clearMinusZoom.setAttribute("style", "clear: both;");
     zoomControl.appendChild(clearMinusZoom);
-    
-    
+
+
     document.body.appendChild(zoomControl);
 }
 
@@ -1939,14 +1939,14 @@ function createZoomControl(map:L.Map & IMapWithZoom)
 
 
 // let url = "http://localhost:59799/sql?sql=Maps.Gebaeudekategorie.sql&BE_Hash=12435&format=" + badDataTable.toString();
-async function getXml(url:string, data?: any)
+async function getXml(url: string, data?: any)
 {
     if (url == null)
     {
         throw Error("URL is NULL...");
     }
 
-    
+
     // https://developer.mozilla.org/en-US/docs/Web/API/NavigatorOnLine/Online_and_offline_events
     // window.addEventListener('online', updateOnlineStatus);
     // window.addEventListener('offline', updateOnlineStatus);
@@ -1958,8 +1958,8 @@ async function getXml(url:string, data?: any)
         throw new HttpRequestError(500, 'Client offline');
         // if (error instanceof ApplicationOfflineError) { console.log(error.sayHello(); }
     }
-    
-    
+
+
     if (url.indexOf("no_cache") == -1)
         url += "&no_cache=" + (new Date()).getTime();
 
@@ -1977,14 +1977,14 @@ async function getXml(url:string, data?: any)
     myHeaders.append("pragma", "no-cache");
     myHeaders.append("cache-control", "no-cache");
     // myHeaders.append("Upgrade-Insecure-Requests", "1");
-    
+
     // myHeaders.append("Content-Type", "application/json");
-    
+
     // https://stackoverflow.com/questions/37668282/unable-to-fetch-post-without-no-cors-in-header
 
     // https://davidwalsh.name/fetch
     let options: any = {
-        "method": "GET" 
+        "method": "GET"
         // "headers": { 'auth': '1234','content-type': 'application/json'},
         // https://stackoverflow.com/questions/38156239/how-to-set-the-content-type-of-request-header-when-using-fetch-api
         // "headers": new Headers({ 'content-type': 'application/json' })
@@ -1992,26 +1992,26 @@ async function getXml(url:string, data?: any)
         // "headers": new Headers({ 'Content-Type': 'application/json' }) 
         // "headers": { 'Accept': 'application/json', 'Content-Type': 'application/json' },
         // "headers": new Headers({ 'Accept': 'application/json', 'Content-Type': 'application/json' }), 
-        ,"headers": myHeaders
+        , "headers": myHeaders
 
         // https://hacks.mozilla.org/2016/03/referrer-and-cache-control-apis-for-fetch/
         // https://googlechrome.github.io/samples/fetch-api/fetch-referrer-policy.html
         // https://w3c.github.io/webappsec-referrer-policy/#referrer-policy-state-origin
         // https://w3c.github.io/webappsec/
         // https://github.com/w3c/WebAppSec
-        , "referrerPolicy": "origin-when-cross-origin" 
+        , "referrerPolicy": "origin-when-cross-origin"
 
         // ,"mode": "no-cors" 
-        ,"body": <any>null
+        , "body": <any>null
     };
-    
-    
+
+
     if (data != null)
     {
         if (typeof data === 'string' || data instanceof String)
             options["body"] = data;
         else
-            options["body"] = JSON.stringify( { "id": 123 } );
+            options["body"] = JSON.stringify({ "id": 123 });
     }
 
     try
@@ -2027,7 +2027,7 @@ async function getXml(url:string, data?: any)
 
     try
     {
-        if(req != null)
+        if (req != null)
             xml = await req.text();
     }
     catch (ex)
@@ -2035,7 +2035,7 @@ async function getXml(url:string, data?: any)
         console.log(ex);
         ex2 = ex;
     }
-    
+
     try
     {
         obj = (new DOMParser()).parseFromString(xml, "text/xml");
@@ -2051,19 +2051,19 @@ async function getXml(url:string, data?: any)
     {
         throw new HttpRequestError(500, 'Server Error');
     }
-    
+
     // console.log(obj);
     return obj;
 } // End Function getXml 
 
 
-function getBoundsArea(bounds:L.LatLngBounds):number 
+function getBoundsArea(bounds: L.LatLngBounds): number 
 {
     let nw = bounds.getNorthWest();
     let se = bounds.getSouthEast();
     // https://github.com/openstreetmap/cgimap/blob/master/src/bbox.cpp
     // double bbox::area() const { return (maxlon - minlon) * (maxlat - minlat);
-    
+
     let maxLng = Math.max(nw.lng, se.lng);
     let maxLat = Math.max(nw.lat, se.lat);
 
@@ -2100,9 +2100,25 @@ async function addDataLayer()
     console.log("xml", xml);
     let layer = new L.OSM.DataLayer(xml).addTo(map);
     // map.fitBounds(layer.getBounds());
-    
+
     // console.log(layer);
 }
+
+
+async function getSiteConfig()
+{
+    return {
+        settings:
+        {
+              "mandant": "140"
+            , "logo": "helvetia23.png"
+            , language: "DE"
+        }
+
+        ,translations: {}
+    };
+}
+
 
 
 // https://maps.wikimedia.org
@@ -2110,25 +2126,25 @@ async function addDataLayer()
 async function initMap()
 {
     // L.DomUtil.get('swissMap')._leaflet_id
-        
+
     // console.log("init");
     let ml: HTMLElement = <HTMLElement>window.parent.document.querySelector('#iMenuLeft');
-    
+
     // Create a map
     map = <L.Map & IMapWithZoom><any>L.map('swissMap', { zoomControl: false });
     map.setView(new L.LatLng(47.317390, 8.520293), 18); // SwissRe Soodring 33, Adliswil
     map.zoomHome = function () { console.log("wrong instance"); };
     createZoomControl(map);
-    
+
     // https://jsfiddle.net/BC7q4/444/
     // let bounds = [[45.802216, 5.920721], [47.968862, 10.769762]];
     let southWest = new L.LatLng(45.802216, 5.920721);
     let northEast = new L.LatLng(47.968862, 10.769762);
     let bounds = new L.LatLngBounds(southWest, northEast);
-    
+
     // https://stackoverflow.com/questions/17187161/bounding-view-of-a-leaflet-image-map-to-a-landscape-viewport
     // http://leafletjs.com/reference-1.2.0.html#map-fitbounds
-    
+
     // map.fitBounds(bounds, { padding: [] });
     map.fitBounds(bounds, null);
 
@@ -2205,35 +2221,40 @@ async function initMap()
 
 
     //Right click on the map activated
-    map.on("contextmenu", function (e: L.LeafletMouseEvent)
+
+
+    //if (false)
+    // if mandant = Heletia || leucktreklame-APK_UID IS NOT NULL 
     {
-        // console.log("map contextmenu", e)
+        map.on("contextmenu", function (e: L.LeafletMouseEvent)
+        {
+            // console.log("map contextmenu", e)
 
-        let container = <HTMLElement><any>document.createDocumentFragment();
-        let title = document.createElement("span");
-        title.setAttribute("style", "font-weight: bold;");
-        title.appendChild(document.createTextNode("Hier können Sie"));
-        container.appendChild(title);
-        container.appendChild(document.createElement("br"));
-        let menuOption = document.createElement("a");
-        menuOption.addEventListener("click", addWerbetafel.bind(this, e.latlng.lat, e.latlng.lng) );
-        
-        menuOption.appendChild(document.createTextNode("eine Leuchtreklame hinzufügen"));
-        container.appendChild(menuOption);
+            let container = <HTMLElement><any>document.createDocumentFragment();
+            let title = document.createElement("span");
+            title.setAttribute("style", "font-weight: bold;");
+            title.appendChild(document.createTextNode("Hier können Sie"));
+            container.appendChild(title);
+            container.appendChild(document.createElement("br"));
+            let menuOption = document.createElement("a");
+            menuOption.addEventListener("click", addWerbetafel.bind(this, e.latlng.lat, e.latlng.lng));
 
-        // let contextMenu = container.innerHTML;
-        // console.log(contextMenu);
+            menuOption.appendChild(document.createTextNode("eine Leuchtreklame hinzufügen"));
+            container.appendChild(menuOption);
 
-        let popup = new L.Popup({ closeButton: true, autoClose: true })
-            .setLatLng(e.latlng)
-            //.setContent(contextMenu)
-            .setContent(container)
-            //.openOn(map)
-        ;
+            // let contextMenu = container.innerHTML;
+            // console.log(contextMenu);
 
-        popup.openOn(map);
-    });
+            let popup = new L.Popup({ closeButton: true, autoClose: true })
+                .setLatLng(e.latlng)
+                //.setContent(contextMenu)
+                .setContent(container)
+                //.openOn(map)
+                ;
 
+            popup.openOn(map);
+        });
+    }
 
     //map.on("click", function (e)
     //{
@@ -2263,11 +2284,11 @@ async function initMap()
     // .openPopup()
     ;
     */
-        
+
 } // End Function initMap 
 
 
-function CreatePolygon( latLongs:L.LatLng[])
+function CreatePolygon(latLongs: L.LatLng[])
 {
     //POLYGON ((73.232821 34.191819,73.233755 34.191942,73.233653 34.192358,73.232843 34.192246,73.23269 34.191969,73.232821 34.191819))
     let polyString = "";
@@ -2286,7 +2307,7 @@ function CreatePolygon( latLongs:L.LatLng[])
     }
     else
     {
-        for (let i = latLongs.length-1; i > -1; --i)
+        for (let i = latLongs.length - 1; i > -1; --i)
         {
             if (i !== latLongs.length - 1)
                 polyString += ",";
@@ -2294,21 +2315,21 @@ function CreatePolygon( latLongs:L.LatLng[])
             polyString += latLongs[i].lng + " " + latLongs[i].lat; // + ",";
         }
     }
-    
-    polyString = "POLYGON((" + polyString+"))";
+
+    polyString = "POLYGON((" + polyString + "))";
     return polyString;
 }
 
 
-function CreateSqlPolygon( latLongs:L.LatLng[])
+function CreateSqlPolygon(latLongs: L.LatLng[])
 {
     let s = "geography::STPolyFromText('" + CreatePolygon(latLongs) + "', 4326)";
-    return s; 
+    return s;
 }
 
 
 // setPositon(47.551811, 7.599570);
-function setPositon(latitude:number, longitude:number)
+function setPositon(latitude: number, longitude: number)
 {
     // It just depends on what behavior you want.
     // map.panTo() will pan to the location with zoom/pan animation, 
@@ -2372,7 +2393,7 @@ function toCounterClockWise(poly: L.LatLng[])
 } // End Function toCounterClockWise 
 
 
-function polygonStringToCoordinates(polygonString:string)
+function polygonStringToCoordinates(polygonString: string)
 {
     let latlongs: L.LatLng[] = [];
 
@@ -2380,8 +2401,8 @@ function polygonStringToCoordinates(polygonString:string)
     polygonString = polygonString.match(/\s*POLYGON\s*\(\s*\(\s*(.*?)\s*\)\s*\)\s*/)[1];
     // polygonString = polygonString.replace( new RegExp("\\s*,\\s*", 'g'), ",");
     polygonString = polygonString.replace(/\s*,\s*/g, ",");
-    
-    
+
+
     //let allPoints: string[] = polygonString.split(", ");
     let allPoints: string[] = polygonString.split(",");
     for (let i = 0; i < allPoints.length; ++i)
@@ -2395,11 +2416,11 @@ function polygonStringToCoordinates(polygonString:string)
 }
 
 
-function drawTestPolygon(t:any)
+function drawTestPolygon(t: any)
 {
-    let unionPolygon = "POLYGON ((7.5989804 47.5512929, 7.5989968 47.5512834, 7.5989937 47.5512791, 7.5989966 47.5512774, 7.5990021 47.5512803, 7.5990346 47.5512613, 7.5990315 47.5512572, 7.5990342 47.5512556, 7.5990398 47.5512583, 7.5990723 47.5512393, 7.5990692 47.5512354, 7.5990722 47.5512336, 7.5990774 47.5512364, 7.5990942 47.5512266, 7.5990778 47.5512139, 7.5990943 47.5512043, 7.5990911 47.5512004, 7.5990939 47.5511988, 7.5990993 47.5512014, 7.5991178 47.5511907, 7.5991321 47.5511824, 7.5991291 47.5511784, 7.5991318 47.5511769, 7.5991371 47.5511795, 7.5991696 47.5511606, 7.5991668 47.5511566, 7.5991696 47.5511549, 7.5991748 47.5511575, 7.5992073 47.5511387, 7.5992043 47.5511348, 7.5992073 47.551133, 7.5992123 47.5511358, 7.5992453 47.5511167, 7.5992423 47.5511128, 7.5992453 47.551111, 7.5992505 47.5511136, 7.5992655 47.5511049, 7.599283 47.5510947, 7.5992803 47.5510907, 7.5992829 47.5510892, 7.5992882 47.5510917, 7.5993207 47.5510729, 7.5993178 47.551069, 7.5993206 47.5510674, 7.5993255 47.55107, 7.5993585 47.5510509, 7.5993557 47.551047, 7.5993584 47.5510454, 7.5993634 47.551048, 7.5993802 47.5510383, 7.5993658 47.5510271, 7.5993593 47.5510293, 7.5993569 47.5510274, 7.5993615 47.5510237, 7.5993472 47.5510126, 7.5993632 47.5510033, 7.5993605 47.5509993, 7.5993631 47.5509978, 7.5993682 47.5510004, 7.5993839 47.5509913, 7.5994011 47.5509813, 7.5993983 47.5509773, 7.599401 47.5509757, 7.5994062 47.5509783, 7.5994391 47.5509592, 7.599436 47.5509554, 7.5994388 47.5509537, 7.5994442 47.5509562, 7.5994768 47.5509372, 7.5994737 47.5509334, 7.5994765 47.5509318, 7.599482 47.5509342, 7.5994984 47.5509246, 7.5995125 47.5509357, 7.5995179 47.5509337, 7.5995206 47.5509358, 7.599517 47.5509392, 7.5995451 47.5509614, 7.5995507 47.5509595, 7.599553 47.5509613, 7.5995494 47.5509647, 7.5995778 47.550987, 7.5995832 47.550985, 7.5995857 47.550987, 7.5995823 47.5509906, 7.5996104 47.5510126, 7.5996158 47.5510106, 7.599618 47.5510123, 7.5996144 47.5510159, 7.599643 47.5510383, 7.5996485 47.5510363, 7.5996508 47.5510381, 7.5996474 47.5510417, 7.5996752 47.5510636, 7.5996807 47.5510616, 7.599683 47.5510634, 7.5996794 47.5510669, 7.599708 47.5510894, 7.5997134 47.5510873, 7.5997157 47.5510892, 7.5997121 47.5510926, 7.5997408 47.5511152, 7.599746 47.5511129, 7.5997484 47.5511149, 7.5997448 47.5511183, 7.5997732 47.5511406, 7.5997784 47.5511384, 7.5997807 47.5511402, 7.5997771 47.5511437, 7.5998051 47.5511657, 7.5998107 47.5511638, 7.5998134 47.551166, 7.5998096 47.5511692, 7.5998186 47.5511762, 7.5996618 47.5512599, 7.5996588 47.5512574, 7.5996532 47.5512593, 7.5996507 47.5512573, 7.5996544 47.5512539, 7.5996264 47.5512319, 7.5996207 47.5512338, 7.5996182 47.5512319, 7.5996222 47.5512286, 7.5995939 47.5512064, 7.5995881 47.5512083, 7.5995855 47.5512063, 7.5995896 47.551203, 7.5995613 47.5511809, 7.5995557 47.5511829, 7.5995532 47.5511809, 7.5995571 47.5511776, 7.5995287 47.5511552, 7.599523 47.5511573, 7.5995204 47.5511553, 7.5995244 47.5511519, 7.5995101 47.5511407, 7.5994938 47.5511501, 7.5994969 47.5511541, 7.5994942 47.5511556, 7.599489 47.5511529, 7.599456 47.5511721, 7.599459 47.551176, 7.5994562 47.5511776, 7.599451 47.551175, 7.5994181 47.551194, 7.5994214 47.5511978, 7.5994186 47.5511995, 7.5994132 47.5511969, 7.5993958 47.551207, 7.5993804 47.5512159, 7.5993838 47.5512196, 7.5993808 47.5512213, 7.5993754 47.5512188, 7.5993423 47.5512379, 7.5993455 47.5512418, 7.5993427 47.5512434, 7.5993376 47.5512407, 7.5993046 47.5512598, 7.5993076 47.5512637, 7.5993049 47.5512653, 7.5992995 47.5512627, 7.5992832 47.5512722, 7.5992996 47.551285, 7.5992837 47.5512947, 7.5992865 47.551298, 7.5992834 47.5512999, 7.5992782 47.5512981, 7.5993219 47.5513338, 7.5993856 47.5512967, 7.5994706 47.551364, 7.5993337 47.5514442, 7.599248 47.551377, 7.5992923 47.5513511, 7.5992518 47.5513191, 7.5991152 47.5513981, 7.599097 47.551384, 7.5990913 47.5513859, 7.5990889 47.551384, 7.5990928 47.5513806, 7.5990643 47.5513584, 7.5990589 47.5513604, 7.5990563 47.5513583, 7.59906 47.551355, 7.5990314 47.5513327, 7.5990263 47.5513348, 7.599024 47.5513329, 7.5990274 47.5513296, 7.5989986 47.5513071, 7.5989936 47.551309, 7.5989913 47.5513072, 7.5989946 47.551304, 7.5989804 47.5512929))"; 
-    if(t) unionPolygon = "POLYGON((7.5994698 47.5519639, 7.5994811 47.5519362, 7.5994732 47.5519337, 7.5994742 47.5519312, 7.5994831 47.5519313, 7.5994942 47.5519042, 7.5994863 47.5519014, 7.5994873 47.5518991, 7.5994961 47.5518995, 7.5995074 47.5518718, 7.5994994 47.5518693, 7.5995004 47.5518668, 7.5995092 47.5518672, 7.5995202 47.5518401, 7.5995332 47.5518425, 7.5995374 47.5518372, 7.5995406 47.5518378, 7.5995398 47.5518438, 7.5995805 47.5518513, 7.5995846 47.551846, 7.5995878 47.5518466, 7.5995871 47.5518526, 7.599628 47.5518602, 7.5996319 47.5518549, 7.599635 47.5518555, 7.5996349 47.5518615, 7.599675 47.551869, 7.5996789 47.5518637, 7.5996822 47.5518643, 7.5996817 47.5518702, 7.5997224 47.5518778, 7.5997265 47.5518725, 7.5997302 47.5518732, 7.5997296 47.5518792, 7.5997697 47.5518867, 7.5997738 47.5518814, 7.5997772 47.551882, 7.5997766 47.551888, 7.5998137 47.5518949, 7.5998177 47.5518896, 7.599821 47.5518902, 7.5998202 47.5518961, 7.5998247 47.551897, 7.5998422 47.5518528, 7.5998389 47.5518541, 7.5998362 47.5518523, 7.5998388 47.5518505, 7.5998269 47.5518423, 7.5998315 47.5518316, 7.5998279 47.5518309, 7.599829 47.5518283, 7.5998326 47.551829, 7.5998365 47.5518198, 7.5998267 47.551813, 7.599824 47.5518148, 7.5998213 47.5518129, 7.5998239 47.5518111, 7.5998017 47.5517958, 7.5997991 47.5517976, 7.5997963 47.5517957, 7.599799 47.5517939, 7.5997883 47.5517866, 7.5997755 47.5517889, 7.5997765 47.5517913, 7.5997726 47.551792, 7.5997716 47.5517896, 7.5997408 47.5517951, 7.5997418 47.5517976, 7.5997379 47.5517983, 7.599737 47.5517958, 7.5997202 47.5517988, 7.5997081 47.5517905, 7.5997054 47.5517923, 7.5997028 47.5517905, 7.5997055 47.5517887, 7.5996944 47.5517811, 7.5997281 47.5517749, 7.5996679 47.5517334, 7.5996651 47.5517352, 7.5996625 47.5517334, 7.5996653 47.5517316, 7.5996553 47.5517247, 7.5996414 47.5517272, 7.5996424 47.5517297, 7.5996388 47.5517304, 7.5996378 47.5517278, 7.5996211 47.5517308, 7.5996091 47.5517224, 7.5996064 47.5517241, 7.5996037 47.5517222, 7.5996063 47.5517205, 7.5995842 47.5517052, 7.5995821 47.5517069, 7.5995791 47.5517053, 7.5995815 47.5517033, 7.5995697 47.5516952, 7.5995743 47.5516838, 7.5995707 47.5516832, 7.5995718 47.5516805, 7.5995754 47.5516812, 7.5995837 47.5516606, 7.5995801 47.5516599, 7.5995812 47.5516574, 7.5995847 47.5516581, 7.599589 47.5516475, 7.5996055 47.5516446, 7.5996046 47.5516421, 7.5996085 47.5516414, 7.5996095 47.5516439, 7.5996394 47.5516385, 7.5996385 47.5516361, 7.5996423 47.5516354, 7.5996433 47.5516378, 7.5996574 47.5516353, 7.5996611 47.5516261, 7.5996575 47.5516254, 7.5996586 47.5516227, 7.5996622 47.5516234, 7.5996705 47.551603, 7.5996669 47.5516023, 7.599668 47.5515997, 7.5996716 47.5516004, 7.599676 47.5515895, 7.599693 47.5515864, 7.599692 47.551584, 7.5996962 47.5515832, 7.5996972 47.5515856, 7.5997269 47.5515803, 7.5997259 47.5515779, 7.5997301 47.5515771, 7.599731 47.5515795, 7.5997472 47.5515766, 7.5997593 47.5515849, 7.5997619 47.5515831, 7.5997646 47.551585, 7.599762 47.5515867, 7.5997841 47.5516019, 7.5997867 47.5516001, 7.5997895 47.551602, 7.5997869 47.5516038, 7.5997988 47.5516121, 7.5997942 47.5516234, 7.5997979 47.5516241, 7.5997969 47.5516265, 7.5997932 47.5516258, 7.5997848 47.5516464, 7.5997885 47.5516471, 7.5997875 47.5516495, 7.5997838 47.5516488, 7.5997795 47.5516594, 7.5997887 47.5516657, 7.5997916 47.5516638, 7.5997942 47.5516655, 7.5997913 47.5516675, 7.5998135 47.5516828, 7.5998164 47.5516808, 7.599819 47.5516826, 7.5998161 47.5516845, 7.5998257 47.5516911, 7.5998413 47.5516883, 7.5998403 47.5516857, 7.5998439 47.5516851, 7.5998449 47.5516877, 7.5998615 47.5516847, 7.599874 47.551693, 7.5998766 47.5516912, 7.5998793 47.551693, 7.5998766 47.5516948, 7.5998987 47.5517099, 7.5999013 47.5517081, 7.5999041 47.5517101, 7.5999015 47.5517118, 7.5999235 47.5517269, 7.5999261 47.5517252, 7.5999291 47.5517272, 7.5999264 47.5517289, 7.5999485 47.5517441, 7.5999512 47.5517423, 7.599954 47.5517443, 7.5999513 47.551746, 7.5999611 47.5517527, 7.5999751 47.5517503, 7.5999742 47.5517478, 7.5999781 47.5517472, 7.599979 47.5517496, 7.5999958 47.5517467, 7.6000077 47.5517548, 7.6000103 47.5517531, 7.6000128 47.5517548, 7.6000102 47.5517566, 7.6000322 47.5517718, 7.6000349 47.55177, 7.6000378 47.551772, 7.6000351 47.5517738, 7.6000571 47.551789, 7.6000598 47.5517872, 7.6000625 47.5517891, 7.6000598 47.5517909, 7.6000813 47.5518057, 7.600084 47.5518039, 7.6000872 47.5518061, 7.6000845 47.5518079, 7.6000967 47.5518163, 7.600092 47.5518277, 7.6000956 47.5518283, 7.6000945 47.5518309, 7.6000909 47.5518302, 7.6000824 47.5518508, 7.600086 47.5518514, 7.6000851 47.5518537, 7.6000815 47.551853, 7.6000767 47.5518646, 7.60006 47.5518675, 7.6000609 47.55187, 7.600057 47.5518706, 7.6000561 47.5518682, 7.6000261 47.5518734, 7.6000271 47.5518759, 7.6000229 47.5518766, 7.600022 47.5518741, 7.5999918 47.5518794, 7.5999928 47.5518819, 7.5999888 47.5518826, 7.5999879 47.5518801, 7.5999578 47.5518854, 7.5999587 47.5518878, 7.599955 47.5518885, 7.5999541 47.551886, 7.5999367 47.5518891, 7.5999247 47.5518807, 7.5999221 47.5518825, 7.5999191 47.5518804, 7.5999218 47.5518787, 7.5999002 47.5518636, 7.5998975 47.5518654, 7.5998949 47.5518635, 7.5998975 47.5518617, 7.5998877 47.5518548, 7.5998744 47.5518575, 7.5998755 47.5518599, 7.5998715 47.5518607, 7.5998697 47.5518585, 7.5998513 47.5519019, 7.5998638 47.5519043, 7.5998675 47.5518989, 7.5998715 47.5518996, 7.5998711 47.5519056, 7.5999109 47.5519131, 7.5999148 47.5519077, 7.5999183 47.5519084, 7.5999175 47.5519143, 7.5999583 47.5519219, 7.5999621 47.5519166, 7.5999658 47.5519172, 7.5999649 47.5519231, 7.6000056 47.5519307, 7.6000094 47.5519254, 7.600013 47.5519261, 7.6000121 47.551932, 7.6000527 47.5519395, 7.6000568 47.5519342, 7.6000605 47.5519349, 7.6000593 47.5519408, 7.6000998 47.5519483, 7.6001037 47.551943, 7.6001074 47.5519437, 7.6001059 47.5519495, 7.600147 47.5519571, 7.6001513 47.5519519, 7.600155 47.5519526, 7.6001537 47.5519584, 7.6001651 47.5519596, 7.6001692 47.5519594, 7.6001699 47.5519577, 7.6001709 47.5519579, 7.6001194 47.5520849, 7.6001044 47.5520819, 7.6001008 47.5520873, 7.6000979 47.5520867, 7.6000981 47.5520807, 7.600057 47.5520731, 7.6000537 47.5520785, 7.6000501 47.5520778, 7.6000507 47.5520719, 7.6000103 47.5520644, 7.6000064 47.5520697, 7.6000032 47.5520691, 7.6000039 47.5520632, 7.5999633 47.5520556, 7.5999591 47.5520609, 7.5999557 47.5520603, 7.5999566 47.5520544, 7.5999158 47.5520468, 7.5999115 47.5520521, 7.5999084 47.5520515, 7.5999094 47.5520456, 7.5998683 47.552038, 7.5998642 47.5520433, 7.599861 47.5520427, 7.5998615 47.5520367, 7.5998383 47.5520324, 7.5998208 47.5520292, 7.5998172 47.5520345, 7.5998137 47.5520339, 7.5998137 47.5520278, 7.599774 47.5520205, 7.5997693 47.5520256, 7.599766 47.552025, 7.5997667 47.5520191, 7.5997262 47.5520116, 7.5997218 47.5520168, 7.5997186 47.5520162, 7.5997189 47.5520102, 7.5996788 47.5520028, 7.5996744 47.552008, 7.5996714 47.5520074, 7.5996717 47.5520014, 7.5996317 47.551994, 7.5996276 47.5519993, 7.5996243 47.5519987, 7.5996246 47.5519927, 7.5995844 47.5519852, 7.5995807 47.5519906, 7.5995772 47.5519899, 7.5995779 47.551984, 7.5995367 47.5519764, 7.5995324 47.5519816, 7.5995293 47.551981, 7.5995298 47.5519751, 7.5994894 47.5519676, 7.5994856 47.5519729, 7.5994821 47.5519723, 7.5994828 47.5519663, 7.5994698 47.5519639))"; 
-    if (t) unionPolygon = "POLYGON((7.599767 47.5526798,7.5997487 47.5526866,7.5994203 47.5526245,7.599491 47.5524535,7.5995463 47.5524639,7.5997672 47.5525058,7.5997611 47.5525208,7.5997976 47.5525277,7.5997457 47.5526517,7.599767 47.5526798))"; 
+    let unionPolygon = "POLYGON ((7.5989804 47.5512929, 7.5989968 47.5512834, 7.5989937 47.5512791, 7.5989966 47.5512774, 7.5990021 47.5512803, 7.5990346 47.5512613, 7.5990315 47.5512572, 7.5990342 47.5512556, 7.5990398 47.5512583, 7.5990723 47.5512393, 7.5990692 47.5512354, 7.5990722 47.5512336, 7.5990774 47.5512364, 7.5990942 47.5512266, 7.5990778 47.5512139, 7.5990943 47.5512043, 7.5990911 47.5512004, 7.5990939 47.5511988, 7.5990993 47.5512014, 7.5991178 47.5511907, 7.5991321 47.5511824, 7.5991291 47.5511784, 7.5991318 47.5511769, 7.5991371 47.5511795, 7.5991696 47.5511606, 7.5991668 47.5511566, 7.5991696 47.5511549, 7.5991748 47.5511575, 7.5992073 47.5511387, 7.5992043 47.5511348, 7.5992073 47.551133, 7.5992123 47.5511358, 7.5992453 47.5511167, 7.5992423 47.5511128, 7.5992453 47.551111, 7.5992505 47.5511136, 7.5992655 47.5511049, 7.599283 47.5510947, 7.5992803 47.5510907, 7.5992829 47.5510892, 7.5992882 47.5510917, 7.5993207 47.5510729, 7.5993178 47.551069, 7.5993206 47.5510674, 7.5993255 47.55107, 7.5993585 47.5510509, 7.5993557 47.551047, 7.5993584 47.5510454, 7.5993634 47.551048, 7.5993802 47.5510383, 7.5993658 47.5510271, 7.5993593 47.5510293, 7.5993569 47.5510274, 7.5993615 47.5510237, 7.5993472 47.5510126, 7.5993632 47.5510033, 7.5993605 47.5509993, 7.5993631 47.5509978, 7.5993682 47.5510004, 7.5993839 47.5509913, 7.5994011 47.5509813, 7.5993983 47.5509773, 7.599401 47.5509757, 7.5994062 47.5509783, 7.5994391 47.5509592, 7.599436 47.5509554, 7.5994388 47.5509537, 7.5994442 47.5509562, 7.5994768 47.5509372, 7.5994737 47.5509334, 7.5994765 47.5509318, 7.599482 47.5509342, 7.5994984 47.5509246, 7.5995125 47.5509357, 7.5995179 47.5509337, 7.5995206 47.5509358, 7.599517 47.5509392, 7.5995451 47.5509614, 7.5995507 47.5509595, 7.599553 47.5509613, 7.5995494 47.5509647, 7.5995778 47.550987, 7.5995832 47.550985, 7.5995857 47.550987, 7.5995823 47.5509906, 7.5996104 47.5510126, 7.5996158 47.5510106, 7.599618 47.5510123, 7.5996144 47.5510159, 7.599643 47.5510383, 7.5996485 47.5510363, 7.5996508 47.5510381, 7.5996474 47.5510417, 7.5996752 47.5510636, 7.5996807 47.5510616, 7.599683 47.5510634, 7.5996794 47.5510669, 7.599708 47.5510894, 7.5997134 47.5510873, 7.5997157 47.5510892, 7.5997121 47.5510926, 7.5997408 47.5511152, 7.599746 47.5511129, 7.5997484 47.5511149, 7.5997448 47.5511183, 7.5997732 47.5511406, 7.5997784 47.5511384, 7.5997807 47.5511402, 7.5997771 47.5511437, 7.5998051 47.5511657, 7.5998107 47.5511638, 7.5998134 47.551166, 7.5998096 47.5511692, 7.5998186 47.5511762, 7.5996618 47.5512599, 7.5996588 47.5512574, 7.5996532 47.5512593, 7.5996507 47.5512573, 7.5996544 47.5512539, 7.5996264 47.5512319, 7.5996207 47.5512338, 7.5996182 47.5512319, 7.5996222 47.5512286, 7.5995939 47.5512064, 7.5995881 47.5512083, 7.5995855 47.5512063, 7.5995896 47.551203, 7.5995613 47.5511809, 7.5995557 47.5511829, 7.5995532 47.5511809, 7.5995571 47.5511776, 7.5995287 47.5511552, 7.599523 47.5511573, 7.5995204 47.5511553, 7.5995244 47.5511519, 7.5995101 47.5511407, 7.5994938 47.5511501, 7.5994969 47.5511541, 7.5994942 47.5511556, 7.599489 47.5511529, 7.599456 47.5511721, 7.599459 47.551176, 7.5994562 47.5511776, 7.599451 47.551175, 7.5994181 47.551194, 7.5994214 47.5511978, 7.5994186 47.5511995, 7.5994132 47.5511969, 7.5993958 47.551207, 7.5993804 47.5512159, 7.5993838 47.5512196, 7.5993808 47.5512213, 7.5993754 47.5512188, 7.5993423 47.5512379, 7.5993455 47.5512418, 7.5993427 47.5512434, 7.5993376 47.5512407, 7.5993046 47.5512598, 7.5993076 47.5512637, 7.5993049 47.5512653, 7.5992995 47.5512627, 7.5992832 47.5512722, 7.5992996 47.551285, 7.5992837 47.5512947, 7.5992865 47.551298, 7.5992834 47.5512999, 7.5992782 47.5512981, 7.5993219 47.5513338, 7.5993856 47.5512967, 7.5994706 47.551364, 7.5993337 47.5514442, 7.599248 47.551377, 7.5992923 47.5513511, 7.5992518 47.5513191, 7.5991152 47.5513981, 7.599097 47.551384, 7.5990913 47.5513859, 7.5990889 47.551384, 7.5990928 47.5513806, 7.5990643 47.5513584, 7.5990589 47.5513604, 7.5990563 47.5513583, 7.59906 47.551355, 7.5990314 47.5513327, 7.5990263 47.5513348, 7.599024 47.5513329, 7.5990274 47.5513296, 7.5989986 47.5513071, 7.5989936 47.551309, 7.5989913 47.5513072, 7.5989946 47.551304, 7.5989804 47.5512929))";
+    if (t) unionPolygon = "POLYGON((7.5994698 47.5519639, 7.5994811 47.5519362, 7.5994732 47.5519337, 7.5994742 47.5519312, 7.5994831 47.5519313, 7.5994942 47.5519042, 7.5994863 47.5519014, 7.5994873 47.5518991, 7.5994961 47.5518995, 7.5995074 47.5518718, 7.5994994 47.5518693, 7.5995004 47.5518668, 7.5995092 47.5518672, 7.5995202 47.5518401, 7.5995332 47.5518425, 7.5995374 47.5518372, 7.5995406 47.5518378, 7.5995398 47.5518438, 7.5995805 47.5518513, 7.5995846 47.551846, 7.5995878 47.5518466, 7.5995871 47.5518526, 7.599628 47.5518602, 7.5996319 47.5518549, 7.599635 47.5518555, 7.5996349 47.5518615, 7.599675 47.551869, 7.5996789 47.5518637, 7.5996822 47.5518643, 7.5996817 47.5518702, 7.5997224 47.5518778, 7.5997265 47.5518725, 7.5997302 47.5518732, 7.5997296 47.5518792, 7.5997697 47.5518867, 7.5997738 47.5518814, 7.5997772 47.551882, 7.5997766 47.551888, 7.5998137 47.5518949, 7.5998177 47.5518896, 7.599821 47.5518902, 7.5998202 47.5518961, 7.5998247 47.551897, 7.5998422 47.5518528, 7.5998389 47.5518541, 7.5998362 47.5518523, 7.5998388 47.5518505, 7.5998269 47.5518423, 7.5998315 47.5518316, 7.5998279 47.5518309, 7.599829 47.5518283, 7.5998326 47.551829, 7.5998365 47.5518198, 7.5998267 47.551813, 7.599824 47.5518148, 7.5998213 47.5518129, 7.5998239 47.5518111, 7.5998017 47.5517958, 7.5997991 47.5517976, 7.5997963 47.5517957, 7.599799 47.5517939, 7.5997883 47.5517866, 7.5997755 47.5517889, 7.5997765 47.5517913, 7.5997726 47.551792, 7.5997716 47.5517896, 7.5997408 47.5517951, 7.5997418 47.5517976, 7.5997379 47.5517983, 7.599737 47.5517958, 7.5997202 47.5517988, 7.5997081 47.5517905, 7.5997054 47.5517923, 7.5997028 47.5517905, 7.5997055 47.5517887, 7.5996944 47.5517811, 7.5997281 47.5517749, 7.5996679 47.5517334, 7.5996651 47.5517352, 7.5996625 47.5517334, 7.5996653 47.5517316, 7.5996553 47.5517247, 7.5996414 47.5517272, 7.5996424 47.5517297, 7.5996388 47.5517304, 7.5996378 47.5517278, 7.5996211 47.5517308, 7.5996091 47.5517224, 7.5996064 47.5517241, 7.5996037 47.5517222, 7.5996063 47.5517205, 7.5995842 47.5517052, 7.5995821 47.5517069, 7.5995791 47.5517053, 7.5995815 47.5517033, 7.5995697 47.5516952, 7.5995743 47.5516838, 7.5995707 47.5516832, 7.5995718 47.5516805, 7.5995754 47.5516812, 7.5995837 47.5516606, 7.5995801 47.5516599, 7.5995812 47.5516574, 7.5995847 47.5516581, 7.599589 47.5516475, 7.5996055 47.5516446, 7.5996046 47.5516421, 7.5996085 47.5516414, 7.5996095 47.5516439, 7.5996394 47.5516385, 7.5996385 47.5516361, 7.5996423 47.5516354, 7.5996433 47.5516378, 7.5996574 47.5516353, 7.5996611 47.5516261, 7.5996575 47.5516254, 7.5996586 47.5516227, 7.5996622 47.5516234, 7.5996705 47.551603, 7.5996669 47.5516023, 7.599668 47.5515997, 7.5996716 47.5516004, 7.599676 47.5515895, 7.599693 47.5515864, 7.599692 47.551584, 7.5996962 47.5515832, 7.5996972 47.5515856, 7.5997269 47.5515803, 7.5997259 47.5515779, 7.5997301 47.5515771, 7.599731 47.5515795, 7.5997472 47.5515766, 7.5997593 47.5515849, 7.5997619 47.5515831, 7.5997646 47.551585, 7.599762 47.5515867, 7.5997841 47.5516019, 7.5997867 47.5516001, 7.5997895 47.551602, 7.5997869 47.5516038, 7.5997988 47.5516121, 7.5997942 47.5516234, 7.5997979 47.5516241, 7.5997969 47.5516265, 7.5997932 47.5516258, 7.5997848 47.5516464, 7.5997885 47.5516471, 7.5997875 47.5516495, 7.5997838 47.5516488, 7.5997795 47.5516594, 7.5997887 47.5516657, 7.5997916 47.5516638, 7.5997942 47.5516655, 7.5997913 47.5516675, 7.5998135 47.5516828, 7.5998164 47.5516808, 7.599819 47.5516826, 7.5998161 47.5516845, 7.5998257 47.5516911, 7.5998413 47.5516883, 7.5998403 47.5516857, 7.5998439 47.5516851, 7.5998449 47.5516877, 7.5998615 47.5516847, 7.599874 47.551693, 7.5998766 47.5516912, 7.5998793 47.551693, 7.5998766 47.5516948, 7.5998987 47.5517099, 7.5999013 47.5517081, 7.5999041 47.5517101, 7.5999015 47.5517118, 7.5999235 47.5517269, 7.5999261 47.5517252, 7.5999291 47.5517272, 7.5999264 47.5517289, 7.5999485 47.5517441, 7.5999512 47.5517423, 7.599954 47.5517443, 7.5999513 47.551746, 7.5999611 47.5517527, 7.5999751 47.5517503, 7.5999742 47.5517478, 7.5999781 47.5517472, 7.599979 47.5517496, 7.5999958 47.5517467, 7.6000077 47.5517548, 7.6000103 47.5517531, 7.6000128 47.5517548, 7.6000102 47.5517566, 7.6000322 47.5517718, 7.6000349 47.55177, 7.6000378 47.551772, 7.6000351 47.5517738, 7.6000571 47.551789, 7.6000598 47.5517872, 7.6000625 47.5517891, 7.6000598 47.5517909, 7.6000813 47.5518057, 7.600084 47.5518039, 7.6000872 47.5518061, 7.6000845 47.5518079, 7.6000967 47.5518163, 7.600092 47.5518277, 7.6000956 47.5518283, 7.6000945 47.5518309, 7.6000909 47.5518302, 7.6000824 47.5518508, 7.600086 47.5518514, 7.6000851 47.5518537, 7.6000815 47.551853, 7.6000767 47.5518646, 7.60006 47.5518675, 7.6000609 47.55187, 7.600057 47.5518706, 7.6000561 47.5518682, 7.6000261 47.5518734, 7.6000271 47.5518759, 7.6000229 47.5518766, 7.600022 47.5518741, 7.5999918 47.5518794, 7.5999928 47.5518819, 7.5999888 47.5518826, 7.5999879 47.5518801, 7.5999578 47.5518854, 7.5999587 47.5518878, 7.599955 47.5518885, 7.5999541 47.551886, 7.5999367 47.5518891, 7.5999247 47.5518807, 7.5999221 47.5518825, 7.5999191 47.5518804, 7.5999218 47.5518787, 7.5999002 47.5518636, 7.5998975 47.5518654, 7.5998949 47.5518635, 7.5998975 47.5518617, 7.5998877 47.5518548, 7.5998744 47.5518575, 7.5998755 47.5518599, 7.5998715 47.5518607, 7.5998697 47.5518585, 7.5998513 47.5519019, 7.5998638 47.5519043, 7.5998675 47.5518989, 7.5998715 47.5518996, 7.5998711 47.5519056, 7.5999109 47.5519131, 7.5999148 47.5519077, 7.5999183 47.5519084, 7.5999175 47.5519143, 7.5999583 47.5519219, 7.5999621 47.5519166, 7.5999658 47.5519172, 7.5999649 47.5519231, 7.6000056 47.5519307, 7.6000094 47.5519254, 7.600013 47.5519261, 7.6000121 47.551932, 7.6000527 47.5519395, 7.6000568 47.5519342, 7.6000605 47.5519349, 7.6000593 47.5519408, 7.6000998 47.5519483, 7.6001037 47.551943, 7.6001074 47.5519437, 7.6001059 47.5519495, 7.600147 47.5519571, 7.6001513 47.5519519, 7.600155 47.5519526, 7.6001537 47.5519584, 7.6001651 47.5519596, 7.6001692 47.5519594, 7.6001699 47.5519577, 7.6001709 47.5519579, 7.6001194 47.5520849, 7.6001044 47.5520819, 7.6001008 47.5520873, 7.6000979 47.5520867, 7.6000981 47.5520807, 7.600057 47.5520731, 7.6000537 47.5520785, 7.6000501 47.5520778, 7.6000507 47.5520719, 7.6000103 47.5520644, 7.6000064 47.5520697, 7.6000032 47.5520691, 7.6000039 47.5520632, 7.5999633 47.5520556, 7.5999591 47.5520609, 7.5999557 47.5520603, 7.5999566 47.5520544, 7.5999158 47.5520468, 7.5999115 47.5520521, 7.5999084 47.5520515, 7.5999094 47.5520456, 7.5998683 47.552038, 7.5998642 47.5520433, 7.599861 47.5520427, 7.5998615 47.5520367, 7.5998383 47.5520324, 7.5998208 47.5520292, 7.5998172 47.5520345, 7.5998137 47.5520339, 7.5998137 47.5520278, 7.599774 47.5520205, 7.5997693 47.5520256, 7.599766 47.552025, 7.5997667 47.5520191, 7.5997262 47.5520116, 7.5997218 47.5520168, 7.5997186 47.5520162, 7.5997189 47.5520102, 7.5996788 47.5520028, 7.5996744 47.552008, 7.5996714 47.5520074, 7.5996717 47.5520014, 7.5996317 47.551994, 7.5996276 47.5519993, 7.5996243 47.5519987, 7.5996246 47.5519927, 7.5995844 47.5519852, 7.5995807 47.5519906, 7.5995772 47.5519899, 7.5995779 47.551984, 7.5995367 47.5519764, 7.5995324 47.5519816, 7.5995293 47.551981, 7.5995298 47.5519751, 7.5994894 47.5519676, 7.5994856 47.5519729, 7.5994821 47.5519723, 7.5994828 47.5519663, 7.5994698 47.5519639))";
+    if (t) unionPolygon = "POLYGON((7.599767 47.5526798,7.5997487 47.5526866,7.5994203 47.5526245,7.599491 47.5524535,7.5995463 47.5524639,7.5997672 47.5525058,7.5997611 47.5525208,7.5997976 47.5525277,7.5997457 47.5526517,7.599767 47.5526798))";
 
     unionPolygon = "POLYGON((8.2950902 47.0539674,8.2956315 47.0537371,8.2960512 47.0534912,8.2961082 47.0534977,8.2962449 47.0536413,8.2963513 47.0535908,8.2965773 47.0538069,8.2965222 47.0538302,8.2965716 47.0538872,8.2963323 47.0539958,8.2962183 47.0538755,8.296243 47.0538639,8.2960265 47.0536646,8.2959771 47.0536905,8.296338 47.0540644,8.2961708 47.0541459,8.2961177 47.0541045,8.2960588 47.0541317,8.296036 47.0541071,8.2960968 47.0540787,8.2958575 47.0538212,8.2958233 47.0538406,8.2958053 47.053824,8.2958404 47.0538043,8.2958252 47.0537888,8.2957283 47.0538445,8.2955384 47.0539221,8.2958423 47.054287,8.2959069 47.0542624,8.2958328 47.0541796,8.2959619 47.0541252,8.296055 47.0542197,8.2964044 47.054058,8.2964595 47.0541201,8.2961025 47.0542818,8.2959809 47.0543284,8.2955251 47.0544371,8.2950902 47.0539674))";
     unionPolygon = "POLYGON((7.5854178 47.5546641,7.5856047 47.5547157,7.5854861 47.5549134,7.5855174 47.5549418,7.58542 47.5549891,7.5854217 47.5549906,7.5853935 47.5550036,7.5853897 47.5549999,7.5852379 47.5549567,7.5852531 47.5549313,7.585316 47.5548265,7.5853835 47.5547142,7.5853943 47.5547036,7.5854178 47.5546641))";
@@ -2409,10 +2430,10 @@ function drawTestPolygon(t:any)
 
     let latlongs: L.LatLng[] = polygonStringToCoordinates(unionPolygon);
     console.log(latlongs);
-    console.log("string", t, JSON.stringify(latlongs, null, 2) );
+    console.log("string", t, JSON.stringify(latlongs, null, 2));
 
     let polygon = L.polygon(latlongs);
-    
+
     polygon.bindPopup(unionPolygon)
         .addTo(map);
 }
@@ -2421,11 +2442,11 @@ function drawTestPolygon(t:any)
 async function startMap()
 {
     polyFills();
-    
+
     // initMap();
     window.setTimeout(initMap, 100);
     // loadApertureColors();
-    
+
     if (window.removeEventListener)
         window.removeEventListener("message", receiveMessage, false);
     else
@@ -2447,7 +2468,7 @@ async function startMap()
             window.attachEvent("onmessage", receiveMessage);
         }
     }
-    
+
     await loadLegend();
 }
 
@@ -2461,27 +2482,27 @@ startMap();
 // polygon.bindTooltip("My Label", { permanent: true, className: "my-label", offset: [0, 0] });
 
 // https://wiki.openstreetmap.org/wiki/Slippy_map_tilenames#Lon..2Flat._to_tile_numbers_2
-function long2tile(lon:number, zoom:number) 
-{ 
-    return (Math.floor((lon+180)/360*Math.pow(2,zoom))); 
-}
-
-
-function lat2tile(lat:number, zoom:number)  
-{ 
-    return (Math.floor((1-Math.log(Math.tan(lat*Math.PI/180) + 1/Math.cos(lat*Math.PI/180))/Math.PI)/2 *Math.pow(2,zoom))); 
-}
-
-
-function tile2long(x:number, z:number) 
+function long2tile(lon: number, zoom: number) 
 {
-    return (x/Math.pow(2, z)*360-180);
+    return (Math.floor((lon + 180) / 360 * Math.pow(2, zoom)));
 }
 
-function tile2lat(y:number, z:number) 
+
+function lat2tile(lat: number, zoom: number)  
 {
-    let n=Math.PI-2*Math.PI*y/Math.pow(2,z);
-    return (180/Math.PI*Math.atan(0.5*(Math.exp(n)-Math.exp(-n))));
+    return (Math.floor((1 - Math.log(Math.tan(lat * Math.PI / 180) + 1 / Math.cos(lat * Math.PI / 180)) / Math.PI) / 2 * Math.pow(2, zoom)));
+}
+
+
+function tile2long(x: number, z: number) 
+{
+    return (x / Math.pow(2, z) * 360 - 180);
+}
+
+function tile2lat(y: number, z: number) 
+{
+    let n = Math.PI - 2 * Math.PI * y / Math.pow(2, z);
+    return (180 / Math.PI * Math.atan(0.5 * (Math.exp(n) - Math.exp(-n))));
 }
 
 
@@ -2492,10 +2513,10 @@ function foo()
 
     let x = L.marker(new L.LatLng(0, 0, 0));
     x.addTo(layerGroupNew);
-    
+
     // Extended LayerGroup that makes it easier to do the same thing to all its member layers:
     let featureGroupNew = new L.FeatureGroup().addTo(layerGroupNew);
-    
+
     /*
     L.featureGroup([marker1, marker2, polyline])
     .bindPopup('Hello world!')
@@ -2512,13 +2533,13 @@ function foo()
 function boundsFomDistance(lat: number, lon: number, distanceInMeters: number): L.LatLngBounds 
 {
 
-    function toRadians(val:number):number
+    function toRadians(val: number): number
     {
-        
+
         return (val / 180.0 * Math.PI);
     }
 
-    function toDegrees(val:number):number
+    function toDegrees(val: number): number
     {
         return val / Math.PI * 180.0;
     }
@@ -2528,7 +2549,7 @@ function boundsFomDistance(lat: number, lon: number, distanceInMeters: number): 
     let R = 6371.0088;  // earth radius in km
     let radius = distanceInMeters * 0.001; // km
 
-    
+
     let lon1 = lon - toDegrees(radius / R / Math.cos(toRadians(lat)));
     let lon2 = lon + toDegrees(radius / R / Math.cos(toRadians(lat)));
 
@@ -2610,16 +2631,16 @@ async function getBuildings()
 
     let xml = await getXml(url);
     // console.log("xml", xml);
-    
+
     // let hello = ``
     // let xml = (new DOMParser()).parseFromString(hello, "text/xml");
-    
-    
+
+
     let buildingsNodes: Element[] = Array.prototype.slice.call(xml.querySelectorAll('way tag[k="building"]')).map(function (x: Node) { return x.parentElement || x.parentNode });
     let nodes: Element[] = Array.prototype.slice.call(xml.querySelectorAll('node'));
     // console.log("buildingsNodes", buildingsNodes);
     // console.log("nodes", nodes);
-    
+
     let nodeDictionary: any = {};
     let buildings: any = {};
 
@@ -2636,7 +2657,7 @@ async function getBuildings()
         // console.log(buildings[i].id);
 
         let buildingNodes: Element[] = Array.prototype.slice.call(buildingsNodes[i].getElementsByTagName("nd"));
-        let coords:L.LatLng[] = [];
+        let coords: L.LatLng[] = [];
         for (let j = 0; j < buildingNodes.length; ++j)
         {
             let ref = buildingNodes[j].getAttribute("ref");
@@ -2698,7 +2719,7 @@ async function getBuildings()
     } // Next property 
 
 
-    
+
 
     // my.querySelector('way[id="28858269"]').getElementsByTagName("nd")
 
@@ -2781,8 +2802,8 @@ class GeographicOperations
         {
             if ((polygon[i].Lng > p.Lng) != (polygon[j].Lng > p.Lng)
                 && p.Lat <
-                      (polygon[j].Lat - polygon[i].Lat) * (p.Lng - polygon[i].Lng)
-                    / (polygon[j].Lng - polygon[i].Lng) + polygon[i].Lat)
+                (polygon[j].Lat - polygon[i].Lat) * (p.Lng - polygon[i].Lng)
+                / (polygon[j].Lng - polygon[i].Lng) + polygon[i].Lat)
             {
                 isInside = !isInside;
             } // End if 

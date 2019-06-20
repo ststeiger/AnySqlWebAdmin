@@ -146,8 +146,8 @@ namespace AnySqlWebAdmin
 
                             string pfxLocation = @"D:\lol\certificate.pfx";
                             string password = "";
-                            
-                            
+
+                            // RedmineMailService\RedmineMailService\CertSSL\SSL\CerGenerator.cs
                             if (System.Environment.OSVersion.Platform == System.PlatformID.Unix)
                                 pfxLocation = "/root/certs/certificate.pfx";
                             
@@ -180,10 +180,11 @@ namespace AnySqlWebAdmin
                 // .UseIISIntegration()
                 .UseStartup<Startup>()
                 .Build();
+
             // return WebHost.CreateDefaultBuilder(args).UseStartup<Startup>().Build(); 
         } // End Function BuildWebHost(string[] args) 
-        
-        
+
+
     } // End Class Program 
     
     

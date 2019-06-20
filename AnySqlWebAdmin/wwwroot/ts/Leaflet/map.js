@@ -1251,6 +1251,20 @@ function addDataLayer() {
         });
     });
 }
+function getSiteConfig() {
+    return __awaiter(this, void 0, void 0, function () {
+        return __generator(this, function (_a) {
+            return [2, {
+                    settings: {
+                        "mandant": "140",
+                        "logo": "helvetia23.png",
+                        language: "DE"
+                    },
+                    translations: {}
+                }];
+        });
+    });
+}
 function initMap() {
     return __awaiter(this, void 0, void 0, function () {
         var ml, southWest, northEast, bounds, scale, scalex;
@@ -1301,22 +1315,24 @@ function initMap() {
                             }
                         }
                     });
-                    map.on("contextmenu", function (e) {
-                        var container = document.createDocumentFragment();
-                        var title = document.createElement("span");
-                        title.setAttribute("style", "font-weight: bold;");
-                        title.appendChild(document.createTextNode("Hier können Sie"));
-                        container.appendChild(title);
-                        container.appendChild(document.createElement("br"));
-                        var menuOption = document.createElement("a");
-                        menuOption.addEventListener("click", addWerbetafel.bind(this, e.latlng.lat, e.latlng.lng));
-                        menuOption.appendChild(document.createTextNode("eine Leuchtreklame hinzufügen"));
-                        container.appendChild(menuOption);
-                        var popup = new L.Popup({ closeButton: true, autoClose: true })
-                            .setLatLng(e.latlng)
-                            .setContent(container);
-                        popup.openOn(map);
-                    });
+                    {
+                        map.on("contextmenu", function (e) {
+                            var container = document.createDocumentFragment();
+                            var title = document.createElement("span");
+                            title.setAttribute("style", "font-weight: bold;");
+                            title.appendChild(document.createTextNode("Hier können Sie"));
+                            container.appendChild(title);
+                            container.appendChild(document.createElement("br"));
+                            var menuOption = document.createElement("a");
+                            menuOption.addEventListener("click", addWerbetafel.bind(this, e.latlng.lat, e.latlng.lng));
+                            menuOption.appendChild(document.createTextNode("eine Leuchtreklame hinzufügen"));
+                            container.appendChild(menuOption);
+                            var popup = new L.Popup({ closeButton: true, autoClose: true })
+                                .setLatLng(e.latlng)
+                                .setContent(container);
+                            popup.openOn(map);
+                        });
+                    }
                     return [2];
             }
         });

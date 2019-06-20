@@ -96,6 +96,11 @@ namespace AnySqlWebAdmin
             app.UseSqlMiddleware();
 
             app.UseMvc();
+
+            // Will use url configured in 
+            // AnySqlWebAdmin\AnySqlWebAdmin\Properties\launchSettings.json 
+            // "launchUrl": "api/values", if value is present 
+            // type, cs, db, query
         } // End Sub Configure 
 
 
