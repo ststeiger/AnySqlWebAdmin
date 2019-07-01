@@ -93,6 +93,7 @@ namespace Tools.XML
             
             System.Xml.Serialization.XmlSerializerNamespaces ns = GetSerializerNamespaces(ThisTypeInstance.GetType());
             System.Xml.Serialization.XmlSerializer serializer = new System.Xml.Serialization.XmlSerializer(ThisTypeInstance.GetType());
+            
 
             using (System.IO.TextWriter twTextWriter = tw)
             {

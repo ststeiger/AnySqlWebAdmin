@@ -78,7 +78,14 @@ namespace AnySqlDataFeed
                     }
                     */
 
-                    Tools.XML.Serialization.SerializeToXml(tableList, response.Body);
+                    
+                    using (System.IO.TextWriter tw = new System.IO.StreamWriter(response.Body, System.Text.Encoding.UTF8))
+                    {
+                        Tools.XML.Serialization.SerializeToXml(tableList, tw);
+                    } // End Using tw 
+
+
+                    
                 } // End if (m_objectToSerialize != null) 
 
                 await System.Threading.Tasks.Task.CompletedTask;
