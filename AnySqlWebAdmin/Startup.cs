@@ -67,11 +67,6 @@ namespace AnySqlWebAdmin
             // app.UseAuthentication();
 
 
-            // if (env.IsDevelopment()) { app.UseDeveloperExceptionPage(); }
-
-            // app.UseStatusCodePages();
-            app.UseErrorHandlingMiddleware();
-
             // var options = new Microsoft.AspNetCore.Rewrite.RewriteOptions().AddRedirectToHttps(
             //     Microsoft.AspNetCore.Http.StatusCodes.Status301MovedPermanently, 44384);
             // app.UseRewriter(options);
@@ -94,8 +89,17 @@ namespace AnySqlWebAdmin
             app.UseStaticFiles();
             // app.UseMiddleware<SqlMiddleware>();
             app.UseSqlMiddleware();
-
+            app.UseDataFeedMiddleware();
+            
             app.UseMvc();
+
+
+            // if (env.IsDevelopment()) { app.UseDeveloperExceptionPage(); }
+
+            // app.UseStatusCodePages();
+            app.UseErrorHandlingMiddleware();
+
+
 
             // Will use url configured in 
             // AnySqlWebAdmin\AnySqlWebAdmin\Properties\launchSettings.json 
