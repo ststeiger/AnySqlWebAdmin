@@ -40,8 +40,7 @@ namespace Tools.XML
                 get { return encoding; }
             }
         }
-
-
+        
 
         public static string SerializeToXml<T>(T ThisTypeInstance)
         {

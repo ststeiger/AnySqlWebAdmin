@@ -1513,7 +1513,7 @@ function boundingBox(latitudeInDegrees, longitudeInDegrees, halfSideInKm) {
 }
 function getBuildings() {
     return __awaiter(this, void 0, void 0, function () {
-        var bb, area, OSM_API_VERSION, url, xml, buildingsNodes, nodes, nodeDictionary, buildings, i, nodeId, i, buildingNodes, coords, j, ref, wayId, property, thisBuilding, contentString, popup;
+        var bb, area, OSM_API_VERSION, url, xml, buildingsNodes, nodes, nodeDictionary, buildings, i, nodeId, i, buildingNodes, coords, j, ref, wayId, property, myway, thisBuilding, contentString, popup;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
@@ -1549,9 +1549,10 @@ function getBuildings() {
                     }
                     for (property in buildings) {
                         if (buildings.hasOwnProperty(property)) {
-                            thisBuilding = L.polygon(buildings[property], { className: 'osm_data_polygon' });
+                            myway = "osm_data_polygon";
+                            thisBuilding = L.polygon(buildings[property], { className: myway });
                             thisBuilding.addTo(map);
-                            contentString = "area: ~" + thousandSeparator(polygonArea(buildings[property])) + "m<sup>2</sup></br>GPS:</br>";
+                            contentString = "OSM way-id: " + property + "<br />" + "area: ~" + thousandSeparator(polygonArea(buildings[property])) + "m<sup>2</sup><br />GPS:<br />";
                             contentString += CreateSqlPolygon(buildings[property]);
                             popup = new L.Popup()
                                 .setContent(contentString);

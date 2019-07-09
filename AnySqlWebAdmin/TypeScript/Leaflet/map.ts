@@ -2679,10 +2679,23 @@ async function getBuildings()
         if (buildings.hasOwnProperty(property))
         {
             // console.log(property, buildings[property]);
-            let thisBuilding = L.polygon(buildings[property], { className: 'osm_data_polygon' /*, "__color": "red", "__dashArray": '10,10'*/ });
+
+            // class for polygon  - different color when nearest polygon to position as per manual selection (property ===)
+            let myway = "osm_data_polygon";
+            //if (property === "218003784")
+            //if (property === "192704208") 
+            //if (property === "192704206") 
+            // if (property === "192482861") 
+            // if (property === "192725294")
+                // myway = "osm_data_polygon_nearest";
+            
+
+
+            // let thisBuilding = L.polygon(buildings[property], { className: 'osm_data_polygon' /*, "__color": "red", "__dashArray": '10,10'*/ });
+            let thisBuilding = L.polygon(buildings[property], { className: myway /*, "__color": "red", "__dashArray": '10,10'*/ });
             thisBuilding.addTo(map);
 
-            let contentString = "area: ~" + thousandSeparator(polygonArea(buildings[property])) + "m<sup>2</sup></br>GPS:</br>";
+            let contentString = "OSM way-id: " + property + "<br />" + "area: ~" + thousandSeparator(polygonArea(buildings[property])) + "m<sup>2</sup><br />GPS:<br />";
             contentString += CreateSqlPolygon(buildings[property]);
 
             /*

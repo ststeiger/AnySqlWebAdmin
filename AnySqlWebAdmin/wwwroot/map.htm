@@ -213,22 +213,36 @@
         }
         */
 
-        .osm_data_polygon 
-        {
+        .osm_data_polygon {
             fill: green;
             opacity: 1;
         }
 
-        .osm_data_polygon:hover 
-        {
-            fill: palegoldenrod;
+            .osm_data_polygon:hover {
+                fill: palegoldenrod;
+                opacity: 1;
+            }
+
+            .osm_data_polygon.active {
+                fill: #58ff00;
+            }
+
+
+
+
+        .osm_data_polygon_nearest {
+            fill: hotpink;
             opacity: 1;
         }
 
-        .osm_data_polygon.active 
-        {
-            fill: #58ff00;
-        }
+            .osm_data_polygon_nearest:hover {
+                fill: hotpink;
+                opacity: 1;
+            }
+
+            .osm_data_polygon_nearest.active {
+                fill: hotpink;
+            }
 
     </style>
     

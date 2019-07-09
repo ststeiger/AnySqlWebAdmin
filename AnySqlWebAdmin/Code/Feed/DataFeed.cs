@@ -72,7 +72,7 @@ namespace AnySqlDataFeed
                         xw.WriteEndElement(); // title
                         xw.WriteEndElement(); // collection
 
-
+                        
                         xw.WriteEndElement(); // workspace
                         xw.WriteEndDocument();
                     }
@@ -84,8 +84,6 @@ namespace AnySqlDataFeed
                         Tools.XML.Serialization.SerializeToXml(tableList, tw);
                     } // End Using tw 
 
-
-                    
                 } // End if (m_objectToSerialize != null) 
 
                 await System.Threading.Tasks.Task.CompletedTask;
