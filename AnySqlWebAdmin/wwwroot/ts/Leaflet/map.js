@@ -256,8 +256,9 @@ function spreadMessage(object) {
         }
     })();
     console.log("inFrame", inFrame);
-    if (inFrame)
-        Portal.Global.spreadMessage(object);
+    if (inFrame) {
+        window.top.Portal.Global.spreadMessage(object);
+    }
     else {
         window.postMessage(JSON.stringify(object), '*');
     }
@@ -865,7 +866,9 @@ function zoomIn(uid) {
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
-                    boundsUrl = "../ajax/AnySelect.ashx?sql=Maps.ObjectBounds.sql&obj_uid=";
+                    boundsUrl = "../ajax/AnySelect.ashx?sql=Maps.ObjectBounds.sql&obj_uid={@obj_uid}&in_stichtag={@stichtag}";
+                    boundsUrl = replaceAll(boundsUrl, "{@obj_uid}", uid);
+                    boundsUrl = replaceAll(boundsUrl, "{@stichtag}", (new Date()).getTime().toString());
                     boundsUrl = SetDefaultVariables(boundsUrl);
                     return [4, getData(boundsUrl)];
                 case 1:
@@ -1510,6 +1513,24 @@ function boundingBox(latitudeInDegrees, longitudeInDegrees, halfSideInKm) {
     var lonMin = lon - halfSide / pradius;
     var lonMax = lon + halfSide / pradius;
     return new L.LatLngBounds(new L.LatLng(rad2deg(latMin), rad2deg(lonMin)), new L.LatLng(rad2deg(latMax), rad2deg(lonMax)));
+}
+function replaceAll(str, find, newToken, ignoreCase) {
+    var i = -1;
+    if (!str) {
+        if ((str == null) && (find == null))
+            return newToken;
+        return str;
+    }
+    if (!find)
+        return str;
+    ignoreCase = ignoreCase || false;
+    find = ignoreCase ? find.toLowerCase() : find;
+    while ((i = (ignoreCase ? str.toLowerCase() : str).indexOf(find, i >= 0 ? i + newToken.length : 0)) !== -1) {
+        str = str.substring(0, i) +
+            newToken +
+            str.substring(i + find.length);
+    }
+    return str;
 }
 function getBuildings() {
     return __awaiter(this, void 0, void 0, function () {

@@ -479,7 +479,9 @@ function spreadMessage(object: any)
     console.log("inFrame", inFrame);
 
     if (inFrame)
-        Portal.Global.spreadMessage(object);
+    { 
+        window.top.Portal.Global.spreadMessage(object);
+    }
     else
     {
         //window.postMessage(JSON.stringify({ "msg": "Hello world" }), '*');
@@ -1523,8 +1525,12 @@ interface IObjectBoundsTable
 async function zoomIn(uid: string)
 {
     // console.log("zoomIn", uid);
-    let boundsUrl = "../ajax/AnySelect.ashx?sql=Maps.ObjectBounds.sql&obj_uid=";
+    let boundsUrl = "../ajax/AnySelect.ashx?sql=Maps.ObjectBounds.sql&obj_uid={@obj_uid}&in_stichtag={@stichtag}";
+    boundsUrl = replaceAll(boundsUrl, "{@obj_uid}", uid);
+    // window.top.document.getElementById("iMenuLeft").contentDocument.getElementById("inDatum").value
+    boundsUrl = replaceAll(boundsUrl, "{@stichtag}", (new Date()).getTime().toString());
     boundsUrl = SetDefaultVariables(boundsUrl);
+
 
     let result = await getData(boundsUrl);
     // console.log(result);
@@ -2614,6 +2620,42 @@ function boundingBox(latitudeInDegrees: number, longitudeInDegrees: number, half
 
 // boundsFomDistance(47.430383, 9.378554, 50)
 // boundingBox(47.430383, 9.378554, 0.050)
+
+
+function replaceAll(str: string, find: string, newToken: string, ignoreCase?:boolean)
+{
+    let i: number = -1;
+    
+    if (!str)
+    {
+        // Instead of throwing, act as COALESCE if find == null/empty and str == null
+        if ((str == null) && (find == null))
+            return newToken;
+
+        return str;
+    }
+
+    if (!find) // sanity check 
+        return str;
+
+    ignoreCase = ignoreCase || false;
+    find = ignoreCase ? find.toLowerCase() : find;
+
+    while (
+        (
+            i = (ignoreCase ? str.toLowerCase() : str).indexOf(
+                find, i >= 0 ? i + newToken.length : 0)
+        ) !== -1
+    )
+    {
+        str = str.substring(0, i) +
+            newToken +
+            str.substring(i + find.length);
+    } // Whend 
+
+    return str;
+}
+
 
 async function getBuildings()
 {
