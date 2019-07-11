@@ -1,10 +1,20 @@
 ﻿
+-- DECLARE @in_stichtag bigint; 
+-- SET @in_stichtag = 1562850247556; 
+-- SET @in_stichtag = NULL 
+
+
 -- DECLARE @obj_uid uniqueidentifier 
 -- SET @obj_uid = 'E54C4E15-55CC-4B9A-9EE7-01002E721504' -- Land 
 -- SET @obj_uid = '3E7C328D-9807-48A7-8DCC-014E8573CA59' -- Ort 
 -- SET @obj_uid = '5F8170F6-A92C-4633-AED5-0D7ADA97C6DB' -- SO 
 -- SET @obj_uid = '921A3415-51A1-431B-B12B-00AE5E867ABE' -- GB 
--- SET @obj_uid = 'DB14B864-6F96-41B9-BD22-51EAEABC46B9'
+-- SET @obj_uid = 'DB14B864-6F96-41B9-BD22-51EAEABC46B9' 
+
+
+DECLARE @stichtag datetime; 
+SET @stichtag = dbo.fu_dtFromEcmaTimeStamp(CAST(@in_stichtag AS bigint), 1); 
+
 
 SELECT 
 	 'LD' AS OBJT_UID 
@@ -20,13 +30,14 @@ SELECT
 	,T_AP_Ref_Land.LD_MAX_Lng AS OBJ_Max_Lng 
 FROM T_AP_Ref_Land  
 WHERE T_AP_Ref_Land.LD_UID = @obj_uid 
+-- AND ISNULL(T_AP_Ref_Land.LD_Status, 1) <> 99 
 
 
 UNION ALL 
 
 
 SELECT 
-	 'ORT' AS OBJT_UID 
+	'ORT' AS OBJT_UID 
 	,T_AP_Ref_Ort.ORT_UID AS OBJ_UID 
 	 
 	,T_AP_Ref_Ort.ORT_GM_Lat AS OBJ_Lat 
@@ -39,6 +50,7 @@ SELECT
 	,ORT_Max_Lng AS OBJ_Max_Lng 
 FROM T_AP_Ref_Ort 
 WHERE T_AP_Ref_Ort.ORT_UID = @obj_uid 
+-- AND ISNULL(T_AP_Ref_Ort.ORT_Status, 1) <> 99 
 
 
 UNION ALL 
@@ -66,8 +78,13 @@ SELECT
 FROM T_AP_Standort 
 
 LEFT JOIN T_AP_Gebaeude 
-	ON T_AP_Gebaeude.GB_SO_UID = T_AP_Standort.SO_UID 
-	AND T_AP_Gebaeude.GB_Status <> 99 
+	ON (T_AP_Gebaeude.GB_SO_UID = T_AP_Standort.SO_UID) 
+	AND (ISNULL(T_AP_Gebaeude.GB_Status, 1) <> 99) 
+	AND ( 
+		(@stichtag BETWEEN T_AP_Gebaeude.GB_DatumVon AND T_AP_Gebaeude.GB_DatumBis) 
+		OR 
+		(@stichtag IS NULL)
+	)
 	AND 
 	(
 		-- 1=2 AND 

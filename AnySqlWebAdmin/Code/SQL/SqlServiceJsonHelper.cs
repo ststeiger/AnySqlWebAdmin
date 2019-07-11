@@ -175,7 +175,8 @@ namespace AnySqlWebAdmin
                                 if (format.HasFlag(RenderType_t.Indented))
                                     jsonWriter.Formatting = Newtonsoft.Json.Formatting.Indented;
 
-                                context.Response.StatusCode = (int) System.Net.HttpStatusCode.OK;
+
+                                context.Response.StatusCode = (int)System.Net.HttpStatusCode.OK;
                                 context.Response.ContentType = "application/json";
 
 

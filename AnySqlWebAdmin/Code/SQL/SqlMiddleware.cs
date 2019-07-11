@@ -28,7 +28,9 @@ namespace AnySqlWebAdmin
         public async System.Threading.Tasks.Task Invoke(Microsoft.AspNetCore.Http.HttpContext context)
         {
             // Do some request logic here.
-            await this._next.Invoke(context).ConfigureAwait(false);
+            // await this._next.Invoke(context).ConfigureAwait(false);
+
+
             // Do some response logic here.
             // context.Response.StatusCode = (int)System.Net.HttpStatusCode.InternalServerError;
             // throw new Exception("YaY");
