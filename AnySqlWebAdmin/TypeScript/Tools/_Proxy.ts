@@ -7,7 +7,7 @@
 // https://stackoverflow.com/questions/44058726/is-the-fetch-api-an-ecmascript-feature
 // https://www.npmjs.com/package/node-fetch
 
-declare type PropertyKey = string | number | symbol;
+// declare type PropertyKey = string | number | symbol;
 
 interface Iterable<T>
 {}

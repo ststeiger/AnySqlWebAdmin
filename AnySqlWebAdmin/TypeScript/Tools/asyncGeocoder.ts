@@ -34,10 +34,10 @@ async function geoCode(address: string)
 // http://benalman.com/projects/jquery-postmessage-plugin/
 // http://benalman.com/code/projects/jquery-postmessage/docs/files/jquery-ba-postmessage-js.html
 
-// .data – A string holding the message passed from the other window.
-// .domain (origin?) – The domain name of the window that sent the message.
-// .uri – The full URI for the window that sent the message.
-// .source – A reference to the window object of the window that sent the message.
+// .data ï¿½ A string holding the message passed from the other window.
+// .domain (origin?) ï¿½ The domain name of the window that sent the message.
+// .uri ï¿½ The full URI for the window that sent the message.
+// .source ï¿½ A reference to the window object of the window that sent the message.
 async function receiveMessage(evt:MessageEvent)
 {
     let message;
@@ -76,8 +76,20 @@ async function receiveMessage(evt:MessageEvent)
     console.log("wanna know", received.content.address);
     payload.content = <any> await geoCode(received.content.address);
 
-    // evt.source.postMessage("thanks, got it (" + evt.data + ")", "*");
-    evt.source.postMessage(JSON.stringify(payload), "*");
+
+    // https://github.com/Microsoft/TypeScript/issues/26403
+    // Before you can post a message to a MessageEventSource, 
+    // you need to know whether it is a Window 
+    // (which requires a targetOrigin parameter) 
+    // or a MessagePort or ServiceWorker 
+    // (which does not accept a targetOrigin parameter).
+    if (evt.source instanceof Window) 
+    {
+        // evt.source.postMessage('message', 'origin');
+        // evt.source.postMessage("thanks, got it (" + evt.data + ")", "*");
+        evt.source.postMessage(JSON.stringify(payload), "*");
+    }
+
 } // End Function ReceiveMessage 
 
 
