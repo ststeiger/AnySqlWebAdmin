@@ -45,7 +45,6 @@ async function postMessageAsync<T>(targetWindow:Window, data:any)
     let persist = this;
     let payloadData: any = null;
     
-    // let targetWindow = document.getElementById("ifrmChild").contentWindow;
     if (!persist.callbackStorage)
         persist.callbackStorage = {};
 
@@ -115,17 +114,18 @@ async function testPostMessage()
 {
     try
     {
-        let targetWindow = (<HTMLIFrameElement>document.getElementById("ifrmChild")).contentWindow;
+        let targetWindow = document.getElementById<HTMLIFrameElement>("ifrmChild").contentWindow;
 
-        let answer = await postMessageAsync<any>(targetWindow, { "address": "Fabrikstrasse 1, CH-8586 Erlen, Switzerland" });
+        let answer = await postMessageAsync<google.maps.GeocoderResult[]>(targetWindow, { "address": "Fabrikstrasse 1, CH-8586 Erlen, Switzerland" });
+
         console.log("answer: ", answer);
         console.log("location.lat: ", answer[0].geometry.location.lat);
         console.log("location.lng: ", answer[0].geometry.location.lng);
 
-        console.log("viewport.s: ", answer[0].geometry.viewport.south);
-        console.log("viewport.w: ", answer[0].geometry.viewport.west);
-        console.log("viewport.n: ", answer[0].geometry.viewport.north);
-        console.log("viewport.e: ", answer[0].geometry.viewport.east);
+        console.log("viewport.s: ", (<google.maps.LatLngBoundsLiteral><any>answer[0].geometry.viewport).south);
+        console.log("viewport.w: ", (<google.maps.LatLngBoundsLiteral><any>answer[0].geometry.viewport).west);
+        console.log("viewport.n: ", (<google.maps.LatLngBoundsLiteral><any>answer[0].geometry.viewport).north);
+        console.log("viewport.e: ", (<google.maps.LatLngBoundsLiteral><any>answer[0].geometry.viewport).east);
     }
     catch (err)
     {
