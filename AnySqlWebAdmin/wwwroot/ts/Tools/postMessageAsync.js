@@ -33,7 +33,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-function createTimeoutPromise(timeout, executor) {
+function createTimeoutPromise1(timeout, executor) {
     var promiseA = new Promise(function (resolve, reject) {
         var wait = setTimeout(function () {
             clearTimeout(wait);
@@ -43,50 +43,79 @@ function createTimeoutPromise(timeout, executor) {
     var promiseB = new Promise(executor);
     return Promise.race([promiseA, promiseB]);
 }
-function testPromise() {
+function newid() {
+    function S4() { return (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1); }
+    return (S4() + S4() + "-" + S4() + "-" + S4() + "-" + S4() + "-" + S4() + S4() + S4());
+}
+function postMessageAsync(targetWindow, data) {
     return __awaiter(this, void 0, void 0, function () {
-        var testResult, err_1;
+        function postMessageAnswerHandler(resolve, reject) {
+            console.log('[processPromise]', data);
+            persist.callbackStorage[id] = function (event) {
+                try {
+                    console.log('[iframeResponse]', event.source, event.data);
+                    var response = JSON.parse(event.data);
+                    if (response.inResponseTo === id) {
+                        try {
+                            window.removeEventListener('message', persist.callbackStorage[id], false);
+                            delete persist.callbackStorage[id];
+                            resolve(response.content);
+                        }
+                        catch (ex) {
+                            reject(ex);
+                        }
+                    }
+                }
+                catch (err) {
+                    reject(err);
+                }
+            };
+            window.addEventListener('message', persist.callbackStorage[id], false);
+            targetWindow.postMessage(JSON.stringify(payloadData), '*');
+        }
+        var persist, payloadData, id;
+        return __generator(this, function (_a) {
+            persist = this;
+            payloadData = null;
+            if (!persist.callbackStorage)
+                persist.callbackStorage = {};
+            id = newid();
+            while (persist.callbackStorage[id] != null) {
+                id = newid();
+            }
+            payloadData = {
+                "messageId": id,
+                "content": data
+            };
+            return [2, createTimeoutPromise(5000, postMessageAnswerHandler)];
+        });
+    });
+}
+function testPostMessage() {
+    return __awaiter(this, void 0, void 0, function () {
+        var targetWindow, answer, err_1;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
                     _a.trys.push([0, 2, , 3]);
-                    return [4, createTimeoutPromise(200, function (resolve, reject) {
-                            var wait = setTimeout(function () {
-                                clearTimeout(wait);
-                                resolve('Promise B win!');
-                            }, 400);
-                        })];
+                    targetWindow = document.getElementById("ifrmChild").contentWindow;
+                    return [4, postMessageAsync(targetWindow, { "address": "Fabrikstrasse 1, CH-8586 Erlen, Switzerland" })];
                 case 1:
-                    testResult = _a.sent();
-                    console.log(testResult);
+                    answer = _a.sent();
+                    console.log("answer: ", answer);
+                    console.log("location.lat: ", answer[0].geometry.location.lat);
+                    console.log("location.lng: ", answer[0].geometry.location.lng);
+                    console.log("viewport.s: ", answer[0].geometry.viewport.south);
+                    console.log("viewport.w: ", answer[0].geometry.viewport.west);
+                    console.log("viewport.n: ", answer[0].geometry.viewport.north);
+                    console.log("viewport.e: ", answer[0].geometry.viewport.east);
                     return [3, 3];
                 case 2:
                     err_1 = _a.sent();
-                    console.log("Timeout: ", err_1, err_1.name, err_1.stack, err_1.message);
+                    console.log("error in testPostMessage:", err_1);
                     return [3, 3];
                 case 3:
-                    console.log("End Sub testPromise");
-                    return [2];
-            }
-        });
-    });
-}
-function sleep(interval) {
-    return new Promise(function (resolve, reject) {
-        var wait = setTimeout(function () {
-            clearTimeout(wait);
-            resolve();
-        }, interval);
-    });
-}
-function testSleep() {
-    return __awaiter(this, void 0, void 0, function () {
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0: return [4, sleep(5000)];
-                case 1:
-                    _a.sent();
-                    console.log("i waited 5 seconds");
+                    console.log('End [testPostMessage]');
                     return [2];
             }
         });
