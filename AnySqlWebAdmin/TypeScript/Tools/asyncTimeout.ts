@@ -1,6 +1,12 @@
 
-function createTimeoutPromise<T>(timeout:number, executor: (resolve: (value?: T) => void, reject: (reason?: any) => void) => void)
-  :Promise<T>
+// https://stackoverflow.com/questions/29996145/visual-studio-code-compile-on-save
+// CTRL + SHIFT + B
+// tsc: watch - tsconfig.json
+
+function createTimeoutPromise<T>(timeout:number, executor: (
+    resolve: (value?: T) => void, reject: (reason?: any) => void
+    ) => void
+  ) :Promise<T>
 {
   // Will resolve after 200ms
   let promiseA = new Promise(
@@ -10,7 +16,7 @@ function createTimeoutPromise<T>(timeout:number, executor: (resolve: (value?: T)
         function()  
         {
           clearTimeout(wait);
-          reject('Promise timed out !');
+          reject(new Error(`Promise timed out ! (timeout = ${timeout})`));
         }, timeout);
     }
   );
@@ -23,11 +29,11 @@ function createTimeoutPromise<T>(timeout:number, executor: (resolve: (value?: T)
 }
 
 
-
-
-async function bar()
+async function testPromise()
 {
-  let foo = await createTimeoutPromise(200,
+  try
+  {
+    let testResult = await createTimeoutPromise(200,
       function(resolve:(x:string)=> void, reject:(x:string)=> void)
       {
         let wait = setTimeout(
@@ -37,9 +43,16 @@ async function bar()
               resolve('Promise B win!');
             }, 400);
       }
-  );
-  
-  console.log(foo)
+    );
+    
+    console.log(testResult);
+  }
+  catch(err)
+  {
+    console.log("Timeout: ", err, err.name, err.stack, err.message);
+  }
+
+  console.log("End Sub testPromise");
 }
 
 

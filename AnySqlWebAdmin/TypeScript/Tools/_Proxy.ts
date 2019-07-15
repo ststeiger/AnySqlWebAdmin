@@ -9,6 +9,9 @@
 
 // declare type PropertyKey = string | number | symbol;
 
+interface Iterable<T>
+{}
+
 
 interface ProxyHandler<T extends object>
 {

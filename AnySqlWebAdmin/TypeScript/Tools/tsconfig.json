@@ -13,6 +13,7 @@
     // "module": "commonjs",
     "lib": [
       "dom",
+      // "dom.iterable",
       "es5",
       "es2015.promise"
       //,"es2015.proxy"
