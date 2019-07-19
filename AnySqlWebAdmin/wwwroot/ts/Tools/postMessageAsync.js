@@ -13,8 +13,8 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     function step(op) {
         if (f) throw new TypeError("Generator is already executing.");
         while (_) try {
-            if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
-            if (y = 0, t) op = [op[0] & 2, t.value];
+            if (f = 1, y && (t = y[op[0] & 2 ? "return" : op[0] ? "throw" : "next"]) && !(t = t.call(y, op[1])).done) return t;
+            if (y = 0, t) op = [0, t.value];
             switch (op[0]) {
                 case 0: case 1: t = op; break;
                 case 4: _.label++; return { value: op[1], done: false };
@@ -105,10 +105,10 @@ function testPostMessage() {
                     console.log("answer: ", answer);
                     console.log("location.lat: ", answer[0].geometry.location.lat);
                     console.log("location.lng: ", answer[0].geometry.location.lng);
-                    console.log("viewport.s: ", answer[0].geometry.viewport.south);
-                    console.log("viewport.w: ", answer[0].geometry.viewport.west);
-                    console.log("viewport.n: ", answer[0].geometry.viewport.north);
-                    console.log("viewport.e: ", answer[0].geometry.viewport.east);
+                    console.log("viewport.south: ", answer[0].geometry.viewport.south);
+                    console.log("viewport.west: ", answer[0].geometry.viewport.west);
+                    console.log("viewport.north: ", answer[0].geometry.viewport.north);
+                    console.log("viewport.east: ", answer[0].geometry.viewport.east);
                     return [3, 3];
                 case 2:
                     err_1 = _a.sent();

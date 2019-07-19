@@ -122,10 +122,10 @@ async function testPostMessage()
         console.log("location.lat: ", answer[0].geometry.location.lat);
         console.log("location.lng: ", answer[0].geometry.location.lng);
 
-        console.log("viewport.s: ", (<google.maps.LatLngBoundsLiteral><any>answer[0].geometry.viewport).south);
-        console.log("viewport.w: ", (<google.maps.LatLngBoundsLiteral><any>answer[0].geometry.viewport).west);
-        console.log("viewport.n: ", (<google.maps.LatLngBoundsLiteral><any>answer[0].geometry.viewport).north);
-        console.log("viewport.e: ", (<google.maps.LatLngBoundsLiteral><any>answer[0].geometry.viewport).east);
+        console.log("viewport.south: ", (<google.maps.LatLngBoundsLiteral><any>answer[0].geometry.viewport).south);
+        console.log("viewport.west: ", (<google.maps.LatLngBoundsLiteral><any>answer[0].geometry.viewport).west);
+        console.log("viewport.north: ", (<google.maps.LatLngBoundsLiteral><any>answer[0].geometry.viewport).north);
+        console.log("viewport.east: ", (<google.maps.LatLngBoundsLiteral><any>answer[0].geometry.viewport).east);
     }
     catch (err)
     {
