@@ -147,6 +147,15 @@
                                     <span class="value">bigint</span>
                                     <span class="label">64 Bit from appx. -9×10<sup>18</sup> to 9×10<sup>18</sup></span>
                                 </li>
+
+                                <li title="uniqueidentifier
+
+WARNING:
+Comparison operators cannot be used with uniqueidentifier values.
+Uniqueidentifier not supported by polybase and DWloader loading tool for Parallel Data Warehouse" class="option" data-value="uniqueidentifier">
+                                    <span class="value">uniqueidentifier</span>
+                                    <span class="label">128 bit from 0 to 2<sup>128</sup>-1 (3.4×10<sup>38</sup>)</span>
+                                </li>
                             </ul>
                         </details>
                     </li>
@@ -253,20 +262,6 @@ The precision of the latitude part does not increase so much." class="option" da
                                     <span class="value">geometry</span>
                                     <span class="label">unknown</span>
                                 </li>
-                                <li title="xml
-Tools &gt; Options &gt; Query Results &gt; SQL Server &gt; Results to Text &gt; Maximum number of characters displayed in each column
-Tools &gt; Options &gt; Query Results &gt; SQL Server &gt; Results to Grid &gt; Maximum Characters Retrieved" class="option" data-value="xml">
-                                    <span class="value">xml</span>
-                                    <span class="label">Cannot exceed 2 gigabytes (GB) in size.</span>
-                                </li>
-                                <li title="uniqueidentifier
-
-WARNING:
-Comparison operators cannot be used with uniqueidentifier values.
-Uniqueidentifier not supported by polybase and DWloader loading tool for Parallel Data Warehouse" class="option" data-value="uniqueidentifier">
-                                    <span class="value">uniqueidentifier</span>
-                                    <span class="label">unknown</span>
-                                </li>
                             </ul>
                         </details>
                     </li>
@@ -279,6 +274,25 @@ Uniqueidentifier not supported by polybase and DWloader loading tool for Paralle
                         <details open>
                             <summary>Binary</summary>
                             <ul>
+                                <li title="binary [ ( n ) ]
+Binary data of indicated length.
+n can be a value from 1 through 8'000.
+                                        " class="option" data-value="binary(N)">
+                                    <span class="value">binary(32)</span>
+                                    <span class="label">up to 2<sup>31</sup>-1 bytes (2GB)</span>
+                                </li>
+
+                                <li title="varbinary [ ( n | max) ]
+Variable-length binary data.
+n can be a value from 1 through 8'000.
+max indicates that the maximum storage size is 2^31-1 bytes.
+The storage size is the actual length of the data entered + 2 bytes.
+The data that is entered can be 0 bytes in length.
+The ANSI SQL synonym for varbinary is binary varying.
+                                        " class="option" data-value="varbinary(MAX)">
+                                    <span class="value">varbinary(8000)</span>
+                                    <span class="label">up to 2<sup>31</sup>-1 bytes (2GB)</span>
+                                </li>
                                 <li title="varbinary [ ( n | max) ]
 Variable-length binary data.
 n can be a value from 1 through 8'000.
@@ -377,6 +391,12 @@ Use nvarchar(max), varchar(max), and varbinary(max) instead." class="option" dat
                                     <span class="label">deprecated - use nvarchar(MAX)</span>
                                 </li>
 
+                                <li title="xml
+Tools &gt; Options &gt; Query Results &gt; SQL Server &gt; Results to Text &gt; Maximum number of characters displayed in each column
+Tools &gt; Options &gt; Query Results &gt; SQL Server &gt; Results to Grid &gt; Maximum Characters Retrieved" class="option" data-value="xml">
+                                    <span class="value">xml</span>
+                                    <span class="label">Cannot exceed 2 gigabytes (GB) in size.</span>
+                                </li>
                             </ul>
                         </details>
                     </li>

@@ -54,11 +54,11 @@ document.addEventListener('DOMContentLoaded', function ()
         list.addEventListener('blur', function (event:FocusEvent)
         {
             console.log('blur');
-            /*
+            /**/
             setTimeout(function () {
                 listOptions.setAttribute('hidden', 'true');
             }, 100); // old 1200
-            */
+            
 
         });
 

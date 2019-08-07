@@ -27,6 +27,9 @@ document.addEventListener('DOMContentLoaded', function () {
         });
         list.addEventListener('blur', function (event) {
             console.log('blur');
+            setTimeout(function () {
+                listOptions.setAttribute('hidden', 'true');
+            }, 100);
         });
         list.addEventListener('input', function (event) {
             var value = event.target.value;
