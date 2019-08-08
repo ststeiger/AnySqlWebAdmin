@@ -168,12 +168,12 @@ namespace Tree
                                     innerHTML: item.label
                                 })
                             )
-                                .addEventListener('click'
+                            .addEventListener('click'
                                 , item.action.bind(
                                     item
                                     , (<HTMLElement>evt.target).parentElement.getAttribute('data-vtree-id')
                                 )
-                                );
+                            );
                         }.bind(this));
 
                         (<HTMLElement>evt.target).parentElement.appendChild(menu);
