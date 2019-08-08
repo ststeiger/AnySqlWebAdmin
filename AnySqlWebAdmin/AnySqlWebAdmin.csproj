@@ -31,6 +31,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="TypeScript\Math\" />
+    <Folder Include="wwwroot\fontawesome\" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="CassandraCSharpDriver" Version="3.7.0" />
