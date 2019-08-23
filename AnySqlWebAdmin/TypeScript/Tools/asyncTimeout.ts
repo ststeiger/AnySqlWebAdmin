@@ -1,5 +1,13 @@
 
+// https://github.com/Microsoft/TypeScript/issues/30164
+// https://stackoverflow.com/questions/55887719/how-to-use-spread-as-argument-of-function/55887905#55887905
+
+// https://code.visualstudio.com/docs/typescript/typescript-tutorial
+// npm install -g typescript
+// tsc --version
+
 // https://stackoverflow.com/questions/29996145/visual-studio-code-compile-on-save
+// Press Ctrl+Shift+B to open a list of tasks in VS Code and select tsc: watch - tsconfig.json.
 // CTRL + SHIFT + B
 // tsc: watch - tsconfig.json
 
