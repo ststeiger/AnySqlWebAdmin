@@ -1,6 +1,4 @@
 ﻿
-using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
@@ -15,14 +13,14 @@ using Microsoft.AspNetCore.Rewrite;
 
 namespace AnySqlWebAdmin
 {
-    
-    
+
+
     public class Startup
     {
-        
+
         public IConfiguration Configuration { get; }
-        
-        
+
+
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -41,8 +39,8 @@ namespace AnySqlWebAdmin
             services.AddSingleton(new SqlService());
             services.AddMvc();
             // services.AddHsts();
-            
-                
+
+
             services.AddMvc(mvcOptions =>
             {
                 // mvcOptions.Filters.Add(new Microsoft.AspNetCore.Mvc.RequireHttpsAttribute());
@@ -59,7 +57,7 @@ namespace AnySqlWebAdmin
         {
             app.UseForwardedHeaders(new ForwardedHeadersOptions
             {
-                ForwardedHeaders = Microsoft.AspNetCore.HttpOverrides.ForwardedHeaders.XForwardedFor 
+                ForwardedHeaders = Microsoft.AspNetCore.HttpOverrides.ForwardedHeaders.XForwardedFor
                 | Microsoft.AspNetCore.HttpOverrides.ForwardedHeaders.XForwardedProto
             });
 
@@ -74,7 +72,7 @@ namespace AnySqlWebAdmin
 
             app.UseDefaultFiles(new DefaultFilesOptions()
             {
-                DefaultFileNames = new List<string>()
+                DefaultFileNames = new System.Collections.Generic.List<string>()
                 {
                     "map.htm", "index.htm", "index.html", "slick.htm"
                 }
@@ -87,12 +85,19 @@ namespace AnySqlWebAdmin
             // app.UseHsts();
 
 
+
+
+            //public IContentTypeProvider ContentTypeProvider { get; set; }
+
             // https://stackoverflow.com/questions/38231739/how-to-disable-browser-cache-in-asp-net-core-rc2
             // https://stackoverflow.com/questions/33342643/how-does-javascript-version-asp-append-version-work-in-asp-net-core-mvc
             app.UseStaticFiles(new StaticFileOptions()
             {
+                ServeUnknownFileTypes = true,
+                DefaultContentType = "application/octet-stream",
+                ContentTypeProvider = new ExtensionContentTypeProvider(), 
 
-                OnPrepareResponse = delegate(Microsoft.AspNetCore.StaticFiles.StaticFileResponseContext context)
+                OnPrepareResponse = delegate (Microsoft.AspNetCore.StaticFiles.StaticFileResponseContext context)
                 {
                     // https://stackoverflow.com/questions/49547/how-do-we-control-web-page-caching-across-all-browsers
 
@@ -114,6 +119,7 @@ namespace AnySqlWebAdmin
                     // (HTTP 1.1 was introduced 1997), then you could omit Pragma.
                     context.Context.Response.Headers["pragma"] = "no-cache";
 
+
                     // On the other hand, if the server auto-includes a valid Date header, 
                     // then you could theoretically omit Cache-Control too and rely on Expires only.
 
@@ -131,7 +137,7 @@ namespace AnySqlWebAdmin
             // app.UseMiddleware<SqlMiddleware>();
             app.UseSqlMiddleware();
             app.UseDataFeedMiddleware();
-            
+
             app.UseMvc();
 
 
