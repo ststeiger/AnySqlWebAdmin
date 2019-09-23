@@ -137,6 +137,9 @@ namespace AnySqlWebAdmin
                     // options.Listen(System.Net.IPAddress.Any, 5443, listenOptions =>
                     //options.Listen(System.Net.IPAddress.Parse("127.0.0.1"), 5443, listenOptions =>
                     // https://localhost:59801/
+                    
+                    #if false 
+                    
                     options.Listen(System.Net.IPAddress.Parse("127.0.0.1"), 59801, listenOptions =>
                         {
                             // listenOptions.UseHttps(@"D:\lol\certificate.pfx", "topsecret");
@@ -175,6 +178,9 @@ namespace AnySqlWebAdmin
                             // listenOptions.UseHttps(pfxLocation, password);
                             listenOptions.UseHttps(cert);
                         });
+
+#endif 
+                    
                 })
                 
                 // .UseIISIntegration()
