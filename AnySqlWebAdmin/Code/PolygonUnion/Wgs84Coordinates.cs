@@ -3,7 +3,7 @@ namespace TestTransform
 {
 
 
-    public class Wgs84Coordinates 
+    public class Wgs84Coordinates
     {
         public decimal Latitude;
         public decimal Longitude;
@@ -18,13 +18,17 @@ namespace TestTransform
         } // End Constructor 
 
 
+        public Wgs84Coordinates(double lat, double lng)
+            : this((decimal)lat, (decimal)lng, 0)
+        { } // End Constructor 
+
         public Wgs84Coordinates(decimal lat, decimal lng)
             : this(lat, lng, 0)
         { } // End Constructor 
 
 
         public Wgs84Coordinates()
-            : this(0, 0)
+            : this(0M, 0M)
         { } // End Constructor 
 
 
@@ -49,21 +53,21 @@ namespace TestTransform
 
         public override bool Equals(object obj)
         {
-            if(!object.ReferenceEquals(typeof(Wgs84Coordinates), obj.GetType()))
+            if (!object.ReferenceEquals(typeof(Wgs84Coordinates), obj.GetType()))
                 return false;
 
-            Wgs84Coordinates wgsObj = (Wgs84Coordinates) obj;
-            
+            Wgs84Coordinates wgsObj = (Wgs84Coordinates)obj;
+
             return this == wgsObj;
         }
-        
-        
+
+
         public override int GetHashCode()
         {
-            return unchecked(this.Latitude.GetHashCode()) ^ ((int)(this.Longitude.GetHashCode() >> 32));  
+            return unchecked(this.Latitude.GetHashCode()) ^ ((int)(this.Longitude.GetHashCode() >> 32));
         }
-        
-        
+
+
     } // End Class Wgs84Coordinates 
 
 
