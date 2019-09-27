@@ -1003,6 +1003,36 @@ function onMarkerClick(uuid: string, e: L.LeafletMouseEvent)
 } // End Function onMarkerClick 
 
 
+
+async function onMarkerMove(uuid: string, marker: L.Marker, event: L.LeafletEvent)
+{
+    console.log("moving marker ", uuid);
+    // https://g.co/chrome/symantecpkicerts
+
+    let position: L.LatLng = marker.getLatLng();
+    marker.setLatLng(position);
+    map.panTo(position);
+
+    let url = "../ajax/AnySelect.ashx?sql=Maps.UpdateMarkerLocation.sql&gb_uid=" + uuid + "&lat=" + position.lat + "&lng=" + position.lng;
+    url = SetDefaultVariables(url);
+    // TODO: SQL-Update position
+
+    let result = null;
+
+    try
+    {
+        result = await getData(url);
+        console.log("finished moving marker ", uuid, result);
+        // console.log(result);
+    }
+    catch (ex)
+    {
+        console.log(ex);
+    }
+}
+
+
+
 function createWerbetafelIcon()
 {
     let icon = L.divIcon(
@@ -1321,9 +1351,11 @@ async function loadMarkers()
             }
         );
 
+        let withDrag = true;
+
         // https://jsfiddle.net/guspersson/393ehmsq/
         // let marker = L.marker([latitude, longitude]).addTo(map);
-        let marker = L.marker([latitude, longitude], { icon: greenIcon }).addTo(map);
+        let marker = L.marker([latitude, longitude], { icon: greenIcon, draggable: withDrag }).addTo(map);
         let tooltipContent = createBuildingContentDiv(uid, null, label);
 
 
@@ -1378,8 +1410,13 @@ async function loadMarkers()
             }
 
         }.bind(this, uid));
+
+        if (withDrag)
+            marker.on('dragend', onMarkerMove.bind(this, uid, marker));
+
         markers[uid] = marker;
 
+        
 
         /*
         let circle = L.circle(latlng,

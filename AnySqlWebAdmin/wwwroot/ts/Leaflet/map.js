@@ -574,6 +574,36 @@ function onMarkerClick(uuid, e) {
         ml.src = t.replace("{@obj}", uuid);
     observeIframe();
 }
+function onMarkerMove(uuid, marker, event) {
+    return __awaiter(this, void 0, void 0, function () {
+        var position, url, result, ex_5;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    console.log("moving marker ", uuid);
+                    position = marker.getLatLng();
+                    marker.setLatLng(position);
+                    map.panTo(position);
+                    url = "../ajax/AnySelect.ashx?sql=Maps.UpdateMarkerLocation.sql&gb_uid=" + uuid + "&lat=" + position.lat + "&lng=" + position.lng;
+                    url = SetDefaultVariables(url);
+                    result = null;
+                    _a.label = 1;
+                case 1:
+                    _a.trys.push([1, 3, , 4]);
+                    return [4, getData(url)];
+                case 2:
+                    result = _a.sent();
+                    console.log("finished moving marker ", uuid, result);
+                    return [3, 4];
+                case 3:
+                    ex_5 = _a.sent();
+                    console.log(ex_5);
+                    return [3, 4];
+                case 4: return [2];
+            }
+        });
+    });
+}
 function createWerbetafelIcon() {
     var icon = L.divIcon({
         className: "customIcon",
@@ -768,7 +798,8 @@ function loadMarkers() {
                             popupAnchor: [0, 0],
                             html: houseImage.replace("{@col1}", color).replace("{@col2}", color)
                         });
-                        var marker = L.marker([latitude, longitude], { icon: greenIcon }).addTo(map);
+                        var withDrag = true;
+                        var marker = L.marker([latitude, longitude], { icon: greenIcon, draggable: withDrag }).addTo(map);
                         var tooltipContent = createBuildingContentDiv(uid, null, label);
                         var tt = L.tooltip({
                             permanent: true,
@@ -792,6 +823,8 @@ function loadMarkers() {
                                 navigateTo(uuid);
                             }
                         }.bind(this_1, uid));
+                        if (withDrag)
+                            marker.on('dragend', onMarkerMove.bind(this_1, uid, marker));
                         markers[uid] = marker;
                         if (poly == null)
                             return "continue";
@@ -1144,7 +1177,7 @@ function createZoomControl(map) {
 }
 function getXml(url, data) {
     return __awaiter(this, void 0, void 0, function () {
-        var req, xml, obj, ex1, ex2, ex3, myHeaders, options, ex_5, ex_6;
+        var req, xml, obj, ex1, ex2, ex3, myHeaders, options, ex_6, ex_7;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
@@ -1186,9 +1219,9 @@ function getXml(url, data) {
                     req = _a.sent();
                     return [3, 4];
                 case 3:
-                    ex_5 = _a.sent();
-                    console.log(ex_5);
-                    ex1 = ex_5;
+                    ex_6 = _a.sent();
+                    console.log(ex_6);
+                    ex1 = ex_6;
                     return [3, 4];
                 case 4:
                     _a.trys.push([4, 7, , 8]);
@@ -1199,9 +1232,9 @@ function getXml(url, data) {
                     _a.label = 6;
                 case 6: return [3, 8];
                 case 7:
-                    ex_6 = _a.sent();
-                    console.log(ex_6);
-                    ex2 = ex_6;
+                    ex_7 = _a.sent();
+                    console.log(ex_7);
+                    ex2 = ex_7;
                     return [3, 8];
                 case 8:
                     try {
