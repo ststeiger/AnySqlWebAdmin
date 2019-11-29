@@ -14,13 +14,13 @@ namespace AnySqlWebAdmin
         {
             // https://stackoverflow.com/questions/751719/sql-server-invalid-characters-in-parameter-names
             s_invalid_characters = new char[] {
-                '\'', '`', '"', '\\', ',', ' ', '\r', '\n'
-                , '{', '}', '(',')','[',']','<','>'
-                , '=', '+', '-', '*', '/'
-                ,'!','~','|','&','^','%'
-                ,'#','.', '@'
+                 '\'', '`', '"', '\\'
+                ,';', ',', '\r', '\n', ' '
+                ,'{', '}', '(',')','[',']','<','>'
+                , '=', '+', '-', '*', '/', '%' 
+                ,'!','~','|','&','^'
+                ,'.', '#','@' // @@ is potentially dangerous
             };
-
         }
 
 
@@ -45,6 +45,9 @@ namespace AnySqlWebAdmin
 
         public static bool IsInvalid(string param)
         {
+            if (string.IsNullOrEmpty(param))
+                return true;
+
             char[] list = param.ToCharArray();
 
 
