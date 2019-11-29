@@ -1,5 +1,4 @@
 ﻿
-using System;
 using Microsoft.AspNetCore.Hosting;
 // using Microsoft.Extensions.Configuration;
 // using Microsoft.Extensions.Logging;
@@ -7,7 +6,6 @@ using Microsoft.AspNetCore.Hosting;
 
 namespace AnySqlWebAdmin
 {
-
 
 
     // https://stackoverflow.com/questions/35715015/where-is-the-typescript-tools-version-set-in-an-asp-net-5-project
@@ -20,10 +18,11 @@ namespace AnySqlWebAdmin
     //<TscYieldDuringToolExecution Condition = "'$(TscYieldDuringToolExecution)' == ''" > true </ TscYieldDuringToolExecution >
     public class Program
     {
-        
-        
+
+
         public static void Main(string[] args)
         {
+
             /*
             TestTransform.LOLdistance.Test();
             TestTransform.TestNetTopology.Test();
@@ -43,7 +42,7 @@ namespace AnySqlWebAdmin
         // openssl pkcs12 -inkey bob_key.pem -in bob_cert.cert -export -out bob_pfx.pfx
         // openssl pkcs12 -export -out bob_pfx.pfx -inkey bob_key.pem -in bob_cert.cert 
         // openssl pkcs12 -export -out localhost.pfx -inkey key.pem -in certificate.cert 
-        
+
         // https://stackoverflow.com/questions/6307886/how-to-create-pfx-file-from-certificate-and-private-key
         // openssl pkcs12 -export -out domain.name.pfx -inkey domain.name.key -in domain.name.crt
         // openssl pkcs12 -export -out domain.name.pfx -inkey domain.name.key -in PRIVATE_KEY.crt 
@@ -83,7 +82,7 @@ namespace AnySqlWebAdmin
 
                     // The default maximum request body size is 30,000,000 bytes, which is approximately 28.6 MB.
                     // options.Limits.MaxRequestBodySize = 30000000; // bytes
-                    
+
 
                     //options.UseHttps("certificate.pfx", "password");
 
@@ -137,8 +136,8 @@ namespace AnySqlWebAdmin
                     // options.Listen(System.Net.IPAddress.Any, 5443, listenOptions =>
                     //options.Listen(System.Net.IPAddress.Parse("127.0.0.1"), 5443, listenOptions =>
                     // https://localhost:59801/
-                    
-                    #if false 
+
+#if false
                     
                     options.Listen(System.Net.IPAddress.Parse("127.0.0.1"), 59801, listenOptions =>
                         {
@@ -179,10 +178,10 @@ namespace AnySqlWebAdmin
                             listenOptions.UseHttps(cert);
                         });
 
-#endif 
-                    
+#endif
+
                 })
-                
+
                 // .UseIISIntegration()
                 .UseStartup<Startup>()
                 .Build();
@@ -192,6 +191,6 @@ namespace AnySqlWebAdmin
 
 
     } // End Class Program 
-    
-    
+
+
 } // End Namespace AnySqlWebAdmin 

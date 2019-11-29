@@ -135,6 +135,9 @@ namespace AnySqlWebAdmin
                 foreach (System.Collections.Generic.KeyValuePair<string
                     , Microsoft.Extensions.Primitives.StringValues> kvp in context.Request.Form)
                 {
+                    if (ParameterNameHelper.IsInvalid(kvp.Key))
+                        continue;
+
                     dict[kvp.Key] = System.Convert.ToString(kvp.Value);
                 } // Next kvp 
             } // End if (context.Request.HasFormContentType) 
@@ -190,6 +193,11 @@ namespace AnySqlWebAdmin
                     foreach (System.Collections.Generic.KeyValuePair<string, Newtonsoft.Json.Linq.JToken> kvp in jo)
                     {
                         string name = kvp.Key;
+
+                        if (ParameterNameHelper.IsInvalid(name))
+                            continue;
+
+
                         object value = GetValue(kvp.Value);
                         System.Console.WriteLine(value);
                         // ls.Add(new Parameter(name, value));
@@ -218,6 +226,9 @@ namespace AnySqlWebAdmin
                 foreach (System.Collections.Generic.KeyValuePair<string
                        , Microsoft.Extensions.Primitives.StringValues> kvp in context.Request.Query)
                 {
+                    if (ParameterNameHelper.IsInvalid(kvp.Key))
+                        continue;
+
                     dict[kvp.Key] = System.Convert.ToString(kvp.Value);
                 } // Next kvp 
 
