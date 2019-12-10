@@ -23,6 +23,12 @@
             height: 100%;
         }
 
+        /* safari-only browser-bug-avoid override  */
+        summary:not(:root:root) 
+        {
+            margin-bottom: 4mm;
+        }
+        
     </style>
 
 
@@ -289,7 +295,7 @@ max indicates that the maximum storage size is 2^31-1 bytes.
 The storage size is the actual length of the data entered + 2 bytes.
 The data that is entered can be 0 bytes in length.
 The ANSI SQL synonym for varbinary is binary varying.
-                                        " class="option" data-value="varbinary(MAX)">
+                                        " class="option" data-value="varbinary(8000)">
                                     <span class="value">varbinary(8000)</span>
                                     <span class="label">up to 2<sup>31</sup>-1 bytes (2GB)</span>
                                 </li>
