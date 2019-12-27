@@ -80,7 +80,7 @@ interface IObjectChanges
 
 
 
-// IE11
+// IE11 - no doesn't work in IE11
 // https://github.com/microsoft/TypeScript/issues/2075
 // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/observe
 // Array.observe instead of Object.observe. 
@@ -119,7 +119,7 @@ function testObjectObservation()
             console.log(change); // all changes
         });
     }
-    
+
     Object.observe(obj, observeCallback);
     // Object.unobserve(obj, observeCallback);
 }
