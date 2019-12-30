@@ -123,3 +123,17 @@ function testObjectObservation()
     Object.observe(obj, observeCallback);
     // Object.unobserve(obj, observeCallback);
 }
+
+
+
+// render
+// dataChanged
+
+// create
+// reload
+
+// viewRecordsChanged
+// dataRecordsChanged
+
+// viewRecordChanged
+// dataRecordChanged
