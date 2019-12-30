@@ -12,17 +12,17 @@ interface EventTarget
 
 function render()
 {
-    document.querySelector<HTMLHeadingElement>('[data-binding="name"]').innerHTML = state.name;
-    document.querySelector<HTMLHeadingElement>('[data-binding="title"]').innerHTML = state.title;
-    document.querySelector<HTMLInputElement>('[data-model="name"]').value = state.name;
-    document.querySelector<HTMLInputElement>('[data-model="title"]').value = state.title;
+    (<HTMLHeadingElement>document.querySelector('[data-binding="name"]')).innerHTML = state.name;
+    (<HTMLHeadingElement>document.querySelector('[data-binding="title"]')).innerHTML = state.title;
+    (<HTMLInputElement>document.querySelector('[data-model="name"]')).value = state.name;
+    (<HTMLInputElement>document.querySelector('[data-model="title"]')).value = state.title;
 }
 
 
 function createState(state: any)
 {
     return new Proxy(state, {
-        set(target, property: string, value)
+        set(target: any, property: string, value: any)
         {
             let oldVal = target[property];
             if (oldVal === value)

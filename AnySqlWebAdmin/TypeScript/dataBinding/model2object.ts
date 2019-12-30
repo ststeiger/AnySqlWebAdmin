@@ -68,6 +68,17 @@ document.querySelector('[data-model="name"]').addEventListener('keyup', listener
 document.querySelector('[data-model="title"]').addEventListener('keyup', listener);
 
 
+function isGecko()
+{
+    let w = window;
+
+    if (!w.navigator || !w.navigator.userAgent)
+    {
+        return false;
+    }
+    var ua = w.navigator.userAgent;
+    return ua.indexOf('Gecko') > 0 && ua.toLowerCase().indexOf('webkit') < 0 && ua.indexOf('Edge') < 0 && ua.indexOf('Trident') < 0 && ua.indexOf('MSIE') < 0;
+}
 
 
 
