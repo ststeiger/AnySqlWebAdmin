@@ -102,3 +102,4 @@ proxied.bar = 2;
 
 proxied.foo;
 // {type: 'get', target: <obj>, prop: 'bar'}
+
