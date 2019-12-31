@@ -275,83 +275,134 @@ if (!String.prototype.padStart) {
     };
 }
 
+
+
+
+	function daysInMonth (month, year) 
+	{
+		return new Date(year, month, 0).getDate();
+	}
+
 	function tableCreate() 
 	{
-	  //body reference 
-	  var body = document.getElementsByTagName("body")[0];
-	
-	  // create elements <table> and a <tbody>
-	  var tbl = document.createElement("table");
-	  
-	  tbl.setAttribute("style", "border: 1px solid black; ");
-	  
-	  
-	  var tblHead = document.createElement("thead");
-	  var headRow = document.createElement("tr");
-	  
-	  
-	  for (var j = 0; j < 12; j++) 
-	  {
-	  	var headColumn = document.createElement("th");
-		headColumn.setAttribute("style", "text-align: left;");
-		headColumn.appendChild(document.createTextNode((j+1).toString().padStart(2, '0')));
+		let year = 2019;
 		
-		headRow.appendChild(headColumn);
-	  }
-	  
-	  tblHead.appendChild(headRow);
-	  tbl.appendChild(tblHead);
-	  
-	  
-	  
-	  
-	  var tblBody = document.createElement("tbody");
-	
-	  // cells creation
-	  for (var j = 0; j <= 2; j++) 
-	  {
-	    // table row creation
-	    var row = document.createElement("tr");
-	
-	    for (var i = 0; i < 2; i++) 
+		var employees = [ "Hafner"
+			,"Hämmerli"
+			,"Hartmann"
+			,"Luder"
+			,"Siegenthaler"
+			,"Sprenger"
+			,"Steiger"
+			,"Visconti"
+		];
+		
+		var dayNames = [];
+		
+		
+		
+		//body reference 
+		var body = document.getElementsByTagName("body")[0];
+		
+		
+		for(let month=0;month<12;++month)
 		{
-	      // create element <td> and text node 
-	      //Make text node the contents of <td> element
-	      // put <td> at end of the table row
-	      var cell = document.createElement("td");
-	      var cellText = document.createTextNode("cell is row " + j + ", column " + i);
-	
-	      cell.appendChild(cellText);
-	      row.appendChild(cell);
-	    }
-	
-	    //row added to end of table body
-	    tblBody.appendChild(row);
-	  }
-	
-	  // append the <tbody> inside the <table>
-	  tbl.appendChild(tblBody);
-	  
-	  
-	  var tblFoot = document.createElement("tfoot");
-	  var footRow = document.createElement("tr");
-	    
-	  for (var j = 0; j <= 2; j++) 
-	  {
-		var footColumn = document.createElement("td");
-		footColumn.setAttribute("style", "text-align: left;");
-		footColumn.appendChild(document.createTextNode("hi"));
+			let maxDays = daysInMonth(month, 2019);
+			
+			
+			// create elements <table> and a <tbody>
+			var tbl = document.createElement("table");
+			tbl.setAttribute("style", "border: 1px solid black; ");
+
+			var tblHead = document.createElement("thead");
+			var headRow = document.createElement("tr");
+			
+			for(let day = 0; day <= maxDays; ++day)
+			{
+				var headColumn = document.createElement("th");
+
+				headColumn.setAttribute("style", "text-align: left;");
+				
+				if(day === 0){
+					headColumn.appendChild(document.createTextNode("Mitarbeiter"));
+					var style = headColumn.getAttribute("style");
+					style+= " width: 4cm;";
+					headColumn.setAttribute("style", style);
+				}
+				else
+				{
+					let d = new Date(year, month, day);
+					
+					// headColumn.appendChild(document.createTextNode(d.toLocaleDateString()));
+					headColumn.appendChild(document.createTextNode(d.getDay()));
+					
+					// headColumn.appendChild(document.createTextNode((day).toString().padStart(2, '0')));
+				}
+				
+				headRow.appendChild(headColumn);		
+			}
+			
+			tblHead.appendChild(headRow);
+			tbl.appendChild(tblHead);
+
+
+			var tblBody = document.createElement("tbody");
+			
+			for(let emp=0;emp< employees.length; ++emp)
+			{
+				// table row creation
+				var row = document.createElement("tr");
+
+				// cells creation
+				for(let day = 0; day <= maxDays; ++day) 
+				{
+					// create element <td> and text node 
+					//Make text node the contents of <td> element
+					// put <td> at end of the table row
+					var cell = document.createElement("td");
+					
+					if(day === 0)
+						cell.appendChild(document.createTextNode(employees[emp]));
+					else
+					{
+						// cell.appendChild(document.createTextNode((day).toString().padStart(2, '0')));
+						cell.setAttribute("style", "border: 1px solid black;");
+					}
+						
+					row.appendChild(cell);
+				} // Next day
+				
+				//row added to end of table body
+				tblBody.appendChild(row);
+			} // Next emp 
+
+
+			// append the <tbody> inside the <table>
+			tbl.appendChild(tblBody);
+
+
+			var tblFoot = document.createElement("tfoot");
+			var footRow = document.createElement("tr");
+
+			for (var j = 0; j <= 2; j++)
+			{
+				var footColumn = document.createElement("td");
+				footColumn.setAttribute("style", "text-align: left;");
+				footColumn.appendChild(document.createTextNode("hi"));
+
+				tblFoot.appendChild(footColumn);
+			}
+
+			tblFoot.appendChild(footRow);
+			// tbl.appendChild(tblFoot);
+			
+			
+			// put <table> in the <body>
+			body.appendChild(tbl);
+			break;
+		} // Next month 
 		
-		tblFoot.appendChild(footColumn);
-	  }
-	  
-	  tblFoot.appendChild(footRow);
-	  tbl.appendChild(tblFoot);
-	  
-	  
-	  // put <table> in the <body>
-	  body.appendChild(tbl);
-	}
+	} // End Function tableCreate
 
 tableCreate();
 
