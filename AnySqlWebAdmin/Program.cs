@@ -136,7 +136,7 @@ namespace AnySqlWebAdmin
                     //options.Listen(System.Net.IPAddress.Parse("127.0.0.1"), 5443, listenOptions =>
                     // https://localhost:59801/
 
-#if false
+#if true
                     
                     options.Listen(System.Net.IPAddress.Parse("127.0.0.1"), 59801, listenOptions =>
                         {
@@ -155,7 +155,7 @@ namespace AnySqlWebAdmin
                             pfxLocation = "/root/.dotnet/corefx/cryptography/x509stores/my/015B78912250D3A1DD277787B59036CFF0213744.pfx";
                             pfxLocation = "/root/sources/tracker/localhost.pfx";
 
-                            if(System.Environment.OSVersion.Platform == PlatformID.Unix)
+                            if(System.Environment.OSVersion.Platform == System.PlatformID.Unix)
                                 pfxLocation = "/root/github/RedmineMailService/RedmineMailService/obelix.pfx";
 
                             // pfxLocation = @"C:\Users\Administrator\Documents\Visual Studio 2017\Projects\RedmineMailService\RedmineMailService\obelix.pfx";

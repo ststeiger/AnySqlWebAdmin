@@ -139,8 +139,7 @@ namespace AnySqlWebAdmin
             app.UseDataFeedMiddleware();
 
             app.UseMvc();
-
-
+            
             // if (env.IsDevelopment()) { app.UseDeveloperExceptionPage(); }
 
             // app.UseStatusCodePages();
