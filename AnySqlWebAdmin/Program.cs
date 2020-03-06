@@ -136,7 +136,7 @@ namespace AnySqlWebAdmin
                     //options.Listen(System.Net.IPAddress.Parse("127.0.0.1"), 5443, listenOptions =>
                     // https://localhost:59801/
 
-#if true
+#if false 
                     
                     options.Listen(System.Net.IPAddress.Parse("127.0.0.1"), 59801, listenOptions =>
                         {
