@@ -2201,7 +2201,7 @@ async function initMap()
     // Add a map layer
     L.tileLayer("{server}/{style}/{z}/{x}/{y}{scalex}.png?lang={language}",
         {
-            maxZoom: 18
+              maxZoom: 19
             , attribution: '<a target="blank" href="https://www.mediawiki.org/wiki/Maps/Technical_Implementation">Wikimedia maps beta</a> | Map data &copy; <a target="blank" href="http://openstreetmap.org/copyright">OpenStreetMap contributors</a>'
             , server: "https://maps.wikimedia.org"
             , style: "osm-intl" // "osm" // Map style to use.Use "osm-intl" for map with labels, "osm" for map without labels.
@@ -2299,13 +2299,13 @@ async function initMap()
         });
     }
 
-    //map.on("click", function (e)
-    //{
-    //    console.log(e.latlng);
-    //});
+    map.on("click", function (e:L.LeafletMouseEvent)
+    {
+        console.log(e.latlng);
+    });
 
 
-    //map.on("dblclick", function (e)
+    //map.on("dblclick", function (e: L.LeafletMouseEvent)
     //{
     //    console.log("doubleClicked");
     //});

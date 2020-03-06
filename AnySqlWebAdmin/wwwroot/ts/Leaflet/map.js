@@ -1319,7 +1319,7 @@ function initMap() {
                     scale = bracketDevicePixelRatio();
                     scalex = (scale === 1) ? '' : ('@' + scale + 'x');
                     L.tileLayer("{server}/{style}/{z}/{x}/{y}{scalex}.png?lang={language}", {
-                        maxZoom: 18,
+                        maxZoom: 19,
                         attribution: '<a target="blank" href="https://www.mediawiki.org/wiki/Maps/Technical_Implementation">Wikimedia maps beta</a> | Map data &copy; <a target="blank" href="http://openstreetmap.org/copyright">OpenStreetMap contributors</a>',
                         server: "https://maps.wikimedia.org",
                         style: "osm-intl",
@@ -1369,6 +1369,9 @@ function initMap() {
                             popup.openOn(map);
                         });
                     }
+                    map.on("click", function (e) {
+                        console.log(e.latlng);
+                    });
                     return [2];
             }
         });
