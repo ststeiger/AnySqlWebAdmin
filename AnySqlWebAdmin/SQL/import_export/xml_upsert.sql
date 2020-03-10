@@ -4,7 +4,7 @@ SET @xml = '<table xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <row>
     <PS_UID>BB01AB7A-0AFA-4C00-AD27-0150774EF8B5</PS_UID>
     <PS_Code>A3</PS_Code>
-    <PS_Lang_DE>A3 hoch</PS_Lang>
+    <PS_Lang>A3 hoch</PS_Lang>
     <PS_Width_mm>297.00</PS_Width_mm>
     <PS_Height_mm>420.00</PS_Height_mm>
     <PS_Sort>4</PS_Sort>
@@ -28,10 +28,7 @@ EXEC @PrepareXmlStatus = sp_xml_preparedocument @handle OUTPUT, @XML
 	SELECT 
 		 PS_UID
 		,PS_Code
-		,PS_Lang_DE
-		,PS_Lang_FR
-		,PS_Lang_IT
-		,PS_Lang_EN
+		,PS_Lang
 		,PS_Width_mm
 		,PS_Height_mm
 		,PS_Sort
@@ -40,10 +37,7 @@ EXEC @PrepareXmlStatus = sp_xml_preparedocument @handle OUTPUT, @XML
 	(
 		 "PS_UID" uniqueidentifier 'PS_UID[not(@*[local-name()="nil" and . ="true"])]'
 		,"PS_Code" character varying(10) 'PS_Code[not(@*[local-name()="nil" and . ="true"])]'
-		,"PS_Lang_DE" character varying(50) 'PS_Lang_DE[not(@*[local-name()="nil" and . ="true"])]'
-		,"PS_Lang_FR" character varying(50) 'PS_Lang_FR[not(@*[local-name()="nil" and . ="true"])]'
-		,"PS_Lang_IT" character varying(50) 'PS_Lang_IT[not(@*[local-name()="nil" and . ="true"])]'
-		,"PS_Lang_EN" character varying(50) 'PS_Lang_EN[not(@*[local-name()="nil" and . ="true"])]'
+		,PS_Lang character varying(50) 'PS_Lang[not(@*[local-name()="nil" and . ="true"])]'
 		,"PS_Width_mm" decimal(12,2) 'PS_Width_mm[not(@*[local-name()="nil" and . ="true"])]'
 		,"PS_Height_mm" decimal(12,2) 'PS_Height_mm[not(@*[local-name()="nil" and . ="true"])]'
 		,"PS_Sort" int 'PS_Sort[not(@*[local-name()="nil" and . ="true"])]'
