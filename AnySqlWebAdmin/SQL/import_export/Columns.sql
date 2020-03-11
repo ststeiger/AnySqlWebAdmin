@@ -9,3 +9,10 @@ FROM INFORMATION_SCHEMA.COLUMNS
 WHERE TABLE_SCHEMA = 'dbo' 
 AND TABLE_NAME = 'T_Benutzer'  
 ORDER BY ORDINAL_POSITION 
+
+
+-- string foo = System.Xml.XmlConvert.EncodeName("foo bar");
+-- foo = System.Xml.XmlConvert.DecodeName(foo);
+
+-- foo = System.Xml.XmlConvert.VerifyName("foo");
+-- System.Console.WriteLine(foo);
