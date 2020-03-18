@@ -105,7 +105,7 @@ export default class WebSocketClient
     // Initiates the close handshake if there is an active connection.
     // Returns a promise that will never reject.
     // The promise resolves once the WebSocket connection is closed.
-    disconnect(code?: number, reason?: string): Promise<CloseEvent?> 
+    disconnect(code?: number, reason?: string): Promise<CloseEvent> 
     {
         if(!this.connected) 
         {
