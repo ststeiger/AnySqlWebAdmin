@@ -1,10 +1,4 @@
 'use strict';
-function render() {
-    document.querySelector('[data-binding="name"]').innerHTML = state.name;
-    document.querySelector('[data-binding="title"]').innerHTML = state.title;
-    document.querySelector('[data-model="name"]').value = state.name;
-    document.querySelector('[data-model="title"]').value = state.title;
-}
 function createState(state) {
     return new Proxy(state, {
         set: function (target, property, value) {
@@ -32,15 +26,21 @@ function createState(state) {
         }
     });
 }
-function listener(event) {
-    state[event.target.dataset.model] = event.target.value;
-}
 var state = createState({
     "name": 'Francesco',
     "title": 'Front-end Engineer'
 });
 state.name = 'Richard';
 state.title = 'Technical Lead';
+function render() {
+    document.querySelector('[data-binding="name"]').innerHTML = state.name;
+    document.querySelector('[data-binding="title"]').innerHTML = state.title;
+    document.querySelector('[data-model="name"]').value = state.name;
+    document.querySelector('[data-model="title"]').value = state.title;
+}
+function listener(event) {
+    state[event.target.dataset.model] = event.target.value;
+}
 var obj = { foo: 1, bar: 2 };
 var proxied = new Proxy(obj, {
     get: function (target, prop) {

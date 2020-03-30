@@ -2,8 +2,8 @@
   "compileOnSave": true,
 
   "compilerOptions": {
-    "target": "es5", //"target": "es5",
-    "module": "amd", // define, export, like playground
+    "target": "ES5", //"target": "es5",
+    "module": "AMD", // define, export, like playground
     // "module": "commonjs", // require
     // "module": "es2015", // just like typescript
     // "module": "system", // System.register
@@ -12,9 +12,10 @@
     // "module": "none", // Object.defineProperty, require
     // "module": "commonjs",
     "lib": [
-      "dom",
-      "es5",
-      "es2015.promise"
+      "DOM",
+      "ES5",
+      "ES2016",
+      "ES2015.promise"
     ],
 
     "noImplicitAny": true,

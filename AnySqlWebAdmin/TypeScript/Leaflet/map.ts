@@ -50,10 +50,7 @@ interface Math
 }
 
 
-interface Function 
-{
-    name: string;
-}
+// interface Function { name: string; }
 
 
 // }
@@ -2162,6 +2159,55 @@ async function getSiteConfig()
     };
 }
 
+interface IInternetExplorerVersionDetectionResult 
+{
+    crap?: boolean;
+    isIE?: boolean;
+    isEdge?: boolean;
+    v?: number;
+}
+
+function IEdetection()
+{
+    let ua = window.navigator.userAgent;
+    let result: IInternetExplorerVersionDetectionResult = {};
+
+    let trident = ua.indexOf('Trident/');
+    if (trident > 0) {
+        // IE 11, return version number
+        result.crap = true;
+        result.isIE = true;
+        result.v = 11;
+    }
+
+    let msie = ua.indexOf('MSIE ');
+    if (msie > 0) {
+        // IE 10 or older, return version number
+
+        result.crap = true;
+        result.isIE = true;
+        result.v = 10;
+
+        let re = new RegExp("MSIE ([0-9]{1,}[\\.0-9]{0,})");
+
+        if (re.exec(ua) !== null)
+        {
+            result.v = parseFloat(RegExp.$1);
+        }
+
+    }
+
+    let edge = ua.indexOf('Edge/');
+    if (edge > 0) {
+        //Edge (IE 12+), return version number
+        result.crap = true;
+        result.isEdge = true;
+        result.v = parseInt(ua.substring(edge + 5, ua.indexOf('.', edge)), 10);
+    }
+
+    // User uses other browser
+    return result;
+} // End Function IEdetection 
 
 
 // https://maps.wikimedia.org
@@ -2198,6 +2244,7 @@ async function initMap()
     let scale = bracketDevicePixelRatio();
     let scalex = (scale === 1) ? '' : ('@' + scale + 'x');
 
+    /*
     // Add a map layer
     L.tileLayer("{server}/{style}/{z}/{x}/{y}{scalex}.png?lang={language}",
         {
@@ -2209,6 +2256,20 @@ async function initMap()
             , language: getUserLanguage() // fr, it, en
         }
     ).addTo(map);
+    */
+
+    let gl = L.mapboxGL(
+        {
+            accessToken: 'no-token',
+            // updateInterval: https://github.com/mapbox/mapbox-gl-leaflet/issues/55
+            // updateInterval: 5, // per 200 ms
+            // updateInterval: IEdetection().crap ? 5 : 32, // per 200 ms
+            updateInterval: IEdetection().crap ? 5 : 20, // per 50 ms
+            attribution: '<a target="blank" href="https://github.com/ststeiger/VectorTileServer ">Steiger&apos;s public vector tile server</a> | <a target="blank" href="https://openmaptiles.org ">OpenMapTiles</a> | Map data &copy; <a target="blank" href="http://openstreetmap.org/copyright">OpenStreetMap contributors</a>',
+            style: "https://www6.cor-asp.ch/VectorTileServer/styles/bright/style.json"
+        }
+    ).addTo(map);
+
 
     await loadMarkers();
     await loadWerbetafeln();

@@ -37,6 +37,23 @@ namespace AnySqlWebAdmin
             csb.MultipleActiveResultSets = false;
             csb.WorkstationID = System.Environment.MachineName;
 
+            // https://github.com/dotnet/runtime/issues/14945
+            // SQL server alias recognized with CLR runtime but not CoreCLR
+            // The SQL server alias is defined on each client machine and it points to a SQL server instance. 
+            // The alias information is stored in the registry on Windows. 
+            // This is a OS specific dependency which can work only on Windows. 
+            // As a result we decided to drop support for sql alias in CoreFX.
+            if (System.Runtime.InteropServices.RuntimeInformation.IsOSPlatform(System.Runtime.InteropServices.OSPlatform.Windows))
+            {
+                string key = System.Environment.GetEnvironmentVariable("PROCESSOR_ARCHITECTURE") == "x86"
+                ? @"HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\MSSQLServer\Client\ConnectTo"
+                : @"HKEY_LOCAL_MACHINE\SOFTWARE\WOW6432Node\Microsoft\MSSQLServer\Client\ConnectTo";
+
+                string newSource = (string)Microsoft.Win32.Registry.GetValue(key, csb.DataSource, null);
+                if (newSource != null)
+                    csb.DataSource = newSource.Substring(newSource.IndexOf(',') + 1);
+            }
+
             string cs = csb.ConnectionString;
             csb = null;
 
@@ -179,13 +196,13 @@ namespace AnySqlWebAdmin
 
                 if (value == null)
                     value = System.DBNull.Value;
-                
-                var p = new System.Data.SqlClient.SqlParameter(key, value);
+
+                System.Data.Common.DbParameter p = new System.Data.SqlClient.SqlParameter(key, value);
                 // cmd.Parameters.Add(new System.Data.SqlClient.SqlParameter(key, kvp.Value));
                 cmd.Parameters.Add(p);
-            }
+            } // Next kvp 
 
-            System.Console.WriteLine(cmd);
+            // System.Console.WriteLine(cmd);
         } // End Sub AddParameterList 
 
 

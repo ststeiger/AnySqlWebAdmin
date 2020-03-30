@@ -1,8 +1,11 @@
 'use strict';
 var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
     return function (d, b) {
         extendStatics(d, b);
         function __() { this.constructor = d; }
@@ -10,10 +13,11 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
         function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
@@ -24,8 +28,8 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     function step(op) {
         if (f) throw new TypeError("Generator is already executing.");
         while (_) try {
-            if (f = 1, y && (t = y[op[0] & 2 ? "return" : op[0] ? "throw" : "next"]) && !(t = t.call(y, op[1])).done) return t;
-            if (y = 0, t) op = [0, t.value];
+            if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
+            if (y = 0, t) op = [op[0] & 2, t.value];
             switch (op[0]) {
                 case 0: case 1: t = op; break;
                 case 4: _.label++; return { value: op[1], done: false };
@@ -1301,9 +1305,36 @@ function getSiteConfig() {
         });
     });
 }
+function IEdetection() {
+    var ua = window.navigator.userAgent;
+    var result = {};
+    var trident = ua.indexOf('Trident/');
+    if (trident > 0) {
+        result.crap = true;
+        result.isIE = true;
+        result.v = 11;
+    }
+    var msie = ua.indexOf('MSIE ');
+    if (msie > 0) {
+        result.crap = true;
+        result.isIE = true;
+        result.v = 10;
+        var re = new RegExp("MSIE ([0-9]{1,}[\\.0-9]{0,})");
+        if (re.exec(ua) !== null) {
+            result.v = parseFloat(RegExp.$1);
+        }
+    }
+    var edge = ua.indexOf('Edge/');
+    if (edge > 0) {
+        result.crap = true;
+        result.isEdge = true;
+        result.v = parseInt(ua.substring(edge + 5, ua.indexOf('.', edge)), 10);
+    }
+    return result;
+}
 function initMap() {
     return __awaiter(this, void 0, void 0, function () {
-        var ml, southWest, northEast, bounds, scale, scalex;
+        var ml, southWest, northEast, bounds, scale, scalex, gl;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
@@ -1318,13 +1349,11 @@ function initMap() {
                     map.fitBounds(bounds, null);
                     scale = bracketDevicePixelRatio();
                     scalex = (scale === 1) ? '' : ('@' + scale + 'x');
-                    L.tileLayer("{server}/{style}/{z}/{x}/{y}{scalex}.png?lang={language}", {
-                        maxZoom: 19,
-                        attribution: '<a target="blank" href="https://www.mediawiki.org/wiki/Maps/Technical_Implementation">Wikimedia maps beta</a> | Map data &copy; <a target="blank" href="http://openstreetmap.org/copyright">OpenStreetMap contributors</a>',
-                        server: "https://maps.wikimedia.org",
-                        style: "osm-intl",
-                        scalex: scalex,
-                        language: getUserLanguage()
+                    gl = L.mapboxGL({
+                        accessToken: 'no-token',
+                        updateInterval: IEdetection().crap ? 5 : 20,
+                        attribution: '<a target="blank" href="https://github.com/ststeiger/VectorTileServer ">Steiger&apos;s public vector tile server</a> | <a target="blank" href="https://openmaptiles.org ">OpenMapTiles</a> | Map data &copy; <a target="blank" href="http://openstreetmap.org/copyright">OpenStreetMap contributors</a>',
+                        style: "https://www6.cor-asp.ch/VectorTileServer/styles/bright/style.json"
                     }).addTo(map);
                     return [4, loadMarkers()];
                 case 1:

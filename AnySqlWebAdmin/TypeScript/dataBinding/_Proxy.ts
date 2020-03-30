@@ -1,4 +1,5 @@
 ﻿
+// Needed in older typescript versions
 // Proxy is an engine-feature, and therefore cannot be polyfilled ! 
 // Promise & Fetch can be polyfilled 
 // "lib": [ "dom", "es5", "es2015.promise" //, "es2015.proxy" ],
@@ -7,11 +8,13 @@
 // https://stackoverflow.com/questions/44058726/is-the-fetch-api-an-ecmascript-feature
 // https://www.npmjs.com/package/node-fetch
 
+
+
+
+/*
 declare type PropertyKey = string | number | symbol;
 
-
-interface Iterable<T>
-{}
+interface Iterable<T> {}
 
 
 interface Document
@@ -46,3 +49,4 @@ interface ProxyConstructor
 }
 
 declare let Proxy: ProxyConstructor;
+*/

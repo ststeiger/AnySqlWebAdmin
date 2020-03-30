@@ -110,28 +110,27 @@
             user-select: none;
         }
 
-        .zoomControl .mp {
-            display: table-cell;
-            width: 1cm;
-            height: 1cm;
-            text-align: center;
-            vertical-align: middle;
-            #font: 5mm/1.5 Arial, Helvetica, sans-serif;
-            font-family: "Lucida Console", Monaco, monospace;
-            font-size: 5mm;
-            color: gray;
-        }
+            .zoomControl .mp {
+                display: table-cell;
+                width: 1cm;
+                height: 1cm;
+                text-align: center;
+                vertical-align: middle;
+                #font: 5mm/1.5 Arial, Helvetica, sans-serif;
+                font-family: "Lucida Console", Monaco, monospace;
+                font-size: 5mm;
+                color: gray;
+            }
 
-        .zoomControl .mp:hover {
-            background-color: #F0F0F0;
-        }
+                .zoomControl .mp:hover {
+                    background-color: #F0F0F0;
+                }
 
         .customTextIcon {
             z-index: 1 !important;
             /*font-family: 'Comic Sans MS';*/
             text-align: center;
         }
-        
     </style>
 
     <!--<link rel="shortcut icon" type="image/png" href="../favicon.png" />-->
@@ -140,16 +139,18 @@
     <link href="Layout.ashx?Single=leaflet.leaflet.css" rel="stylesheet" type="text/css" />
     -->
     <link href="leaflet/leaflet.css" rel="stylesheet" type="text/css" />
-    
+    <link href="leaflet/leaflet.css" rel="stylesheet" type="text/css" />
+    <link href="leaflet/mapbox-gl.css" rel="stylesheet" type="text/css" />
+
     <!--
     <script type="text/javascript" src="ts/leaflet/EasyAjax.js" charset="utf-8"></script>
     -->
-    
+
 </head>
 <body>
     <div id="zoom-level">Zoom Level: 18</div>
-    
-    
+
+
     <div class="legende">
         <table id="gk_legend">
             <tr>
@@ -178,30 +179,44 @@
             </tr>
         </table>
     </div>
-    
+
     <div id="swissMap"></div>
-    
-    
+
+
     <!--
     https://jakearchibald.com/2017/es-modules-in-browsers/
     https://polyfill.io/v2/docs/
     -->
-    
+
     <script src="dump/polyfills/classList.js?v=1"></script>
     <script src="dump/polyfills/object-setprototypeof-ie9.js?v=1"></script>
     <script src="dump/polyfills/es6-promise-2.0.0.min.js?v=1"></script>
     <script src="dump/polyfills/fetch.js?v=1"></script>
-    
+
+
+
+
+
+
+
+
     <script type="text/javascript" src="leaflet/leaflet.js" charset="utf-8"></script>
     <script type="text/javascript" src="leaflet/leaflet-osm.js" charset="utf-8"></script>
     <script type="text/javascript" src="ts/Leaflet/portalJunk.js" charset="utf-8"></script>
+
+
+    <script type="text/javascript" src="leaflet/mapbox-gl.js" charset="utf-8"></script>
+    <script type="text/javascript" src="leaflet/mapbox-gl-language.js" charset="utf-8"></script>
+    <script type="text/javascript" src="leaflet/leaflet-mapbox-gl.js" charset="utf-8"></script>
+
+
     <!-- <script src="ts/Leaflet/leaflet.js" charset="utf-8" type="module" ></script> -->
-    <script type="text/javascript" src="ts/Leaflet/map.js?v=5" charset="utf-8" ></script>
-    
+    <script type="text/javascript" src="ts/Leaflet/map.js?v=5" charset="utf-8"></script>
+
     <script type="text/javascript">
-        
+
     </script>
-    
+
     <style type="text/css" media="all">
 
         /*
@@ -243,8 +258,7 @@
             .osm_data_polygon_nearest.active {
                 fill: hotpink;
             }
-
     </style>
-    
+
 </body>
 </html>

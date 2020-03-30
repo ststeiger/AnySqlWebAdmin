@@ -1665,6 +1665,20 @@ declare global
             let emptyImageUrl: string;
         }
 
+
+        class MapboxGL extends Layer {
+            constructor(options: MapboxGLOptions);
+        }
+
+        function mapboxGL(options: MapboxGLOptions): MapboxGL;
+
+        interface MapboxGLOptions {
+            accessToken: string;
+            style: string;
+            updateInterval: number;
+            attribution: string;
+        }
+
     }
 
 }

@@ -24,7 +24,7 @@ namespace AnySqlWebAdmin
                     continue;
 
                 return mi;
-            }
+            } // Next mi 
 
             return null;
         } // End Function GetToObjectMethod 
@@ -197,10 +197,11 @@ namespace AnySqlWebAdmin
                         if (ParameterNameHelper.IsInvalid(name))
                             continue;
 
-
                         object value = GetValue(kvp.Value);
-                        System.Console.WriteLine(value);
+
+                        // System.Console.WriteLine(value);
                         // ls.Add(new Parameter(name, value));
+
                         dict[name] = value;
                     } // Next kvp 
 
@@ -238,7 +239,7 @@ namespace AnySqlWebAdmin
         } // End Function GetParameters 
 
 
-    } // End Class 
+    } // End Class SqlServiceHelper 
 
 
-} // End Namespace 
+} // End Namespace AnySqlWebAdmin 

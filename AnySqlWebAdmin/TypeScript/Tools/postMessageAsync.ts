@@ -114,7 +114,7 @@ async function testPostMessage()
 {
     try
     {
-        let targetWindow = document.getElementById<HTMLIFrameElement>("ifrmChild").contentWindow;
+        let targetWindow = (<HTMLIFrameElement>document.getElementById("ifrmChild")).contentWindow;
 
         let answer = await postMessageAsync<google.maps.GeocoderResult[]>(targetWindow, { "address": "Fabrikstrasse 1, CH-8586 Erlen, Switzerland" });
 

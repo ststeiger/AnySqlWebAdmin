@@ -18,21 +18,28 @@
     // "module": "none", // Object.defineProperty, require
     // "module": "commonjs",
     "lib": [
-      "dom",
+      "DOM",
       // "webworker",
       // "scripthost",
-      "es5",
-      //"es6",
-      "es2015.promise"
-      // "es2015.core",
-      // "es2015.proxy",
-      // "es2015.iterable"
-      // "es2015"
+      "DOM.Iterable",
+      // "ES5",
+      // "ES6",
+      // "ES7",
+      // "ES2015",
+      "ES2016"
       // "es2016"
       // "es2017"
       // "es2018"
       // "esnext"
+      // "ES2015.Iterable",
+      // "ES2015.Symbol",
+      // "ES2015.Core",
+      // "ES2015.Promise",
+      // "ES2015.Proxy"
     ],
+
+
+
 
     // "importHelpers": true,
     "noImplicitAny": true,
@@ -40,7 +47,7 @@
     "removeComments": true,
     "sourceMap": false,
     //"outDir": "../../wwwroot/ts/BundleTest",
-    // Note: When using outFile, module must be systemjs or amd 
+    // Note: When using outFile, module must be systemjs or amd
     "outFile": "../../wwwroot/ts/BundleTest/main.js",
     "rootDir": "./",
     "allowUnreachableCode": true

@@ -2,19 +2,20 @@
   "compileOnSave": true,
 
   "compilerOptions": {
-    "target": "es5", //"target": "es5",
+    "target": "ES5", //"target": "es5",
     //"module": "amd", // define, export, like playground
     // "module": "commonjs", // require
-    "module": "es2015", // just like typescript
+    "module": "ES2015", // just like typescript
     // "module": "system", // System.register
-    //  "module": "umd", // factory, require, exports
+    // "module": "umd", // factory, require, exports
     // "module": "esnext", // like typescript
     // "module": "none", // Object.defineProperty, require
     // "module": "commonjs",
     "lib": [
-      "dom",
-      "es5",
-      "es2015.promise"
+      "DOM",
+      "ES2016",
+      "ES2015.Promise",
+      "ES2015.Proxy"
     ],
 
     "noImplicitAny": true,

@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
   <PropertyGroup>
     <TargetFramework>netcoreapp2.0</TargetFramework>
-    <TypeScriptToolsVersion>2.5</TypeScriptToolsVersion>
+    <TypeScriptToolsVersion>3.8</TypeScriptToolsVersion>
   </PropertyGroup>
   
   
@@ -17,21 +17,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Remove="TypeScript\fetch.ts" />
-    <None Remove="TypeScript\SpatialDistance\Distance.ts" />
-    <None Remove="TypeScript\SpatialDistance\DistanceUnit.ts" />
-    <None Remove="TypeScript\SpatialDistance\Ellipsoid.ts" />
-    <None Remove="TypeScript\SpatialDistance\Latitude.ts" />
-    <None Remove="TypeScript\SpatialDistance\Longitude.ts" />
-    <None Remove="TypeScript\SpatialDistance\Position.ts" />
-    <None Remove="TypeScript\SpatialDistance\Radian.ts" />
-    <None Remove="TypeScript\SpatialDistance\Speed.ts" />
-    <None Remove="TypeScript\SpatialDistance\SpeedUnit.ts" />
-    <None Remove="TypeScript\Tools\test.ts" />
-    <None Remove="TypeScript\Tools\webSocketClient.ts" />
     <None Remove="TypeScript\urlModifier.ts" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="TypeScript\Math\" />
     <Folder Include="wwwroot\fontawesome\" />
   </ItemGroup>
   <ItemGroup>
@@ -47,24 +35,22 @@
     <DotNetCliToolReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Tools" Version="2.0.0" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="TypeScript\Tools\_BrowserQuirksExtensions.ts" />
-  </ItemGroup>
-  <ItemGroup>
-    <TypeScriptCompile Include="TypeScript\SpatialDistance\Distance.ts" />
-    <TypeScriptCompile Include="TypeScript\SpatialDistance\DistanceUnit.ts" />
-    <TypeScriptCompile Include="TypeScript\SpatialDistance\Ellipsoid.ts" />
-    <TypeScriptCompile Include="TypeScript\SpatialDistance\Latitude.ts" />
-    <TypeScriptCompile Include="TypeScript\SpatialDistance\Longitude.ts" />
-    <TypeScriptCompile Include="TypeScript\SpatialDistance\Position.ts" />
-    <TypeScriptCompile Include="TypeScript\SpatialDistance\Radian.ts" />
-    <TypeScriptCompile Include="TypeScript\SpatialDistance\Speed.ts" />
-    <TypeScriptCompile Include="TypeScript\SpatialDistance\SpeedUnit.ts" />
-    <TypeScriptCompile Include="TypeScript\Tools\test.ts" />
-    <TypeScriptCompile Include="TypeScript\Tools\urlModifier.ts" />
-    <TypeScriptCompile Include="TypeScript\Tools\webSocketClient.ts" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\DotSpatial.Positioning\DotSpatial.Positioning.csproj" />
     <ProjectReference Include="..\DotSpatial.Projections\DotSpatial.Projections.csproj" />
   </ItemGroup>
+  <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
+    <TypeScriptTarget>ES5</TypeScriptTarget>
+    <TypeScriptJSXEmit>None</TypeScriptJSXEmit>
+    <TypeScriptModuleKind />
+    <TypeScriptCompileOnSaveEnabled>True</TypeScriptCompileOnSaveEnabled>
+    <TypeScriptNoImplicitAny>False</TypeScriptNoImplicitAny>
+    <TypeScriptRemoveComments>False</TypeScriptRemoveComments>
+    <TypeScriptOutFile />
+    <TypeScriptOutDir />
+    <TypeScriptGeneratesDeclarations>False</TypeScriptGeneratesDeclarations>
+    <TypeScriptNoEmitOnError>True</TypeScriptNoEmitOnError>
+    <TypeScriptSourceMap>True</TypeScriptSourceMap>
+    <TypeScriptMapRoot />
+    <TypeScriptSourceRoot />
+  </PropertyGroup>
 </Project>
