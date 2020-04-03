@@ -15,7 +15,7 @@ namespace AnySqlWebAdmin
             var csb = new System.Data.SqlClient.SqlConnectionStringBuilder();
 
             if (System.Environment.OSVersion.Platform == System.PlatformID.Unix)
-                csb.DataSource = System.Environment.MachineName;
+                csb.DataSource = System.Environment.MachineName + ",2017";
             else
                 csb.DataSource = System.Environment.MachineName + @"\SQLEXPRESS";
 
