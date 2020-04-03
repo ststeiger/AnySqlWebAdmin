@@ -21,10 +21,14 @@ DECLARE @json NVarChar(2048) = N'[
 ,{"lat": 46.50876045823126, "lng": 6.495744287967683}
 ,{"lat": 46.50865338935172, "lng": 6.4958006143569955}
 ,{"lat": 46.50869584772572, "lng": 6.496023237705232}
-]';
+]'; 
 
-DELETE FROM T_ZO_Objekt_Wgs84Polygon 
-WHERE ZO_OBJ_WGS84_GB_UID = 'FBDCC862-0475-4158-9DE2-ADD244FC59F7' 
+
+DECLARE @gb_uid uniqueidentifier; 
+SET @gb_uid = 'FBDCC862-0475-4158-9DE2-ADD244FC59F7'; 
+
+
+DELETE FROM T_ZO_Objekt_Wgs84Polygon WHERE ZO_OBJ_WGS84_GB_UID = @gb_uid; 
 
 
 
@@ -38,14 +42,14 @@ INSERT INTO T_ZO_Objekt_Wgs84Polygon
 	,ZO_OBJ_WGS84_GM_Lng
 )
 SELECT 
-	 NEWID() AS ZO_OBJ_WGS84_UID
-	,'FBDCC862-0475-4158-9DE2-ADD244FC59F7' AS ZO_OBJ_WGS84_GB_UID
-	,NULL AS ZO_OBJ_WGS84_SO_UID
-	,ROW_NUMBER() OVER(ORDER BY (SELECT NULL)) AS ZO_OBJ_WGS84_Sort
+	 NEWID() AS ZO_OBJ_WGS84_UID 
+	,@gb_uid AS ZO_OBJ_WGS84_GB_UID 
+	,NULL AS ZO_OBJ_WGS84_SO_UID 
+	,ROW_NUMBER() OVER(ORDER BY (SELECT NULL)) AS ZO_OBJ_WGS84_Sort 
 	,Coordinates.lat AS ZO_OBJ_WGS84_GM_Lat 
 	,Coordinates.lng AS ZO_OBJ_WGS84_GM_Lng 
-FROM OpenJson(@json)
-WITH ( lat decimal(23, 20), lng decimal(23, 20) ) AS Coordinates  
+FROM OpenJson(@json) 
+WITH ( lat decimal(23, 20), lng decimal(23, 20) ) AS Coordinates 
 ; 
 
 
