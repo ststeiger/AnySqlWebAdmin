@@ -15,6 +15,7 @@ map.on("click", function (e:L.LeafletMouseEvent)
 
 
 -- Coordinates from OSM.org 
+-- OSM is COUNTER-clockwise  (OSM wants the polygon points in counterclockwise sequence) 
 DECLARE @json NVarChar(2048) = N'[
  {"lat": 46.5088158386034,  "lng": 6.495972275733949}
 ,{"lat": 46.50878076437425, "lng": 6.495746970176697}
