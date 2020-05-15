@@ -875,6 +875,8 @@ async function moveWerbetafel(uuid: string, marker: L.Marker, event: L.LeafletEv
     {
         console.log(ex);
     }
+
+    if (map.gl) map.gl._update();
 }
 
 
@@ -903,6 +905,7 @@ async function deleteWerbetafel(uuid: string)
     }
 
     map.closePopup();
+    if (map.gl) map.gl._update();
 } // End Function deleteWerbetafel 
 
 
@@ -1098,6 +1101,7 @@ async function loadWerbetafeln()
         werbetafeln[uid] = marker;
     } // Next i
 
+    if (map.gl) map.gl._update();
 } // End Function loadWerbetafeln 
 
 
@@ -1406,6 +1410,7 @@ async function loadMarkers()
                 navigateTo(uuid);
             }
 
+            if (map.gl) map.gl._update();
         }.bind(this, uid));
 
         if (withDrag)
@@ -1493,6 +1498,7 @@ async function loadMarkers()
     map.zoomHome = function (homeView?: L.LatLngBoundsExpression)
     {
         map.fitBounds(homeView);
+        if (map.gl) map.gl._update();
     }.bind(this, initialBounds);
 
     map.zoomHome();
@@ -1608,6 +1614,7 @@ async function zoomIn(uid: string)
         }
     } // Next i 
 
+    if (map.gl) map.gl._update();
 } // End Function ZoomIn
 
 
@@ -1652,6 +1659,7 @@ async function onBaumClick(uid: string, typ: string)
             console.log("Objekt nicht definiert.");
     } // End Switch
 
+    if (map.gl) map.gl._update();
 } // End Function onBaumClick
 
 
@@ -2266,10 +2274,11 @@ async function initMap()
             // updateInterval: IEdetection().crap ? 5 : 32, // per 200 ms
             updateInterval: IEdetection().crap ? 5 : 20, // per 50 ms
             attribution: '<a target="blank" href="https://github.com/ststeiger/VectorTileServer ">Steiger&apos;s public vector tile server</a> | <a target="blank" href="https://openmaptiles.org ">OpenMapTiles</a> | Map data &copy; <a target="blank" href="http://openstreetmap.org/copyright">OpenStreetMap contributors</a>',
-            style: "https://www6.cor-asp.ch/VectorTileServer/styles/bright/style.json"
+            style: "https://corpool.cor-asp.ch/VectorTileServer/styles/bright/style.json"
         }
     ).addTo(map);
 
+    map.gl = gl;
 
     await loadMarkers();
     await loadWerbetafeln();
@@ -2308,6 +2317,7 @@ async function initMap()
             }
         }
 
+        if (map.gl) map.gl._update();
     });
 
 

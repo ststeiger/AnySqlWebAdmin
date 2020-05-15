@@ -489,7 +489,10 @@ function moveWerbetafel(uuid, marker, event) {
                     ex_3 = _a.sent();
                     console.log(ex_3);
                     return [3, 4];
-                case 4: return [2];
+                case 4:
+                    if (map.gl)
+                        map.gl._update();
+                    return [2];
             }
         });
     });
@@ -520,6 +523,8 @@ function deleteWerbetafel(uuid) {
                     return [3, 4];
                 case 4:
                     map.closePopup();
+                    if (map.gl)
+                        map.gl._update();
                     return [2];
             }
         });
@@ -651,6 +656,8 @@ function loadWerbetafeln() {
                         marker.on('dragend', moveWerbetafel.bind(this, uid, marker));
                         werbetafeln[uid] = marker;
                     }
+                    if (map.gl)
+                        map.gl._update();
                     return [2];
             }
         });
@@ -826,6 +833,8 @@ function loadMarkers() {
                                 ignoreThisNavigation = true;
                                 navigateTo(uuid);
                             }
+                            if (map.gl)
+                                map.gl._update();
                         }.bind(this_1, uid));
                         if (withDrag)
                             marker.on('dragend', onMarkerMove.bind(this_1, uid, marker));
@@ -868,6 +877,8 @@ function loadMarkers() {
                     }
                     map.zoomHome = function (homeView) {
                         map.fitBounds(homeView);
+                        if (map.gl)
+                            map.gl._update();
                     }.bind(this, initialBounds);
                     map.zoomHome();
                     return [2];
@@ -936,6 +947,8 @@ function zoomIn(uid) {
                             map.setView([latitude, longitude], 18, { animate: true });
                         }
                     }
+                    if (map.gl)
+                        map.gl._update();
                     return [2];
             }
         });
@@ -982,7 +995,10 @@ function onBaumClick(uid, typ) {
                 case 6:
                     console.log("Objekt nicht definiert.");
                     _b.label = 7;
-                case 7: return [2];
+                case 7:
+                    if (map.gl)
+                        map.gl._update();
+                    return [2];
             }
         });
     });
@@ -1353,8 +1369,9 @@ function initMap() {
                         accessToken: 'no-token',
                         updateInterval: IEdetection().crap ? 5 : 20,
                         attribution: '<a target="blank" href="https://github.com/ststeiger/VectorTileServer ">Steiger&apos;s public vector tile server</a> | <a target="blank" href="https://openmaptiles.org ">OpenMapTiles</a> | Map data &copy; <a target="blank" href="http://openstreetmap.org/copyright">OpenStreetMap contributors</a>',
-                        style: "https://www6.cor-asp.ch/VectorTileServer/styles/bright/style.json"
+                        style: "https://corpool.cor-asp.ch/VectorTileServer/styles/bright/style.json"
                     }).addTo(map);
+                    map.gl = gl;
                     return [4, loadMarkers()];
                 case 1:
                     _a.sent();
@@ -1379,6 +1396,8 @@ function initMap() {
                                 }
                             }
                         }
+                        if (map.gl)
+                            map.gl._update();
                     });
                     {
                         map.on("contextmenu", function (e) {

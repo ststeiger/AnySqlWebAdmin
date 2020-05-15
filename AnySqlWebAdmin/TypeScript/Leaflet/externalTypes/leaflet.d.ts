@@ -460,6 +460,8 @@ declare global
             getAttribution?(): string | null;
             beforeAdd?(map: Map): this;
 
+            _update(e?:any): this; // for manual leaflet.GL update 
+
             protected _map: Map;
         }
 
@@ -1411,6 +1413,8 @@ declare global
 
         export class Map extends Evented
         {
+            gl: MapboxGL;
+
             constructor(element: string | HTMLElement, options?: MapOptions);
             getRenderer(layer: Path): Renderer;
 
