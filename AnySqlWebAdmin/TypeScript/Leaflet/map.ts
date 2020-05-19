@@ -2280,6 +2280,42 @@ async function initMap()
 
     map.gl = gl;
 
+    let drawnItems = new L.FeatureGroup();
+    map.addLayer(drawnItems);
+    
+    
+    let options = {
+        position: <L.ControlPosition>"topright",
+        shapeOptions: {
+            showArea: true,
+            clickable: true
+        },
+        metric: true,
+        edit: {
+            featureGroup: drawnItems
+        }
+    };
+
+    let drawControl = new L.Control.Draw(options);
+    map.addControl(drawControl);
+
+    map.on('draw:created', function(e:L.DrawEvents.Created) {
+        let type = e.layerType,
+            layer = e.layer;
+        drawnItems.addLayer(layer);
+    });
+
+    map.on('draw:editstart', function() {
+        console.log('edit start');
+    });
+
+    map.on('draw:editstop', function() {
+        console.log('edit stop');
+    });
+
+
+
+
     await loadMarkers();
     await loadWerbetafeln();
 

@@ -1350,7 +1350,7 @@ function IEdetection() {
 }
 function initMap() {
     return __awaiter(this, void 0, void 0, function () {
-        var ml, southWest, northEast, bounds, scale, scalex, gl;
+        var ml, southWest, northEast, bounds, scale, scalex, gl, drawnItems, options, drawControl;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
@@ -1372,6 +1372,31 @@ function initMap() {
                         style: "https://corpool.cor-asp.ch/VectorTileServer/styles/bright/style.json"
                     }).addTo(map);
                     map.gl = gl;
+                    drawnItems = new L.FeatureGroup();
+                    map.addLayer(drawnItems);
+                    options = {
+                        position: "topright",
+                        shapeOptions: {
+                            showArea: true,
+                            clickable: true
+                        },
+                        metric: true,
+                        edit: {
+                            featureGroup: drawnItems
+                        }
+                    };
+                    drawControl = new L.Control.Draw(options);
+                    map.addControl(drawControl);
+                    map.on('draw:created', function (e) {
+                        var type = e.layerType, layer = e.layer;
+                        drawnItems.addLayer(layer);
+                    });
+                    map.on('draw:editstart', function () {
+                        console.log('edit start');
+                    });
+                    map.on('draw:editstop', function () {
+                        console.log('edit stop');
+                    });
                     return [4, loadMarkers()];
                 case 1:
                     _a.sent();

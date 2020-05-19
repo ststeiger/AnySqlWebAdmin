@@ -44,6 +44,9 @@
     <ProjectReference Include="..\DotSpatial.Positioning\DotSpatial.Positioning.csproj" />
     <ProjectReference Include="..\DotSpatial.Projections\DotSpatial.Projections.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <TypeScriptCompile Include="TypeScript\Leaflet\externalTypes\leaflet-draw.d.ts" />
+  </ItemGroup>
   <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
     <TypeScriptTarget>ES5</TypeScriptTarget>
     <TypeScriptJSXEmit>None</TypeScriptJSXEmit>
