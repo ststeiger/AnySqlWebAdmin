@@ -2284,24 +2284,123 @@ async function initMap()
     map.addLayer(drawnItems);
     
     
-    let options = {
+    let options = <any>{
         position: <L.ControlPosition>"topright",
-        shapeOptions: {
-            showArea: true,
-            clickable: true
+        draw: {
+            
+            polygon: {
+                metric: true,
+                showArea: false,
+                allowIntersection: false,
+                drawError: {
+                    color: "#b00b00",
+                    message: '<strong>Oh snap!<strong> you can\'t draw that!', 
+                    timeout: 1000
+                },
+                icon: new L.DivIcon({
+                    iconSize: new L.Point(5, 5),
+                    className: 'leaflet-div-icon leaflet-editing-icon'
+                }),
+                touchIcon: new L.DivIcon({
+                    iconSize: new L.Point(5, 5),
+                    className: 'leaflet-div-icon leaflet-editing-icon leaflet-touch-icon'
+                }),
+                shapeOptions: {
+                    stroke: true,
+                    weight: 2,
+                    color: "#bada55"
+                }
+
+            },
+
+            // polyline: { metric: true },
+            polyline: false,
+            rectangle: false,
+            circle: false,
+            marker: false, 
+            circlemarker: false
         },
-        metric: true,
+         
+        // shapeOptions: { showArea: true, clickable: true },
+        // metric: true,
         edit: {
-            featureGroup: drawnItems
+            featureGroup: drawnItems, 
+            remove: true
         }
     };
 
+
+    L.drawLocal.draw.toolbar.buttons.polygon = "Ein Polygon zeichnen."; // Draw a polygon
+
+
+    L.drawLocal.draw.toolbar.actions.title = "Zeichnen abbrechen"; // "Cancel drawing"; 
+    L.drawLocal.draw.toolbar.actions.text = "Abbrechen"; // "Cancel"; 
+
+    L.drawLocal.draw.toolbar.finish.title = "Zeichen abschliessen"; // "Finish drawing";
+    L.drawLocal.draw.toolbar.finish.text = "Abschliessen"; // "Finish";
+
+    L.drawLocal.draw.toolbar.undo.title = "Den letzten gezeichneten Punkt löschen"; // "Delete last point drawn";
+    L.drawLocal.draw.toolbar.undo.text = "Letzten Punkt löschen"; // "Delete last point";
+
+    L.drawLocal.draw.handlers.polygon.tooltip.start = "Klicken um das Zeichnen eines Polygons zu starten."; // 'Click to start drawing shape.';
+    L.drawLocal.draw.handlers.polygon.tooltip.cont = "Klicken um das Zeichnen des Polygons weiterzuführen."; // 'Click to continue drawing shape.'; 
+    L.drawLocal.draw.handlers.polygon.tooltip.end = "Auf den ersten Punkt klicken um das Polygon zu schliessen."; // 'Click first point to close this shape.' 
+
+    L.drawLocal.edit.toolbar.actions.save.title = "Änderungen speichern"; // 'Save changes',
+    L.drawLocal.edit.toolbar.actions.save.text = "Speichern"; // 'Save'
+    L.drawLocal.edit.toolbar.actions.cancel.title = "Bearbeiten abbrechen, alle Änderungen verwerfen"; // 'Cancel editing, discards all changes',
+    L.drawLocal.edit.toolbar.actions.cancel.text = "Abbrechen"; // 'Cancel'
+    L.drawLocal.edit.toolbar.actions.clearAll.title = "Alle Layer löschen"; // 'Clear all layers',
+    L.drawLocal.edit.toolbar.actions.clearAll.text = "Alle löschen"; // 'Clear All'
+
+
+
+
+    L.drawLocal.edit.toolbar.buttons.edit = "Layer bearbeiten"; // 'Edit layers',
+    L.drawLocal.edit.toolbar.buttons.editDisabled = "Keine Layer zum bearbeiten"; // 'No layers to edit',
+    L.drawLocal.edit.toolbar.buttons.remove = "Layer löschen"; // 'Delete layers',
+    L.drawLocal.edit.toolbar.buttons.removeDisabled = "Keine Layer zum Löschen"; // 'No layers to delete'
+
+    L.drawLocal.edit.handlers.edit.tooltip.text = "Ziehen Sie Ziehpunkte oder Markierungen, um Features zu bearbeiten."; // 'Drag handles or markers to edit features.',
+    L.drawLocal.edit.handlers.edit.tooltip.subtext = "Klicken Sie auf Abbrechen, um die Änderungen rückgängig zu machen."; // 'Click cancel to undo changes.'
+
+    L.drawLocal.edit.handlers.remove.tooltip.text = "Klicken Sie auf ein Gebilde um es zu entfernen."; // 'Click on a feature to remove.'
+
+
+
     let drawControl = new L.Control.Draw(options);
     map.addControl(drawControl);
-    
+
+
     map.on('draw:created', function(e:L.DrawEvents.Created) 
     {
-        console.log('draw:created', e, e.type, e.target);
+        console.log('On draw:created', e.target);
+        console.log(e.type, e);
+
+
+        e.layer.bindPopup('A popup!');
+
+        console.log(e.layerType);
+        // console.log((<any>e.layer).getLatLngs()); // polyline
+        // console.log((<any>e.layer).getLatLng()); // circle
+
+        // e.layerType // polygon, circle, etc. 
+
+        // polygon 
+        // e.layer.getLatLngs()
+
+        // circle
+        // e.layer.getLatLng()
+        // e.layer.getRadius()
+
+
+        // e.layer.toGeoJSON().geometry.type // is point if circle 
+        // e.layer.toGeoJSON().geometry.coordinates
+
+        console.log("coordinates:");
+        console.log(e.layer.toGeoJSON().geometry.coordinates[0]);
+
+        
 
         // https://www.gaiaresources.com.au/drawing-features-leaflet-using-leaflet-draw-plugin/
         // https://jsfiddle.net/user2314737/Lscupxqp/
@@ -2338,6 +2437,9 @@ async function initMap()
     
     map.on('draw:deleted', function(e:L.DrawEvents.Deleted) {
         console.log('draw:deleted', e, e.type, e.target);
+
+
+        // drawnItems.clearLayers();
     });
     
     
