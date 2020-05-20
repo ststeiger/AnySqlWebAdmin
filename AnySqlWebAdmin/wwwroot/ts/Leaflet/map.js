@@ -1408,7 +1408,15 @@ function initMap() {
                         },
                         edit: {
                             featureGroup: drawnItems,
-                            remove: true
+                            remove: true,
+                            icon: new L.DivIcon({
+                                iconSize: new L.Point(8, 8),
+                                className: 'leaflet-div-icon leaflet-editing-icon'
+                            }),
+                            touchIcon: new L.DivIcon({
+                                iconSize: new L.Point(20, 20),
+                                className: 'leaflet-div-icon leaflet-editing-icon leaflet-touch-icon'
+                            }),
                         }
                     };
                     L.drawLocal.draw.toolbar.buttons.polygon = "Ein Polygon zeichnen.";

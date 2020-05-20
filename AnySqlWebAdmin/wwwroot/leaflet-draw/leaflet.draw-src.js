@@ -1865,11 +1865,11 @@ L.Edit.Poly = L.Handler.extend({
 L.Edit.PolyVerticesEdit = L.Handler.extend({
 	options: {
 		icon: new L.DivIcon({
-			iconSize: new L.Point(8, 8),
+			iconSize: new L.Point(4, 4), // was 8,9
 			className: 'leaflet-div-icon leaflet-editing-icon'
 		}),
 		touchIcon: new L.DivIcon({
-			iconSize: new L.Point(20, 20),
+			iconSize: new L.Point(8, 8), // was 20,20
 			className: 'leaflet-div-icon leaflet-editing-icon leaflet-touch-icon'
 		}),
 		drawError: {
