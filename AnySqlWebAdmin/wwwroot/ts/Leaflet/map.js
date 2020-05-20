@@ -1388,14 +1388,21 @@ function initMap() {
                     drawControl = new L.Control.Draw(options);
                     map.addControl(drawControl);
                     map.on('draw:created', function (e) {
+                        console.log('draw:created', e, e.type, e.target);
                         var type = e.layerType, layer = e.layer;
                         drawnItems.addLayer(layer);
                     });
-                    map.on('draw:editstart', function () {
-                        console.log('edit start');
+                    map.on('draw:editstart', function (e) {
+                        console.log('draw:editstart', e, e.type, e.target);
                     });
-                    map.on('draw:editstop', function () {
-                        console.log('edit stop');
+                    map.on('draw:editstop', function (e) {
+                        console.log('draw:editstop', e, e.type, e.target);
+                    });
+                    map.on('draw:edited', function (e) {
+                        console.log('draw:edited', e, e.type, e.target);
+                    });
+                    map.on('draw:deleted', function (e) {
+                        console.log('draw:deleted', e, e.type, e.target);
                     });
                     return [4, loadMarkers()];
                 case 1:

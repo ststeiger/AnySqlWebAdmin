@@ -2298,24 +2298,49 @@ async function initMap()
 
     let drawControl = new L.Control.Draw(options);
     map.addControl(drawControl);
+    
+    map.on('draw:created', function(e:L.DrawEvents.Created) 
+    {
+        console.log('draw:created', e, e.type, e.target);
 
-    map.on('draw:created', function(e:L.DrawEvents.Created) {
+        // https://www.gaiaresources.com.au/drawing-features-leaflet-using-leaflet-draw-plugin/
+        // https://jsfiddle.net/user2314737/Lscupxqp/
+        // https://jsfiddle.net/user2314737/324h2d9q/
+        
+        // https://stackoverflow.com/questions/12687779/how-do-you-produce-a-d-ts-typings-definition-file-from-an-existing-javascript
+        
+        // https://www.liquidweb.com/kb/how-to-install-node-version-manager-on-ubuntu/
+        // https://nodesource.com/blog/installing-node-js-tutorial-using-nvm-on-mac-os-x-and-ubuntu/
+        // https://docs.npmjs.com/try-the-latest-stable-version-of-npm
+        
+        
+        // e.layer.editing.latlngs
+        
+        
         let type = e.layerType,
             layer = e.layer;
         drawnItems.addLayer(layer);
     });
-
-    map.on('draw:editstart', function() {
-        console.log('edit start');
+    
+    map.on('draw:editstart', function(e:L.DrawEvents.EditStart) 
+    {
+        console.log('draw:editstart', e, e.type, e.target);
     });
-
-    map.on('draw:editstop', function() {
-        console.log('edit stop');
+    
+    map.on('draw:editstop', function(e:L.DrawEvents.EditStop) 
+    {
+        console.log('draw:editstop', e, e.type, e.target);
     });
-
-
-
-
+    
+    map.on('draw:edited', function(e:L.DrawEvents.Edited) {
+        console.log('draw:edited', e, e.type, e.target);
+    });
+    
+    map.on('draw:deleted', function(e:L.DrawEvents.Deleted) {
+        console.log('draw:deleted', e, e.type, e.target);
+    });
+    
+    
     await loadMarkers();
     await loadWerbetafeln();
 
