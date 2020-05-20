@@ -2312,7 +2312,7 @@ async function initMap()
         // https://www.liquidweb.com/kb/how-to-install-node-version-manager-on-ubuntu/
         // https://nodesource.com/blog/installing-node-js-tutorial-using-nvm-on-mac-os-x-and-ubuntu/
         // https://docs.npmjs.com/try-the-latest-stable-version-of-npm
-        
+        // https://github.com/Microsoft/dts-gen/issues/58
         
         // e.layer.editing.latlngs
         
