@@ -8,6 +8,21 @@ namespace AnySqlWebAdmin
 {
 
 
+
+    public class MyWgsPoint
+    {
+        public decimal Lat;
+        public decimal Long;
+    }
+    
+    
+    public class MyPoint
+    {
+        public decimal Lat;
+        public decimal Long;
+    }
+
+
     // https://stackoverflow.com/questions/35715015/where-is-the-typescript-tools-version-set-in-an-asp-net-5-project
     //<TypeScriptToolsVersion>3.1.3</TypeScriptToolsVersion>
     //<!--
@@ -18,8 +33,67 @@ namespace AnySqlWebAdmin
     //<TscYieldDuringToolExecution Condition = "'$(TscYieldDuringToolExecution)' == ''" > true </ TscYieldDuringToolExecution >
     public class Program
     {
+        
+        
+        public static bool IsInPolygon(MyPoint[] vertices,  MyPoint testPoint)
+        {
+            if( vertices.Length < 3 ) 
+                return false;
+            
+            bool isInPolygon = false;
+            MyPoint lastVertex = vertices[vertices.Length - 1];
+            
+            foreach( MyPoint vertex in vertices )
+            {
+                if( IsBetween(testPoint.Long, lastVertex.Long, vertex.Long ) )
+                {
+                    decimal t = ( testPoint.Long - lastVertex.Long ) / ( vertex.Long - lastVertex.Long );
+                    decimal x = t * ( vertex.Lat - lastVertex.Lat ) + lastVertex.Lat;
+                    if( x >= testPoint.Lat ) 
+                        isInPolygon = !isInPolygon;
+                }
+                else
+                {
+                    if( testPoint.Long == lastVertex.Long && testPoint.Lat < lastVertex.Lat && vertex.Long > testPoint.Long ) 
+                        isInPolygon = !isInPolygon;
+                    
+                    if( testPoint.Long == vertex.Long && testPoint.Lat < vertex.Lat && lastVertex.Long > testPoint.Long ) 
+                        isInPolygon = !isInPolygon;
+                }
+                
+                lastVertex = vertex;
+            } // Next vertex 
+            
+            return isInPolygon;
+        } // End Function IsInPolygon 
+
+        public static bool IsBetween( decimal x, decimal a, decimal b )
+        {
+            return ( x - a ) * ( x - b ) < 0M;
+        }
 
 
+        // https://stackoverflow.com/questions/39853481/is-point-inside-polygon/39857727#39857727
+        public static bool IsPointInPolygon4(MyWgsPoint[] polygon, MyWgsPoint testPoint)
+        {
+            bool result = false;
+            int j = polygon.Length - 1;
+            for (int i = 0; i < polygon.Length; i++)
+            {
+                if (polygon[i].Long < testPoint.Long && polygon[j].Long >= testPoint.Long || polygon[j].Long < testPoint.Long && polygon[i].Long >= testPoint.Long)
+                {
+                    if (polygon[i].Lat + (testPoint.Long - polygon[i].Long) / (polygon[j].Long - polygon[i].Long) * (polygon[j].Lat - polygon[i].Lat) < testPoint.Lat)
+                    {
+                        result = !result;
+                    }
+                }
+                j = i;
+            } // Next i 
+            return result;
+        } // End Function IsPointInPolygon4
+        
+        
+        
         public static void Main(string[] args)
         {
             
