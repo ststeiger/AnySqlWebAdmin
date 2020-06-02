@@ -2314,7 +2314,7 @@ async function initMap()
             },
 
             // polyline: { metric: true },
-            polyline: false,
+            // polyline: false,
             rectangle: false,
             circle: false,
             marker: false, 
