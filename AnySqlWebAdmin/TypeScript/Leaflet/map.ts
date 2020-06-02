@@ -2122,6 +2122,8 @@ function getBoundsArea(bounds: L.LatLngBounds): number
     return area;
 } // End Function getBoundsArea 
 
+
+// new function see getBuildings()
 async function addDataLayer()
 {
     map.closePopup();
@@ -2144,11 +2146,13 @@ async function addDataLayer()
     let OSM_API_VERSION = "0.6";
     let url = "https://www.openstreetmap.org/api/" + OSM_API_VERSION + "/map?bbox=" + bb.toBBoxString();
 
+    
     let xml = await getXml(url);
-    console.log("xml", xml);
+    // console.log("xml", xml);
+    
     let layer = new L.OSM.DataLayer(xml).addTo(map);
     // map.fitBounds(layer.getBounds());
-
+    
     // console.log(layer);
 }
 
@@ -2759,7 +2763,7 @@ SELECT
 }
 
 
-function createInsertScript(unionPolygon: string)
+function createInsertScript(unionPolygon: string):string
 {
     if (unionPolygon == null)
     {
@@ -2775,7 +2779,9 @@ function createInsertScript(unionPolygon: string)
     polygon.bindPopup(unionPolygon).addTo(map);
 
     let insertScript = createInsertScriptSQL(latlongs)
-    console.log("SQL-INSERT-Script: ", insertScript);
+    // console.log("SQL-INSERT-Script: ", insertScript);
+
+    return insertScript;
 }
 
 
@@ -2991,6 +2997,8 @@ function replaceAll(str: string, find: string, newToken: string, ignoreCase?:boo
 }
 
 
+// old function see addDataLayer()
+// with this, including leaflet-osm is obsolete
 async function getBuildings()
 {
     let bb = map.getBounds();
@@ -3010,7 +3018,6 @@ async function getBuildings()
 
     // let hello = ``
     // let xml = (new DOMParser()).parseFromString(hello, "text/xml");
-
 
     let buildingsNodes: Element[] = Array.prototype.slice.call(xml.querySelectorAll('way tag[k="building"]')).map(function (x: Node) { return x.parentElement || x.parentNode });
     let nodes: Element[] = Array.prototype.slice.call(xml.querySelectorAll('node'));
@@ -3070,9 +3077,12 @@ async function getBuildings()
             // let thisBuilding = L.polygon(buildings[property], { className: 'osm_data_polygon' /*, "__color": "red", "__dashArray": '10,10'*/ });
             let thisBuilding = L.polygon(buildings[property], { className: myway /*, "__color": "red", "__dashArray": '10,10'*/ });
             thisBuilding.addTo(map);
-
+            
             let contentString = "OSM way-id: " + property + "<br />" + "area: ~" + thousandSeparator(polygonArea(buildings[property])) + "m<sup>2</sup><br />GPS:<br />";
             contentString += CreateSqlPolygon(buildings[property]);
+            contentString += '<textarea style="width: 100%; height: 5cm;">'
+            contentString += createInsertScriptSQL(buildings[property]);
+            contentString += "</textarea>"
 
             /*
             for (let r = 0; r < polygonData.length; ++r)
@@ -3086,7 +3096,6 @@ async function getBuildings()
                 ;
 
             thisBuilding.bindPopup(popup);
-
 
             thisBuilding.on("click", function (event: L.LeafletMouseEvent)
             {
@@ -3102,7 +3111,6 @@ async function getBuildings()
                 else
                     (<Element>event.originalEvent.target).classList.add("active");
             });
-
         } // End if (buildings.hasOwnProperty(property)) 
 
     } // Next property 

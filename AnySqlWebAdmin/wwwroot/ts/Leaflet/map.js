@@ -1300,7 +1300,6 @@ function addDataLayer() {
                     return [4, getXml(url)];
                 case 1:
                     xml = _a.sent();
-                    console.log("xml", xml);
                     layer = new L.OSM.DataLayer(xml).addTo(map);
                     return [2];
             }
@@ -1609,7 +1608,7 @@ function createInsertScript(unionPolygon) {
     var polygon = L.polygon(latlongs);
     polygon.bindPopup(unionPolygon).addTo(map);
     var insertScript = createInsertScriptSQL(latlongs);
-    console.log("SQL-INSERT-Script: ", insertScript);
+    return insertScript;
 }
 function startMap() {
     return __awaiter(this, void 0, void 0, function () {
@@ -1764,6 +1763,9 @@ function getBuildings() {
                             thisBuilding.addTo(map);
                             contentString = "OSM way-id: " + property + "<br />" + "area: ~" + thousandSeparator(polygonArea(buildings[property])) + "m<sup>2</sup><br />GPS:<br />";
                             contentString += CreateSqlPolygon(buildings[property]);
+                            contentString += '<textarea style="width: 100%; height: 5cm;">';
+                            contentString += createInsertScriptSQL(buildings[property]);
+                            contentString += "</textarea>";
                             popup = new L.Popup()
                                 .setContent(contentString);
                             thisBuilding.bindPopup(popup);

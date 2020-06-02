@@ -192,7 +192,12 @@ L.OSM.DataLayer = L.FeatureGroup.extend({
 
           
           var contentString = "area: ~" + thousandSeparator(polygonData.area) + "m<sup>2</sup></br>GPS:</br>";
+          contentString += "<b>added by leaflet-osm.js</b> <br />"
           contentString += CreateSqlPolygon(polygonData);
+          contentString += '<textarea style="width: 100%; height: 5cm;">'
+          contentString += createInsertScriptSQL(polygonData);
+          contentString += "</textarea>"
+
           
           /*
           for (var r = 0; r < polygonData.length; ++r)
