@@ -538,8 +538,6 @@ namespace TestTransform
             string s4 = "POLYGON((8.304174 47.050784,8.3041695 47.0507507,8.3041592 47.0506835,8.3041585 47.0506448,8.3042166 47.0506438,8.3042225 47.0506777,8.3042885 47.0506777,8.3043001 47.0507637,8.304174 47.050784))";
 
 
-            NetTopologySuite.IO.WKTReader wr = new NetTopologySuite.IO.WKTReader();
-
             Wgs84Coordinates[] coords1 = PolygonParsingExtensions.PolygonStringToCoordinates(s1);
             Wgs84Coordinates[] coords2 = PolygonParsingExtensions.PolygonStringToCoordinates(s2);
             Wgs84Coordinates[] coords3 = PolygonParsingExtensions.PolygonStringToCoordinates(s3);

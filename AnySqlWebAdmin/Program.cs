@@ -27,7 +27,7 @@ namespace AnySqlWebAdmin
         public static void Main(string[] args)
         {
             // TestTransform.TestNetTopology.Test();
-            // TestTransform.TestNetTopology.TestUnion();
+            TestTransform.TestNetTopology.TestUnion();
             // TestTransform.TestNetTopology.PolygonArea();
             // TestTransform.TestNetTopology.TestComputeArea();
             // TestTransform.LOLdistance.Test();
