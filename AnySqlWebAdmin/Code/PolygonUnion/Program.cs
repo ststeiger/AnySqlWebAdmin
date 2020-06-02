@@ -530,6 +530,115 @@ namespace TestTransform
         }
 
 
+        public static void TestUnion()
+        {
+            string s1 = "POLYGON((8.3038582 47.0506309,8.3038611 47.050588,8.3038772 47.0504833,8.3041581 47.0505083,8.3041532 47.0506229,8.303965 47.0506089,8.3039616 47.0506342,8.3038582 47.0506309))";
+            string s2 = "POLYGON((8.3041532 47.0506229,8.3041581 47.0505083,8.3042898 47.0505392,8.3042879 47.050571,8.3042854 47.0506139,8.3041532 47.0506229))";
+            string s3 = "POLYGON((8.3042879 47.050571,8.30442 47.05058,8.3044327 47.0507439,8.3043001 47.0507637,8.3042885 47.0506777,8.3042854 47.0506139,8.3042879 47.050571))";
+            string s4 = "POLYGON((8.304174 47.050784,8.3041695 47.0507507,8.3041592 47.0506835,8.3041585 47.0506448,8.3042166 47.0506438,8.3042225 47.0506777,8.3042885 47.0506777,8.3043001 47.0507637,8.304174 47.050784))";
+
+
+            NetTopologySuite.IO.WKTReader wr = new NetTopologySuite.IO.WKTReader();
+
+            Wgs84Coordinates[] coords1 = PolygonParsingExtensions.PolygonStringToCoordinates(s1);
+            Wgs84Coordinates[] coords2 = PolygonParsingExtensions.PolygonStringToCoordinates(s2);
+            Wgs84Coordinates[] coords3 = PolygonParsingExtensions.PolygonStringToCoordinates(s3);
+            Wgs84Coordinates[] coords4 = PolygonParsingExtensions.PolygonStringToCoordinates(s4);
+
+
+            NetTopologySuite.Geometries.GeometryFactory geomFactory = new NetTopologySuite.Geometries.GeometryFactory();
+
+            GeoAPI.Geometries.IPolygon poly1 = geomFactory.CreatePolygon(coords1.ToNetTopologyCoordinates());
+            GeoAPI.Geometries.IPolygon poly2 = geomFactory.CreatePolygon(coords2.ToNetTopologyCoordinates());
+            GeoAPI.Geometries.IPolygon poly3 = geomFactory.CreatePolygon(coords3.ToNetTopologyCoordinates());
+            GeoAPI.Geometries.IPolygon poly4 = geomFactory.CreatePolygon(coords4.ToNetTopologyCoordinates());
+
+
+
+            System.Collections.Generic.List<GeoAPI.Geometries.IGeometry> lsPolygons =
+                new System.Collections.Generic.List<GeoAPI.Geometries.IGeometry>();
+
+            lsPolygons.Add(poly1);
+            lsPolygons.Add(poly2);
+            lsPolygons.Add(poly3);
+            lsPolygons.Add(poly4);
+
+
+            GeoAPI.Geometries.IGeometry ig = NetTopologySuite.Operation.Union.CascadedPolygonUnion.Union(lsPolygons);
+            System.Console.WriteLine(ig.GetType().FullName);
+
+            GeoAPI.Geometries.IPolygon unionPolygon = (GeoAPI.Geometries.IPolygon)ig;
+            System.Console.WriteLine(poly3);
+            System.Console.WriteLine(unionPolygon.Shell.Coordinates);
+
+
+            System.Collections.Generic.List<Wgs84Coordinates> coords = new System.Collections.Generic.List<Wgs84Coordinates>();
+
+            for (int i = 0; i < unionPolygon.Shell.Coordinates.Length; ++i)
+            {
+                coords.Add(new Wgs84Coordinates(unionPolygon.Shell.Coordinates[i].X, unionPolygon.Shell.Coordinates[i].Y));
+            }
+
+
+            coords = PolygonParsingExtensions.ToCounterClockWise(coords);
+
+
+            // Close polygon if unclosed
+            if (coords[0].Latitude != coords[coords.Count - 1].Latitude || coords[0].Longitude != coords[coords.Count - 1].Longitude)
+                coords.Add(coords[0]);
+            
+            string insertString = @"
+DECLARE @GB_UID AS uniqueidentifier;
+DECLARE @SO_UID AS uniqueidentifier;
+
+SET @GB_UID = NULLIF('abc', '');
+SET @SO_UID = NULLIF('', '');
+
+
+DELETE FROM T_ZO_Objekt_Wgs84Polygon WHERE ZO_OBJ_WGS84_GB_UID = @GB_UID; 
+
+
+/*
+INSERT INTO T_ZO_Objekt_Wgs84Polygon
+(
+     ZO_OBJ_WGS84_UID
+    ,ZO_OBJ_WGS84_GB_UID
+    ,ZO_OBJ_WGS84_SO_UID
+    ,ZO_OBJ_WGS84_Sort
+    ,ZO_OBJ_WGS84_GM_Lat
+    ,ZO_OBJ_WGS84_GM_Lng
+)
+*/";
+
+
+            for (int i = 0; i < coords.Count; ++i)
+            {
+                if (i != 0)
+                    insertString += " \r\n\r\n\r\nUNION ALL \r\n\r\n";
+
+                
+
+                insertString += $@"
+SELECT
+     NEWID() AS ZO_OBJ_WGS84_UID
+    ,CAST(@GB_UID AS uniqueidentifier) AS ZO_OBJ_WGS84_GB_UID
+    ,CAST(@SO_UID AS uniqueidentifier) AS ZO_OBJ_WGS84_SO_UID
+    ,CAST({i.ToString(System.Globalization.CultureInfo.InvariantCulture)} AS integer) + 1 AS ZO_OBJ_WGS84_Sort
+    ,{coords[i].Latitude.ToString(System.Globalization.CultureInfo.InvariantCulture)} AS ZO_OBJ_WGS84_GM_Lat -- decimal(23, 20)
+    ,{coords[i].Longitude.ToString(System.Globalization.CultureInfo.InvariantCulture)} AS ZO_OBJ_WGS84_GM_Lng -- decimal(23, 20) ";
+            }
+
+
+
+
+            insertString += " \r\n; \r\n\r\n";
+            System.Console.WriteLine(insertString);
+
+            System.Console.WriteLine("--- Press any key to continue --- ");
+            System.Console.ReadKey();
+        }
+
+
 
         public static void Test()
         {

@@ -26,13 +26,13 @@ namespace AnySqlWebAdmin
         
         public static void Main(string[] args)
         {
-            /*
-            TestTransform.LOLdistance.Test();
-            TestTransform.TestNetTopology.Test();
-            TestTransform.TestNetTopology.PolygonArea();
-            TestTransform.TestNetTopology.TestComputeArea();
-            AnySqlWebAdmin.OSM.TileCoordinates.Test();
-            */
+            // TestTransform.TestNetTopology.Test();
+            // TestTransform.TestNetTopology.TestUnion();
+            // TestTransform.TestNetTopology.PolygonArea();
+            // TestTransform.TestNetTopology.TestComputeArea();
+            // TestTransform.LOLdistance.Test();
+
+            // AnySqlWebAdmin.OSM.TileCoordinates.Test();
 
             // AnySqlWebAdmin.TestCassandra.Test();
             BuildWebHost(args).Run();
