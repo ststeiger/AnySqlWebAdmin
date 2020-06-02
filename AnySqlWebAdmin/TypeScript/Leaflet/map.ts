@@ -2314,7 +2314,7 @@ async function initMap()
             },
 
             // polyline: { metric: true },
-            // polyline: false,
+            polyline: false,
             rectangle: false,
             circle: false,
             marker: false, 
@@ -2382,7 +2382,7 @@ async function initMap()
     map.addControl(drawControl);
 
 
-    map.on('draw:created', function(e:L.DrawEvents.Created) 
+    map.on('draw:created', function (e: L.DrawEvents.Created)
     {
         console.log('On draw:created', e.target);
         console.log(e.type, e);
@@ -2407,10 +2407,13 @@ async function initMap()
         // e.layer.toGeoJSON().geometry.type // is point if circle 
         // e.layer.toGeoJSON().geometry.coordinates
 
-        console.log("coordinates:");
-        console.log(e.layer.toGeoJSON().geometry.coordinates[0]);
+        let feat = e.layer.toGeoJSON();
 
-        
+        if (feat.geometry && feat.geometry.coordinates && feat.geometry.coordinates.length > 0)
+        {
+            let polygonCoords = (<number[][][]>feat.geometry.coordinates)[0].map(function (c: number[]) { return [c[1], c[0]] });
+            console.log("polygonCoords", polygonCoords); // geoJSON has (longitude, latitude), not (latitude, longitude)
+        }   
 
         // https://www.gaiaresources.com.au/drawing-features-leaflet-using-leaflet-draw-plugin/
         // https://jsfiddle.net/user2314737/Lscupxqp/
@@ -2793,7 +2796,7 @@ function tile2lat(y: number, z: number)
 }
 
 
-function foo()
+function UNUSED_extendLayerGroup()
 {
     let layerGroupNew = new L.LayerGroup();
     layerGroupNew.addTo(map);

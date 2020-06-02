@@ -1400,6 +1400,7 @@ function initMap() {
                                     color: "#bada55"
                                 }
                             },
+                            polyline: false,
                             rectangle: false,
                             circle: false,
                             marker: false,
@@ -1448,8 +1449,11 @@ function initMap() {
                         console.log(e.type, e);
                         e.layer.bindPopup('A popup!');
                         console.log(e.layerType);
-                        console.log("coordinates:");
-                        console.log(e.layer.toGeoJSON().geometry.coordinates[0]);
+                        var feat = e.layer.toGeoJSON();
+                        if (feat.geometry && feat.geometry.coordinates && feat.geometry.coordinates.length > 0) {
+                            var polygonCoords = feat.geometry.coordinates[0].map(function (c) { return [c[1], c[0]]; });
+                            console.log("polygonCoords", polygonCoords);
+                        }
                         var type = e.layerType, layer = e.layer;
                         drawnItems.addLayer(layer);
                     });
@@ -1642,7 +1646,7 @@ function tile2lat(y, z) {
     var n = Math.PI - 2 * Math.PI * y / Math.pow(2, z);
     return (180 / Math.PI * Math.atan(0.5 * (Math.exp(n) - Math.exp(-n))));
 }
-function foo() {
+function UNUSED_extendLayerGroup() {
     var layerGroupNew = new L.LayerGroup();
     layerGroupNew.addTo(map);
     var x = L.marker(new L.LatLng(0, 0, 0));
