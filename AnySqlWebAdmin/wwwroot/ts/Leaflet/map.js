@@ -1400,7 +1400,6 @@ function initMap() {
                                     color: "#bada55"
                                 }
                             },
-                            polyline: false,
                             rectangle: false,
                             circle: false,
                             marker: false,
