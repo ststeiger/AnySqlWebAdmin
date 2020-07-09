@@ -1,13 +1,15 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.26730.12
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29911.84
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AnySqlWebAdmin", "AnySqlWebAdmin\AnySqlWebAdmin.csproj", "{7408A639-C454-454A-8424-D1662FFD2211}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotSpatial.Projections", "DotSpatial.Projections\DotSpatial.Projections.csproj", "{7ADA5EE7-3291-4DC3-87A5-6A5615718AF8}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotSpatial.Positioning", "DotSpatial.Positioning\DotSpatial.Positioning.csproj", "{94B0F1C8-D5FE-4F6B-9A16-F1DD2A73B233}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Dapper", "Dapper\Dapper.csproj", "{85378766-4DBA-426B-8CF2-B0D6390C0190}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -27,6 +29,10 @@ Global
 		{94B0F1C8-D5FE-4F6B-9A16-F1DD2A73B233}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{94B0F1C8-D5FE-4F6B-9A16-F1DD2A73B233}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{94B0F1C8-D5FE-4F6B-9A16-F1DD2A73B233}.Release|Any CPU.Build.0 = Release|Any CPU
+		{85378766-4DBA-426B-8CF2-B0D6390C0190}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{85378766-4DBA-426B-8CF2-B0D6390C0190}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{85378766-4DBA-426B-8CF2-B0D6390C0190}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{85378766-4DBA-426B-8CF2-B0D6390C0190}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

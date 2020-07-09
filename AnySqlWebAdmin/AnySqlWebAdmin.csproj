@@ -41,6 +41,7 @@
     <None Include="wwwroot\leaflet-draw\leaflet.draw.js" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Dapper\Dapper.csproj" />
     <ProjectReference Include="..\DotSpatial.Positioning\DotSpatial.Positioning.csproj" />
     <ProjectReference Include="..\DotSpatial.Projections\DotSpatial.Projections.csproj" />
   </ItemGroup>

@@ -22,6 +22,8 @@ namespace AnySqlWebAdmin
 
         public static void Main(string[] args)
         {
+            Code.SqlMerge.MergeTst.Test();
+
             // TestTransform.TestNetTopology.Test();
             // TestTransform.TestNetTopology.TestUnion();
             // TestTransform.TestNetTopology.PolygonArea();
