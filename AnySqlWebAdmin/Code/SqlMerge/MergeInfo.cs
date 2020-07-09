@@ -1,12 +1,12 @@
 ﻿
 using Dapper;
-using System.Collections.Generic;
 using System.Linq;
+
 
 namespace AnySqlWebAdmin.Code.SqlMerge
 {
-
-
+    
+    
     public class MergeInfo
     {
         public string column_name;
@@ -18,36 +18,43 @@ namespace AnySqlWebAdmin.Code.SqlMerge
 
     public class MergeTst
     {
-
-
-        public static string GetMergeCommand(string table_schema, string table_name, bool with_merge, System.Collections.Generic.IEnumerable<MergeInfo> mis, System.Text.StringBuilder xml)
+        
+        
+        private static string GetMergeCommand(string table_schema, string table_name, bool with_merge,
+            System.Collections.Generic.IEnumerable<MergeInfo> mis, System.Text.StringBuilder xml)
         {
             xml = xml.Replace("'", "''");
 
-
             string[] selectColumns = mis.Select(x => x.column_name).ToArray();
-            string[] xqueryColumns = mis.Select(x => "\"" + x.column_name + "\" " + x.column_sql_datatype + " '" + x.column_name + "[not(@*[local-name()=\"nil\" and . =\"true\"])]' ").ToArray();
+            string[] xqueryColumns = mis.Select(x =>
+                "\"" + x.column_name + "\" " + x.column_sql_datatype + " '" + x.column_name +
+                "[not(@*[local-name()=\"nil\" and . =\"true\"])]' ").ToArray();
             // "BE_Name" character varying(50) 'BE_Name[not(@*[local-name()="nil" and . ="true"])]'
             string[] pkColumns = mis.Where(x => x.column_of_pk != null).Select(x => x.column_of_pk).ToArray();
-            string[] updateColumns = mis.Where(x => x.column_of_pk == null).Select(x => "A." + x.column_name + " = CTE." + x.column_name + " ").ToArray();
+            string[] updateColumns = mis.Where(x => x.column_of_pk == null)
+                .Select(x => "A." + x.column_name + " = CTE." + x.column_name + " ").ToArray();
             bool is_identity = mis.Any(x => x.is_identity == 1);
-            
+
 
             const string padding = "    ";
             const string double_padding = padding + padding;
 
-            string select = double_padding + " " + string.Join(System.Environment.NewLine + double_padding + ",", selectColumns);
-            string from = double_padding + " " + string.Join(System.Environment.NewLine+ double_padding+",", xqueryColumns);
+            string select = double_padding + " " +
+                            string.Join(System.Environment.NewLine + double_padding + ",", selectColumns);
+            string from = double_padding + " " +
+                          string.Join(System.Environment.NewLine + double_padding + ",", xqueryColumns);
 
-            string insert = double_padding + " " + string.Join(System.Environment.NewLine + double_padding + ",", selectColumns);
-            string insert_select = double_padding + " CTE." + string.Join(System.Environment.NewLine + double_padding + ",CTE.", selectColumns);
+            string insert = double_padding + " " +
+                            string.Join(System.Environment.NewLine + double_padding + ",", selectColumns);
+            string insert_select = double_padding + " CTE." +
+                                   string.Join(System.Environment.NewLine + double_padding + ",CTE.", selectColumns);
 
             string[] joinConditions = pkColumns.Select(x => "CTE." + x + " = A." + x).ToArray();
             string joinCondition = string.Join(" AND ", joinConditions);
 
-            
-            string updateStatement = string.Join(System.Environment.NewLine + double_padding + padding + ",", updateColumns);
 
+            string updateStatement =
+                string.Join(System.Environment.NewLine + double_padding + padding + ",", updateColumns);
 
 
             xml.Insert(0, $@"
@@ -64,7 +71,7 @@ SELECT @xml
 
 
 DECLARE @xml xml 
-SET @xml = N'"); 
+SET @xml = N'");
 
 
             xml.Append(@"'
@@ -74,7 +81,7 @@ DECLARE @handle INT
 DECLARE @PrepareXmlStatus INT
 
 EXEC @PrepareXmlStatus = sp_xml_preparedocument @handle OUTPUT, @XML
-
+-- EXEC @PrepareXmlStatus = sp_xml_preparedocument @handle OUTPUT, 'C:\Export1\med_Form.xml'
 
 ");
 
@@ -104,17 +111,15 @@ SET IDENTITY_INSERT {table_schema}.{table_name} ON;
     */
 )
 ");
-            if(with_merge)
+            if (with_merge)
                 xml.Append("-- ");
 
 
-
-            xml.Append( @"SELECT * FROM CTE 
+            xml.Append(@"SELECT * FROM CTE 
 ");
 
             if (with_merge)
             {
-
                 xml.Append($@"
 
 
@@ -127,11 +132,15 @@ WHEN MATCHED
 WHEN NOT MATCHED BY TARGET THEN 
     INSERT  
     (
-{insert}
+");
+                xml.Append(insert);
+                xml.Append(@"
     )
     VALUES
-    (
-{insert_select}
+    ( ");
+                xml.Append(insert_select);
+
+                xml.Append(@"
     )
 -- WHEN NOT MATCHED BY SOURCE THEN DELETE
 ;
@@ -142,71 +151,68 @@ EXEC sp_xml_removedocument @handle
 
                 if (is_identity)
                 {
-                    xml.Append( $@"
-SET IDENTITY_INSERT { table_schema}.{ table_name} OFF; 
+                    xml.Append($@"
+SET IDENTITY_INSERT {table_schema}.{table_name} OFF; 
 ");
                 }
-
-            }
+            } // End if (with_merge)
 
             return xml.ToString();
-        }
-
+        } // End Function GetMergeCommand 
 
 
         public static void Test()
         {
-            var service = new SqlService();
+            SqlService service = new SqlService();
             // System.Collections.Generic.Dictionary<string, object> pars = null;
             // service.AddParameterList(pars);
-
-            string __table_schema = "dbo";
-            string __table_name = "T_VWS_ZO_SVG_AP_Objekt";
-            __table_name = "T_AP_Standort";
-            __table_name = "T_AP_Gebaeude";
-            // __table_name = "T_Benutzer";
-
+            
+            string table_schema = "dbo";
+            string table_name = "T_VWS_ZO_SVG_AP_Objekt";
+            table_name = "T_AP_Standort";
+            table_name = "T_AP_Gebaeude";
+            // table_name = "T_Benutzer";
+            
+            using (System.Data.Common.DbConnection conn = service.Connection)
+            {
+                Test(table_schema, table_name, conn);
+            } // End Using conn 
+            
+        } // End Sub Test 
+        
+        
+        public static void Test(string table_schema, string table_name, System.Data.Common.DbConnection conn)
+        {
             string sql = System.IO.Path.Combine("SQL", "Schema.Merge.sql");
             sql = System.IO.File.ReadAllText(sql, System.Text.Encoding.UTF8);
 
-            System.Text.StringBuilder xmlBuilder;
-
-            string xml = $@"DECLARE @xml XML
-SET @xml = (SELECT(
-
-SELECT * FROM {__table_schema}.{__table_name}
-
-FOR XML PATH('row'), ROOT('table'), ELEMENTS xsinil) AS outerXml )
-SELECT @xml";
-
-
-
+            System.Text.StringBuilder xml;
             System.Collections.Generic.IEnumerable<MergeInfo> mis = null;
 
-            using (var conn = service.Connection)
+            mis = conn.Query<MergeInfo>(sql, new {__table_schema = table_schema, __table_name = table_name});
+            string xml1 = conn.ExecuteScalar<string>($@"DECLARE @xml XML
+SET @xml = (SELECT(
+
+SELECT * FROM {table_schema}.{table_name} 
+
+FOR XML PATH('row'), ROOT('table'), ELEMENTS xsinil) AS outerXml )
+SELECT @xml"
+            );
+
+
+            using (System.Data.IDataReader reader = conn.ExecuteReader($"SELECT * FROM {table_schema}.{table_name} ;"))
             {
-                mis = conn.Query<MergeInfo>(sql, new { __table_schema, __table_name });
-                // xml = conn.ExecuteScalar<string>(xml);
-
-                using (System.Data.IDataReader reader = conn.ExecuteReader($"SELECT * FROM {__table_schema}.{__table_name};"))
-                {
-                    // use reader here
-                    xmlBuilder = LargeDataToXML(__table_schema, __table_name, reader);
-                }
-
-
-            } // End Using conn 
-
-            string cmd = GetMergeCommand(__table_schema, __table_name, false, mis, xmlBuilder);
+                xml = LargeDataToXML(table_schema, table_name, reader);
+            }
+            
+            string cmd = GetMergeCommand(table_schema, table_name, false, mis, xml);
             System.Console.WriteLine(cmd);
-        }
+        } // End Sub Test 
 
 
-
-        public class StringWriterWithEncoding 
+        public class StringWriterWithEncoding
             : System.IO.StringWriter
         {
-
             private readonly System.Text.Encoding m_Encoding;
 
 
@@ -215,18 +221,19 @@ SELECT @xml";
             {
                 this.m_Encoding = encoding;
             }
-            
+
+
             public override System.Text.Encoding Encoding
             {
-                get
-                {
-                    return this.m_Encoding;
-                }
+                get { return this.m_Encoding; }
             }
-        }
+        } // End Class StringWriterWithEncoding
 
 
-        public static System.Text.StringBuilder LargeDataToXML(string table_schema, string table_name, System.Data.IDataReader dr)
+        public static System.Text.StringBuilder LargeDataToXML(
+            string table_schema
+            , string table_name
+            , System.Data.IDataReader dr)
         {
             System.Text.StringBuilder builder = new System.Text.StringBuilder();
 
@@ -255,60 +262,58 @@ SELECT @xml";
                     writer.WriteAttributeString("xmlns", "xsi", null, System.Xml.Schema.XmlSchema.InstanceNamespace);
                     // writer.WriteAttributeString("xsi", "schemaLocation", null, System.Xml.Schema.XmlSchema.InstanceNamespace);
 
-                    //if (dr.HasRows)
+                    int fc = dr.FieldCount;
+
+                    string[] columnNames = new string[fc];
+                    System.Type[] columnTypes = new System.Type[fc];
+
+                    for (int i = 0; i < dr.FieldCount; ++i)
                     {
-                        int fc = dr.FieldCount;
+                        columnNames[i] = dr.GetName(i);
+                        columnTypes[i] = dr.GetFieldType(i);
+                    } // Next i 
+                    
+                    while (dr.Read())
+                    {
+                        writer.WriteStartElement("row");
 
-                        string[] columnNames = new string[fc];
-                        // System.Type[] columnTypes = new System.Type[fc];
-
-                        for (int i = 0; i < dr.FieldCount; ++i)
+                        for (int i = 0; i < fc; ++i)
                         {
-                            columnNames[i] = dr.GetName(i);
-                            // columnTypes[i] = dr.GetFieldType(i);
-                        } // Next i 
-
-                        while (dr.Read())
-                        {
-                            writer.WriteStartElement("row");
-
-                            for (int i = 0; i < fc; ++i)
+                            writer.WriteStartElement(columnNames[i]);
+                            object obj = dr.GetValue(i);
+                            
+                            if (obj != System.DBNull.Value)
                             {
-                                writer.WriteStartElement(columnNames[i]);
-                                object obj = dr.GetValue(i);
-
-                                if (obj != System.DBNull.Value)
+                                if (object.ReferenceEquals(columnTypes[i], typeof(System.DateTime)))
                                 {
-                                    if (object.ReferenceEquals(obj.GetType(), typeof(System.DateTime)))
-                                    {
-                                        System.DateTime t = (System.DateTime)obj;
-                                        writer.WriteValue(t.ToString("yyyy-MM-dd'T'HH':'mm':'ss'.'fff", System.Globalization.CultureInfo.InvariantCulture));
-                                    }
-                                    else
-                                        writer.WriteValue(System.Convert.ToString(obj, System.Globalization.CultureInfo.InvariantCulture));
+                                    System.DateTime dt = (System.DateTime) obj;
+                                    writer.WriteValue(dt.ToString("yyyy-MM-dd'T'HH':'mm':'ss'.'fff",
+                                        System.Globalization.CultureInfo.InvariantCulture));
                                 }
                                 else
-                                    writer.WriteAttributeString("xsi", "nil", System.Xml.Schema.XmlSchema.InstanceNamespace, "true");
-
-                                writer.WriteEndElement();
-                            } // Next i
+                                    writer.WriteValue(System.Convert.ToString(obj,
+                                        System.Globalization.CultureInfo.InvariantCulture));
+                            }
+                            else
+                                writer.WriteAttributeString("xsi", "nil",
+                                    System.Xml.Schema.XmlSchema.InstanceNamespace, "true");
 
                             writer.WriteEndElement();
-                        } // Whend 
+                        } // Next i
 
-                    } // End if (dr.HasRows) 
-
+                        writer.WriteEndElement();
+                    } // Whend 
+                    
                     writer.WriteEndElement();
                 } // End Using writer 
-
+                
             } // End Using stringWriter 
-
+            
             return builder;
         } // End Sub LargeDataToXML 
-
-
-
-    }
-
-
+        
+        
+    } // End Class MergeTst 
+    
+    
 }

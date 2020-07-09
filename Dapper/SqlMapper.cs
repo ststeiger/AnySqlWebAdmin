@@ -8,6 +8,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Data.Common;
 using System.Globalization;
 using System.Linq;
 using System.Reflection;
@@ -601,6 +602,17 @@ namespace Dapper
             var reader = ExecuteReaderImpl(cnn, ref command, CommandBehavior.Default, out IDbCommand dbcmd);
             return new WrappedReader(dbcmd, reader);
         }
+
+
+        public static DbDataReader ExecuteDbReader(this IDbConnection cnn, string sql, object param = null, IDbTransaction transaction = null, int? commandTimeout = null, CommandType? commandType = null)
+        {
+            IWrappedDataReader iw = (IWrappedDataReader)
+                ExecuteReader(cnn, sql, param, transaction, commandTimeout, commandType);
+            ;
+            
+            return (System.Data.Common.DbDataReader) iw.Reader;
+        }
+
 
         /// <summary>
         /// Execute parameterized SQL and return an <see cref="IDataReader"/>.
