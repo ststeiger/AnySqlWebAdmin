@@ -1,8 +1,5 @@
-﻿
-namespace AnySqlWebAdmin 
+﻿namespace AnySqlWebAdmin
 {
-    
-    
     [System.Flags]
     public enum RenderType_t : int
     {
@@ -18,12 +15,10 @@ namespace AnySqlWebAdmin
         LongName = 256,
         AssemblyQualifiedName = 512
     }
-    
-    
-    public class SqlServiceJsonHelper 
+
+
+    public class SqlServiceJsonHelper
     {
-        
-        
         private static string GetAssemblyQualifiedNoVersionName(string input)
         {
             int i = 0;
@@ -37,13 +32,14 @@ namespace AnySqlWebAdmin
 
                     isNotFirst = true;
                 }
+
                 i += 1;
             }
-            
+
             return input.Substring(0, i);
         } // GetAssemblyQualifiedNoVersionName
-        
-        
+
+
         private static string GetAssemblyQualifiedNoVersionName(System.Type type)
         {
             if (type == null)
@@ -51,8 +47,8 @@ namespace AnySqlWebAdmin
 
             return GetAssemblyQualifiedNoVersionName(type.AssemblyQualifiedName);
         } // GetAssemblyQualifiedNoVersionName
-        
-        
+
+
         private static string GetTypeName(System.Type type, RenderType_t renderType)
         {
             if (type == null)
@@ -69,9 +65,10 @@ namespace AnySqlWebAdmin
 
             return type.Name;
         } // GetAssemblyQualifiedNoVersionName
-        
-        
-        private static async System.Threading.Tasks.Task WriteAssociativeColumnsArray(Newtonsoft.Json.JsonTextWriter jsonWriter
+
+
+        private static async System.Threading.Tasks.Task WriteAssociativeColumnsArray(
+            Newtonsoft.Json.JsonTextWriter jsonWriter
             , System.Data.Common.DbDataReader dr, RenderType_t renderType)
         {
             //await jsonWriter.WriteStartObjectAsync();
@@ -98,9 +95,10 @@ namespace AnySqlWebAdmin
 
             await jsonWriter.WriteEndObjectAsync();
         } // WriteAssociativeArray
-        
-        
-        private static async System.Threading.Tasks.Task WriteComplexArray(Newtonsoft.Json.JsonTextWriter jsonWriter, System.Data.Common.DbDataReader dr, RenderType_t renderType)
+
+
+        private static async System.Threading.Tasks.Task WriteComplexArray(Newtonsoft.Json.JsonTextWriter jsonWriter,
+            System.Data.Common.DbDataReader dr, RenderType_t renderType)
         {
             //await jsonWriter.WriteStartObjectAsync();
             await jsonWriter.WriteStartArrayAsync();
@@ -120,7 +118,6 @@ namespace AnySqlWebAdmin
                     await jsonWriter.WritePropertyNameAsync("fieldType");
                     //await jsonWriter.WriteValueAsync(GetAssemblyQualifiedNoVersionName(dr.GetFieldType(i)));
                     await jsonWriter.WriteValueAsync(GetTypeName(dr.GetFieldType(i), renderType));
-                    
                 }
 
                 await jsonWriter.WriteEndObjectAsync();
@@ -129,9 +126,10 @@ namespace AnySqlWebAdmin
             // await jsonWriter.WriteEndObjectAsync();
             await jsonWriter.WriteEndArrayAsync();
         } // WriteAssociativeArray
-        
-        
-        private static async System.Threading.Tasks.Task WriteArray(Newtonsoft.Json.JsonTextWriter jsonWriter, System.Data.Common.DbDataReader dr)
+
+
+        private static async System.Threading.Tasks.Task WriteArray(Newtonsoft.Json.JsonTextWriter jsonWriter,
+            System.Data.Common.DbDataReader dr)
         {
             await jsonWriter.WriteStartArrayAsync();
             for (int i = 0; i <= dr.FieldCount - 1; i++)
@@ -142,16 +140,15 @@ namespace AnySqlWebAdmin
 
 
         public static async System.Threading.Tasks.Task AnyDataReaderToJson(
-              string sql
+            string sql
             , System.Collections.Generic.Dictionary<string, object> pars
             , Microsoft.AspNetCore.Http.HttpContext context
             , RenderType_t format)
         {
             SqlService service = (SqlService) context.RequestServices.GetService(typeof(SqlService));
-            
+
             using (System.Data.Common.DbConnection con = service.Connection)
             {
-                
                 using (System.Data.Common.DbCommand cmd = con.CreateCommand())
                 {
                     cmd.CommandText = sql;
@@ -166,7 +163,6 @@ namespace AnySqlWebAdmin
                         System.Data.CommandBehavior.SequentialAccess
                         | System.Data.CommandBehavior.CloseConnection))
                     {
-
                         using (System.IO.StreamWriter output = new System.IO.StreamWriter(context.Response.Body))
                         {
                             using (Newtonsoft.Json.JsonTextWriter jsonWriter =
@@ -176,7 +172,7 @@ namespace AnySqlWebAdmin
                                     jsonWriter.Formatting = Newtonsoft.Json.Formatting.Indented;
 
 
-                                context.Response.StatusCode = (int)System.Net.HttpStatusCode.OK;
+                                context.Response.StatusCode = (int) System.Net.HttpStatusCode.OK;
                                 context.Response.ContentType = "application/json";
 
 
@@ -187,7 +183,6 @@ namespace AnySqlWebAdmin
 
                                 do
                                 {
-
                                     if (!format.HasFlag(RenderType_t.Data_Only) &&
                                         !format.HasFlag(RenderType_t.DataTable))
                                     {
@@ -209,55 +204,50 @@ namespace AnySqlWebAdmin
                                     } // End if (!format.HasFlag(RenderType_t.Data_Only)) 
 
 
-
                                     if (!format.HasFlag(RenderType_t.Data_Only) &&
                                         !format.HasFlag(RenderType_t.DataTable))
                                     {
                                         await jsonWriter.WritePropertyNameAsync("rows");
                                     } // End if (!format.HasFlag(RenderType_t.Data_Only))
-
+                                    
                                     await jsonWriter.WriteStartArrayAsync();
-
-                                    if (dr.HasRows)
+                                    
+                                    string[] columns = null;
+                                    if (format.HasFlag(RenderType_t.DataTable))
                                     {
-                                        string[] columns = null;
+                                        columns = new string[dr.FieldCount];
+                                        for (int i = 0; i < dr.FieldCount; i++)
+                                        {
+                                            columns[i] = dr.GetName(i);
+                                        } // Next i 
+                                    } // End if (format.HasFlag(RenderType_t.DataTable)) 
+
+                                    while (await dr.ReadAsync())
+                                    {
                                         if (format.HasFlag(RenderType_t.DataTable))
+                                            await jsonWriter.WriteStartObjectAsync();
+                                        else
+                                            await jsonWriter.WriteStartArrayAsync();
+
+                                        for (int i = 0; i <= dr.FieldCount - 1; i++)
                                         {
-                                            columns = new string[dr.FieldCount];
-                                            for (int i = 0; i < dr.FieldCount; i++)
+                                            object obj = await dr.GetFieldValueAsync<object>(i);
+                                            if (obj == System.DBNull.Value)
+                                                obj = null;
+
+                                            if (columns != null && format.HasFlag(RenderType_t.DataTable))
                                             {
-                                                columns[i] = dr.GetName(i);
-                                            } // Next i 
-                                        } // End if (format.HasFlag(RenderType_t.DataTable)) 
+                                                await jsonWriter.WritePropertyNameAsync(columns[i]);
+                                            }
 
-                                        while (await dr.ReadAsync())
-                                        {
-                                            if (format.HasFlag(RenderType_t.DataTable))
-                                                await jsonWriter.WriteStartObjectAsync();
-                                            else
-                                                await jsonWriter.WriteStartArrayAsync();
+                                            await jsonWriter.WriteValueAsync(obj);
+                                        } // Next i 
 
-                                            for (int i = 0; i <= dr.FieldCount - 1; i++)
-                                            {
-                                                object obj = await dr.GetFieldValueAsync<object>(i);
-                                                if (obj == System.DBNull.Value)
-                                                    obj = null;
-
-                                                if (columns != null && format.HasFlag(RenderType_t.DataTable))
-                                                {
-                                                    await jsonWriter.WritePropertyNameAsync(columns[i]);
-                                                }
-
-                                                await jsonWriter.WriteValueAsync(obj);
-                                            } // Next i 
-
-                                            if (format.HasFlag(RenderType_t.DataTable))
-                                                await jsonWriter.WriteEndObjectAsync();
-                                            else
-                                                await jsonWriter.WriteEndArrayAsync();
-                                        } // Whend 
-
-                                    } // End if (dr.HasRows) 
+                                        if (format.HasFlag(RenderType_t.DataTable))
+                                            await jsonWriter.WriteEndObjectAsync();
+                                        else
+                                            await jsonWriter.WriteEndArrayAsync();
+                                    } // Whend 
 
                                     await jsonWriter.WriteEndArrayAsync();
 
@@ -266,30 +256,21 @@ namespace AnySqlWebAdmin
                                     {
                                         await jsonWriter.WriteEndObjectAsync();
                                     } // End if (!format.HasFlag(RenderType_t.Data_Only)) 
-
                                 } while (await dr.NextResultAsync());
-                                
+
                                 await jsonWriter.WriteEndArrayAsync();
                                 await jsonWriter.WriteEndObjectAsync();
-                                
+
                                 await jsonWriter.FlushAsync();
                                 await output.FlushAsync();
                             } // jsonWriter 
-                            
                         } // output 
-                        
                     } // dr 
-                    
                 } // End Using cmd 
-                
+
                 if (con.State != System.Data.ConnectionState.Closed)
                     con.Close();
             } // con 
-            
         } // End Sub WriteArray 
-        
-        
     } // End Class 
-    
-    
 } // End Namespace 
