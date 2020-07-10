@@ -1,3 +1,15 @@
+var __values = (this && this.__values) || function(o) {
+    var s = typeof Symbol === "function" && Symbol.iterator, m = s && o[s], i = 0;
+    if (m) return m.call(o);
+    if (o && typeof o.length === "number") return {
+        next: function () {
+            if (o && i >= o.length) o = void 0;
+            return { value: o && o[i++], done: !o };
+        }
+    };
+    throw new TypeError(s ? "Object is not iterable." : "Symbol.iterator is not defined.");
+};
+var e_1, _a;
 var TableWrapper = (function () {
     function TableWrapper(columns, data, ignoreCase) {
         if (ignoreCase == null)
@@ -83,7 +95,16 @@ var TableWrapper = (function () {
     return TableWrapper;
 }());
 var a = ["a", "b", "c"];
-for (var _i = 0, a_1 = a; _i < a_1.length; _i++) {
-    var val = a_1[_i];
-    console.log(val);
+try {
+    for (var a_1 = __values(a), a_1_1 = a_1.next(); !a_1_1.done; a_1_1 = a_1.next()) {
+        var val = a_1_1.value;
+        console.log(val);
+    }
+}
+catch (e_1_1) { e_1 = { error: e_1_1 }; }
+finally {
+    try {
+        if (a_1_1 && !a_1_1.done && (_a = a_1.return)) _a.call(a_1);
+    }
+    finally { if (e_1) throw e_1.error; }
 }

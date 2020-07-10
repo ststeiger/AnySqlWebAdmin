@@ -2,7 +2,9 @@
   "compileOnSave": true,
 
   "compilerOptions": {
+    // "target": "ES5", //"target": "es5",
     "target": "ES5", //"target": "es5",
+    "downlevelIteration": true, // https://stackoverflow.com/questions/49218765/typescript-and-iterator-type-iterableiteratort-is-not-an-array-type
     //"module": "amd", // define, export, like playground
     // "module": "commonjs", // require
     "module": "ES2015", // just like typescript
@@ -14,8 +16,11 @@
     "lib": [
       "DOM",
       // "DOM.Iterable",
-      "ES2016",
-      "ES2015.Promise"
+      "ES2016"
+      // "ES2015.Promise"
+      // "ES2015.Iterable"
+      // "ES2015.Generator"
+      // "ES2015.Symbol"
       //,"ES2015.Proxy"
     ],
 
