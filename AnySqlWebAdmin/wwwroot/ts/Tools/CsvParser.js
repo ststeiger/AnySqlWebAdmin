@@ -127,7 +127,6 @@ var BlueMine;
             };
             return StringReader;
         }());
-        Data.StringReader = StringReader;
         function ParseSimple(reader, delimiter, qualifier) {
             var ls = [];
             var inQuote = false;
@@ -335,5 +334,53 @@ var BlueMine;
             }
         }
         Data.test = test;
+        function parseExcel(clipboardText) {
+            var reader = new StringReader(clipboardText);
+            var delimiter = "\t";
+            var qualifier = '"';
+            var result = ParseSimple(reader, delimiter, qualifier);
+            return result;
+        }
+        Data.parseExcel = parseExcel;
+        function copyPasteTest() {
+            function determineTypes(data) {
+                var itemFound = false;
+                for (var i = 0; i < data.items.length; i++) {
+                    var item = data.items[i];
+                    if (item.type === 'image/png') {
+                        itemFound = true;
+                        break;
+                    }
+                }
+            }
+            document.onpaste = function (pasteEvent) {
+                determineTypes(pasteEvent.clipboardData);
+                var item = pasteEvent.clipboardData.items[0];
+                if (item.type.indexOf("image") === 0) {
+                    var blob = item.getAsFile();
+                    var reader = new FileReader();
+                    reader.onload = function (event) {
+                    };
+                    reader.readAsDataURL(blob);
+                }
+            };
+            function pasteHandler(e) {
+                if (e.clipboardData && e.clipboardData.getData) {
+                    var pastedText = "";
+                    if (window.clipboardData && window.clipboardData.getData) {
+                        pastedText = window.clipboardData.getData('Text');
+                    }
+                    else if (e.clipboardData && e.clipboardData.getData) {
+                        pastedText = e.clipboardData.getData('text/plain');
+                    }
+                    console.log(pastedText);
+                    var tabularData = parseExcel(pastedText);
+                    console.log("data from Excel", tabularData);
+                }
+                else {
+                    console.log('Not paste object!');
+                }
+            }
+        }
     })(Data = BlueMine.Data || (BlueMine.Data = {}));
 })(BlueMine || (BlueMine = {}));

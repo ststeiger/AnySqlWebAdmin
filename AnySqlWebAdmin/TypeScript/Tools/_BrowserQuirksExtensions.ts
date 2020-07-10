@@ -1,24 +1,27 @@
 ﻿
 interface Element
 {
-    msMatchesSelector(selectors: string): boolean;
+    msMatchesSelector(selectors: string): boolean; // IE Quirk
 }
 
 interface Window
 {
     CustomEvent: any;
-    attachEvent: any;
-    detachEvent: any;
+    attachEvent: any; // IE Quirk
+    detachEvent: any; // IE Quirk
     
     getStackTrace: any;
     AudioContext: any;
     webkitAudioContext: any;
+    clipboardData: DataTransfer | null; // IE Quirk
 }
+
+
 
 interface Document
 {
-    attachEvent: any;
-    attachCustomEvent: any;
+    attachEvent: any; // IE Quirk
+    attachCustomEvent: any; // IE Quirk
 }
 
 interface Response
@@ -33,29 +36,29 @@ interface ErrorConstructor
 
 interface EventTarget
 {
-    value: any;
+    value: any; // IE Quirk
 }
 
 interface HTMLScriptElement
 {
-    onreadystatechange: any;
+    onreadystatechange: any; // IE Quirk
 }
 
 interface Element
 {
-    attachEvent: any;
-    detachEvent: any;
-    fireEvent: (eventName:string)=> void;
+    attachEvent: any; // IE Quirk
+    detachEvent: any; // IE Quirk
+    fireEvent: (eventName: string) => void; // IE Quirk
 }
 
 interface Event
 {
-    clientX: any;
-    clientY: any;
+    clientX: any; // IE Quirk
+    clientY: any; // IE Quirk
 }
 
 interface CustomEvent
 {
-    pageX: number;
-    pageY: number;
+    pageX: number; // IE Quirk
+    pageY: number; // IE Quirk
 }

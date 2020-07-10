@@ -31,9 +31,7 @@ namespace BlueMine.Data
     }
 
     
-
-
-    export class StringReader
+    class StringReader
     {
         private m_source: string;
         private m_nextChar: number;
@@ -365,6 +363,7 @@ namespace BlueMine.Data
     }
 
 
+    // Comparison of generators ECMA vs. C#: 
     
     //public static System.Collections.Generic.IEnumerable<int> generateList(int index)
     //{
@@ -411,7 +410,7 @@ helloWolrd
         }
 
 
-        //for (let value in a.tail)
+        // for (let value in a.tail)
         for (let value of a.tail)
         {
             console.log("value", value);
@@ -419,9 +418,96 @@ helloWolrd
 
         // BlueMine.Data.test();
 
-
-
     }
+
+
+    export function parseExcel(clipboardText: string):string[][]
+    {
+        let reader: StringReader = new StringReader(clipboardText);
+        let delimiter: string = "\t";
+        let qualifier: string = '"';
+
+        let result: string[][] = ParseSimple(reader, delimiter, qualifier);
+        return result;
+    }
+
+
+    // https://www.techiedelight.com/paste-image-from-clipboard-using-javascript
+    // https://stackoverflow.com/questions/30125770/paste-event-listener-on-internet-explorer-getting-wrong-arguments
+    function copyPasteTest()
+    {
+
+        function determineTypes(data: DataTransfer)
+        {
+            let itemFound: boolean = false;
+
+            for (let i = 0; i < data.items.length; i++)
+            {
+                let item = data.items[i];
+                if (item.type === 'image/png')
+                {
+                    itemFound = true;
+                    break;
+                }
+            } // Next i 
+        }
+
+
+
+        // get pasted image
+        document.onpaste = function (pasteEvent)
+        {
+            determineTypes(pasteEvent.clipboardData);
+
+            // consider the first item (can be easily extended for multiple items)
+            let item = pasteEvent.clipboardData.items[0];
+
+            // https://stackoverflow.com/questions/30187817/reading-clipboard-images-in-ie
+            // IE: window.clipboardData.files
+
+            if (item.type.indexOf("image") === 0)
+            {
+                let blob = item.getAsFile();
+
+                let reader = new FileReader();
+                reader.onload = function (event: ProgressEvent)
+                {
+                    // document.getElementById("container").src = event.target.result;
+                };
+
+                reader.readAsDataURL(blob);
+            } // End if 
+        };
+
+
+        // get pasted text
+        function pasteHandler(e:ClipboardEvent)
+        {
+            if (e.clipboardData && e.clipboardData.getData)
+            {
+                let pastedText = "";
+                if (window.clipboardData && window.clipboardData.getData) // IE
+                { 
+                    pastedText = window.clipboardData.getData('Text');
+                }
+                else if (e.clipboardData && e.clipboardData.getData)
+                {
+                    pastedText = e.clipboardData.getData('text/plain');
+                }
+
+                
+                console.log(pastedText);
+                let tabularData: string[][] = parseExcel(pastedText)
+                console.log("data from Excel", tabularData);
+            }
+            else
+            {
+                console.log('Not paste object!');
+            }
+        } // End Function pasteHandler
+
+
+    } // End Function copyPasteTest
 
 
 }

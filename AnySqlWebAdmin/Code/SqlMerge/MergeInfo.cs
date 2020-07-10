@@ -179,8 +179,17 @@ SET IDENTITY_INSERT {table_schema}.{table_name} OFF;
             } // End Using conn 
             
         } // End Sub Test 
-        
-        
+
+
+        /*
+         Kannst du vom Projekt https://corpool.cor-asp.ch/FM_StadtBasel/w8/index.html die Benutzergruppen 
+         Administratoren, Power-User, Provider, R-User und W-User mit allen Berechtigungen in das Projekt 
+         https://cordemo.cor-asp.ch/FM_COR_Demo_V4/w8/index.html Übernehmen?
+
+Und in Zukunft im Skript für die neuen Projekte alle Benutzergruppen rauslöschen ausser die 5 oben erwähnten?
+
+             */
+
         public static void Test(string table_schema, string table_name, System.Data.Common.DbConnection conn)
         {
             string sql = System.IO.Path.Combine("SQL", "Schema.Merge.sql");
