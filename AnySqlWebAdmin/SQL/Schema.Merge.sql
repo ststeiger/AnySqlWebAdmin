@@ -125,6 +125,7 @@ SELECT
     CASE 
         WHEN DATA_TYPE = 'nvarchar' THEN N'national character varying' 
         WHEN DATA_TYPE = 'varchar' THEN N'character varying' 
+		WHEN DATA_TYPE = 'varbinary' THEN N'binary varying' 
         ELSE DATA_TYPE 
     END 
     + 
