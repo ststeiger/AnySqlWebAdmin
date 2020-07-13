@@ -28,7 +28,7 @@ namespace AnySqlWebAdmin.Code.SqlMerge
             string[] selectColumns = mis.Select(x => x.column_name).ToArray();
             string[] xqueryColumns = mis.Select(x =>
                 "\"" + x.column_name + "\" " + x.column_sql_datatype + " '" + x.column_name +
-                "[not(@*[local-name()=\"nil\" and . =\"true\"])]' ").ToArray();
+                "[not(@*[local-name()=\"nil\" and . =\"true\"])]'").ToArray();
             // "BE_Name" character varying(50) 'BE_Name[not(@*[local-name()="nil" and . ="true"])]'
             string[] pkColumns = mis.Where(x => x.column_of_pk != null).Select(x => x.column_of_pk).ToArray();
             string[] updateColumns = mis.Where(x => x.column_of_pk == null)
@@ -40,14 +40,14 @@ namespace AnySqlWebAdmin.Code.SqlMerge
             const string double_padding = padding + padding;
 
             string select = double_padding + " " +
-                            string.Join(System.Environment.NewLine + double_padding + ",", selectColumns);
+                            string.Join(" " + System.Environment.NewLine + double_padding + ",", selectColumns);
             string from = double_padding + " " +
-                          string.Join(System.Environment.NewLine + double_padding + ",", xqueryColumns);
+                          string.Join(" " + System.Environment.NewLine + double_padding + ",", xqueryColumns);
 
             string insert = double_padding + " " +
-                            string.Join(System.Environment.NewLine + double_padding + ",", selectColumns);
+                            string.Join(" " + System.Environment.NewLine + double_padding + ",", selectColumns);
             string insert_select = double_padding + " CTE." +
-                                   string.Join(System.Environment.NewLine + double_padding + ",CTE.", selectColumns);
+                                   string.Join(" " + System.Environment.NewLine + double_padding + ",CTE.", selectColumns);
 
             string[] joinConditions = pkColumns.Select(x => "CTE." + x + " = A." + x).ToArray();
             string joinCondition = string.Join(" AND ", joinConditions);
@@ -58,16 +58,16 @@ namespace AnySqlWebAdmin.Code.SqlMerge
 
 
             xml.Insert(0, $@"
-/*
+/* 
 -- How to create the XML 
 DECLARE @xml XML 
-SET @xml = ( SELECT (
+SET @xml = ( SELECT ( 
 
-SELECT * FROM {table_schema}.{table_name}
+SELECT * FROM {table_schema}.{table_name} 
 
-FOR XML PATH('row'), ROOT('table'),  ELEMENTS xsinil) AS outerXml )
+FOR XML PATH('row'), ROOT('table'),  ELEMENTS xsinil) AS outerXml ) 
 SELECT @xml 
-*/
+*/ 
 
 
 DECLARE @xml xml 
@@ -77,39 +77,41 @@ SET @xml = N'");
             xml.Append(@"'
 
 
-DECLARE @handle INT
-DECLARE @PrepareXmlStatus INT
+DECLARE @handle int 
+DECLARE @PrepareXmlStatus int 
 
-EXEC @PrepareXmlStatus = sp_xml_preparedocument @handle OUTPUT, @XML
--- EXEC @PrepareXmlStatus = sp_xml_preparedocument @handle OUTPUT, 'C:\Export1\med_Form.xml'
+EXEC @PrepareXmlStatus = sp_xml_preparedocument @handle OUTPUT, @XML 
+-- EXEC @PrepareXmlStatus = sp_xml_preparedocument @handle OUTPUT, 'C:\Export1\med_Form.xml' 
 
 ");
 
 
             if (with_merge && is_identity)
                 xml.Append($@"
-SET IDENTITY_INSERT {table_schema}.{table_name} ON;
+SET IDENTITY_INSERT {table_schema}.{table_name} ON; 
 ");
 
             xml.Append($@"
 ;WITH CTE AS 
-(
-    SELECT
-{select}
-    FROM OPENXML(@handle, '/table/row', 2) WITH
-    (
-{from}
-    ) AS tSource
-
-    WHERE(1 = 1)
-
-    /*
+( 
+    SELECT 
+{select} 
+    FROM OPENXML(@handle, '/table/row', 2) WITH 
+    ( 
+{from} 
+    ) AS tSource 
+    
+    -- TODO: INNER JOIN ON FOREIGN KEYS 
+    
+    WHERE (1=1) 
+    
+    /* 
     AND NOT EXISTS 
-    (
+    ( 
 	    SELECT T_Benutzer.* FROM T_Benutzer WHERE T_Benutzer.BE_ID = tSource.BE_ID 
-    )
-    */
-)
+    ) 
+    */ 
+) 
 ");
             if (with_merge)
                 xml.Append("-- ");
@@ -124,29 +126,29 @@ SET IDENTITY_INSERT {table_schema}.{table_name} ON;
 
 
 MERGE INTO {table_schema}.{table_name} AS A 
-USING CTE ON {joinCondition}
-WHEN MATCHED 
-	THEN UPDATE
-		SET  {updateStatement}
+USING CTE ON {joinCondition} 
+WHEN MATCHED THEN 
+    UPDATE 
+        SET  {updateStatement}
 
 WHEN NOT MATCHED BY TARGET THEN 
-    INSERT  
-    (
+    INSERT 
+    ( 
 ");
                 xml.Append(insert);
-                xml.Append(@"
-    )
-    VALUES
+                xml.AppendLine(@" 
+    ) 
+    VALUES 
     ( ");
                 xml.Append(insert_select);
 
-                xml.Append(@"
-    )
--- WHEN NOT MATCHED BY SOURCE THEN DELETE
+                xml.Append(@" 
+    ) 
+-- WHEN NOT MATCHED BY SOURCE THEN DELETE 
 ;
 
 
-EXEC sp_xml_removedocument @handle
+EXEC sp_xml_removedocument @handle 
 ");
 
                 if (is_identity)
@@ -171,8 +173,18 @@ SET IDENTITY_INSERT {table_schema}.{table_name} OFF;
             string table_name = "T_VWS_ZO_SVG_AP_Objekt";
             table_name = "T_AP_Standort";
             table_name = "T_AP_Gebaeude";
-            // table_name = "T_Benutzer";
-            
+
+            table_name = "T_Benutzer";
+            table_name = "T_Benutzergruppen";
+            table_name = "T_Benutzerrechte";
+            table_name = "T_SYS_Registerrechte";
+            table_name = "T_SYS_AdresseRollenrechte";
+            table_name = "T_SYS_Form_Register_Recht";
+            table_name = "T_SYS_Form_Feld_Recht";
+            table_name = "T_SYS_Layersetrechte";
+            table_name = "T_SYS_Backofficerechte";
+            table_name = "T_SYS_BackOfficeMenuerechte";
+
             using (System.Data.Common.DbConnection conn = service.Connection)
             {
                 Test(table_schema, table_name, conn);
@@ -199,13 +211,13 @@ Und in Zukunft im Skript für die neuen Projekte alle Benutzergruppen rauslösch
             System.Collections.Generic.IEnumerable<MergeInfo> mis = null;
 
             mis = conn.Query<MergeInfo>(sql, new {__table_schema = table_schema, __table_name = table_name});
-            string xml1 = conn.ExecuteScalar<string>($@"DECLARE @xml XML
-SET @xml = (SELECT(
+            string xml1 = conn.ExecuteScalar<string>($@"DECLARE @xml XML 
+SET @xml = (SELECT( 
 
 SELECT * FROM {table_schema}.{table_name} 
 
-FOR XML PATH('row'), ROOT('table'), ELEMENTS xsinil) AS outerXml )
-SELECT @xml"
+FOR XML PATH('row'), ROOT('table'), ELEMENTS xsinil) AS outerXml ) 
+SELECT @xml "
             );
 
 
@@ -214,7 +226,7 @@ SELECT @xml"
                 xml = LargeDataToXML(table_schema, table_name, reader);
             }
             
-            string cmd = GetMergeCommand(table_schema, table_name, false, mis, xml);
+            string cmd = GetMergeCommand(table_schema, table_name, true, mis, xml);
             System.Console.WriteLine(cmd);
         } // End Sub Test 
 

@@ -21,6 +21,7 @@ namespace AnySqlWebAdmin
                 csb.DataSource = System.Environment.MachineName;
 
             csb.InitialCatalog = "COR_Basic_Demo_V4";
+            csb.InitialCatalog = "COR_Basic_StadtBasel";
 
 
             csb.IntegratedSecurity = System.Environment.OSVersion.Platform != System.PlatformID.Unix;
