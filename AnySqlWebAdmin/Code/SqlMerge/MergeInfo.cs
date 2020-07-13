@@ -210,6 +210,7 @@ SET IDENTITY_INSERT {table_schema}.{table_name} OFF;
             table_name = "T_Benutzer";
             table_name = "T_Benutzergruppen";
             table_name = "T_Benutzerrechte";
+            table_name = "T_SYS_Navigationrechte";
             table_name = "T_SYS_Registerrechte";
             table_name = "T_SYS_AdresseRollenrechte";
             table_name = "T_SYS_Form_Register_Recht";
@@ -217,6 +218,18 @@ SET IDENTITY_INSERT {table_schema}.{table_name} OFF;
             table_name = "T_SYS_Layersetrechte";
             table_name = "T_SYS_Backofficerechte";
             table_name = "T_SYS_BackOfficeMenuerechte";
+            table_name = "T_VWS_Ref_PaperSize";
+            table_name = "T_VWS_Ref_PdfLegendenKategorie";
+            table_name = "T_VWS_PdfLegende";
+
+            
+            table_name = "T_ZO_SYS_Mimetyperechte_Benutzergruppe";
+            table_name = "T_SM2_ZO_Stoerungstatus_Benutzergruppe";
+            table_name = "T_SM2_ZO_StoerungStatus_Formularzone_Benutzergruppe";
+            table_name = "T_VWS_ZO_DarstellungRechte_Lesen"; // TODO: Omit update if only PKs
+
+
+
 
             string cmd = null;
             using (System.Data.Common.DbConnection conn = service.Connection)
