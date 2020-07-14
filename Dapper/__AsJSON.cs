@@ -291,7 +291,6 @@ namespace Dapper
           , CommandType? commandType = null)
         {
             System.Exception ex = null;
-
             using (System.IO.TextWriter output = new System.IO.StreamWriter(strm, new System.Text.UTF8Encoding(false)))
             {
                 ex = await AsJSON(cnn, output, sql, format, param, transaction, commandTimeout, commandType);

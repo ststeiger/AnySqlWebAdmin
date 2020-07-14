@@ -3,6 +3,9 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Builder;
 
 
+using Dapper;
+
+
 // https://docs.microsoft.com/en-us/aspnet/core/fundamentals/middleware/?view=aspnetcore-2.1&tabs=aspnetcore2x
 // https://www.thomaslevesque.com/2018/03/27/understanding-the-asp-net-core-middleware-pipeline/
 // https://stackoverflow.com/questions/38630076/asp-net-core-web-api-exception-handling
@@ -16,12 +19,14 @@ namespace AnySqlWebAdmin
     public class SqlMiddleware
     {
 
+        protected SqlService m_service; 
         protected readonly Microsoft.AspNetCore.Http.RequestDelegate _next;
         
         
-        public SqlMiddleware(Microsoft.AspNetCore.Http.RequestDelegate next)
+        public SqlMiddleware(Microsoft.AspNetCore.Http.RequestDelegate next, SqlService service)
         {
             this._next = next;
+            this.m_service = service;
         }
         
         
@@ -61,8 +66,18 @@ namespace AnySqlWebAdmin
 
                     format = (RenderType_t)renderType;
                 } // End if (pars.ContainsKey("format")) 
+
+
+                using (System.Data.Common.DbConnection cnn = this.m_service.Connection)
+                {
+                    System.Exception hasErrors = await cnn.AsJSON(context.Response.Body, sql, (Dapper.RenderType_t)format, pars);
+                    
+                    // TOOD: Log if not NULL
+                    
+                }
                 
-                await SqlServiceJsonHelper.AnyDataReaderToJson(sql, pars, context, format);
+
+                // await SqlServiceJsonHelper.AnyDataReaderToJson(sql, pars, context, format);
                 
                 // throw new Exception("SQL error");
                 // await context.Response.WriteAsync("Howdy");
