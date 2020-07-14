@@ -7,6 +7,7 @@ class DemonstrateScopingProblems
     constructor()
     {
         this.run = this.run.bind(this);
+        this.eventActionHandler = this.eventActionHandler.bind(this);
     }
 
     get kickMe(): string
@@ -21,6 +22,54 @@ class DemonstrateScopingProblems
 
         return this.status;
     }
+
+    public testFiltering()
+    {
+        let array: any[] = [0, 0, 0, null, "", "abc", 0, 0, 0, 123, 0, 0];
+        // const filter = array.filter((last => v => last = last || v)(false));
+
+
+        const filter = function (array:any[])
+        {
+            return array.filter(
+                function (last)
+                {
+                    return function (v:any)
+                    {
+                        return last = last || v;
+                    }
+                }
+                (false)
+            );
+        };
+
+
+        console.log(filter([0, 0, 0, 14, 0, 63, 0]));
+        console.log(filter([243, 0, 0, 0, 1]));
+        console.log(filter([0, 0, 1, 0]));
+        console.log(filter([0, 0]));
+        console.log(filter([0]));
+    }
+
+
+    public eventActionHandler(e:MouseEvent)
+    {
+        // Because we bound "this" to the class, we now have to use e.currentTarget
+        console.log(e.target); // the clicked-on element
+        console.log(e.srcElement); // esrcElement = alias for .target
+        console.log(e.currentTarget); // = this
+
+        // Event.currentTarget(https://developer.mozilla.org/en-US/docs/Web/API/Event/target)
+        //   - It always refers to the element to which the event handler has been attached
+
+        // Event.target(https://developer.mozilla.org/en-US/docs/Web/API/Event/currentTarget)
+        //   - which identifies the element on which the event occurred
+
+
+        // https://developer.mozilla.org/en-US/docs/Web/API/CustomEvent/CustomEvent
+        // https://developer.mozilla.org/en-US/docs/Web/Guide/Events/Creating_and_triggering_events
+    }
+
 
 
     public callback(fn: () => string)

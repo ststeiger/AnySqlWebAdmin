@@ -50,6 +50,10 @@ namespace AnySqlWebAdmin.Code.SqlMerge
 
             string updateStatement = string.Join(System.Environment.NewLine + double_padding + padding + ",", updateColumns);
 
+            if (joinCondition.Length == 0)
+                throw new System.InvalidOperationException("Cannot generate MERGE-statement for table without primary-key");
+
+
 
             xml.Insert(0, $@"
 /* 
@@ -121,10 +125,29 @@ SET IDENTITY_INSERT {table_schema}.{table_name} ON;
 
 MERGE INTO {table_schema}.{table_name} AS A 
 USING CTE ON {joinCondition} 
-WHEN MATCHED THEN 
+");
+
+
+
+
+                if (updateColumns.Length == 0)
+                {
+                    
+                    xml.Append($@"-- WHEN MATCHED THEN UPDATE 
+-- Syntax error on WHEN MATCHED statement with no columns in UPDATE-statement - occurs if all columns belong to the PK … 
+");
+                }
+                else
+                {
+
+                    xml.Append($@"WHEN MATCHED THEN 
     UPDATE 
         SET  {updateStatement}
+");
+                }
 
+
+                xml.Append($@"
 WHEN NOT MATCHED BY TARGET THEN 
     INSERT 
     ( 
@@ -223,11 +246,12 @@ SET IDENTITY_INSERT {table_schema}.{table_name} OFF;
             table_name = "T_VWS_PdfLegende";
 
             
-            table_name = "T_ZO_SYS_Mimetyperechte_Benutzergruppe";
+            table_name = "T_ZO_SYS_Mimetyperechte_Benutzergruppe"; // NO PK ! 
+            /*
             table_name = "T_SM2_ZO_Stoerungstatus_Benutzergruppe";
             table_name = "T_SM2_ZO_StoerungStatus_Formularzone_Benutzergruppe";
             table_name = "T_VWS_ZO_DarstellungRechte_Lesen"; // TODO: Omit update if only PKs
-
+            */
 
 
 
