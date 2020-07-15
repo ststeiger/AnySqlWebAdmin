@@ -6,6 +6,7 @@
   SET @__table_name = 'T_Benutzer' 
   */
 
+
 -- select name, definition,* from sys.computed_columns
 ;WITH CTE AS 
 (
@@ -126,6 +127,8 @@ SELECT
         WHEN DATA_TYPE = 'nvarchar' THEN N'national character varying' 
         WHEN DATA_TYPE = 'varchar' THEN N'character varying' 
 		WHEN DATA_TYPE = 'varbinary' THEN N'binary varying' 
+		-- XML comes wrong when handled as XML
+		WHEN DATA_TYPE = 'xml' THEN N'national character varying(MAX)' 
         ELSE DATA_TYPE 
     END 
     + 

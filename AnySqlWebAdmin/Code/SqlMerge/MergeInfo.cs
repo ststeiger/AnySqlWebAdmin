@@ -253,7 +253,15 @@ SET IDENTITY_INSERT {table_schema}.{table_name} OFF;
             table_name = "T_VWS_ZO_DarstellungRechte_Lesen"; // TODO: Omit update if only PKs
             */
 
-
+            table_name = "T_VWS_PdfBibliothek";
+            table_name = "T_SYS_Language";
+            table_name = "T_SYS_Language_DayNames";
+            table_name = "T_SYS_Language_MonthNames";
+            table_name = "T_VWS_Ref_PdfBibliotheksGruppe";
+            table_name = "T_VWS_Ref_PdfBibliotheksGruppe_i18n";
+            table_name = "T_VWS_Ref_PdfBibliotheksGruppe_i18n_Cust";
+            table_name = "T_VWS_PdfBibliothek"; // Caution: XML-datatype...
+            table_name = "T_VWS_PdfLegende";
 
             string cmd = null;
             using (System.Data.Common.DbConnection conn = service.Connection)
