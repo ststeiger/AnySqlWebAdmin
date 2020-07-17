@@ -212,7 +212,18 @@ SET IDENTITY_INSERT {table_schema}.{table_name} OFF;
 
             using (System.Xml.XmlWriter writer = CreateXmlWriter(xmlBuilder))
             {
-                conn.AsXml(table_schema, table_name, writer);
+                string dataSQL = @"
+
+SELECT * FROM T_FMS_Navigation
+WHERE NA_NA_UID = 'F0000000-E000-0060-0003-000000000010' 
+
+";
+
+                dataSQL = null;
+
+
+
+                conn.AsXml(table_schema, table_name, writer, dataSQL);
             } // End Using writer 
 
             return GetMergeScript(table_schema, table_name, true, mis, xmlBuilder);
@@ -263,13 +274,19 @@ SET IDENTITY_INSERT {table_schema}.{table_name} OFF;
             table_name = "T_VWS_PdfBibliothek"; // Caution: XML-datatype...
             table_name = "T_VWS_PdfLegende";
 
+            table_name = "T_FMS_Configuration";
+            table_name = "T_FMS_Navigation";
+            table_name = "T_VWS_Ref_Stempel";
+            table_name = "T_VWS_ZO_Ref_Stempel_Stylizer";
+            table_name = "T_VWS_Ref_Stylizer";
+            table_name = "T_FMS_Translation";
+            
             string cmd = null;
             using (System.Data.Common.DbConnection conn = service.Connection)
             {
                 cmd = MergeStatementForTable(table_schema, table_name, conn);
             } // End Using conn 
 
-            System.Console.WriteLine(cmd);
         } // End Sub Test 
 
 
