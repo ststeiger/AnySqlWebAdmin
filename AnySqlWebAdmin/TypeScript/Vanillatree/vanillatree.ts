@@ -118,7 +118,61 @@ namespace Tree
                 {
                     this.toggle(evt.target.parentElement.getAttribute('data-vtree-id'));
                 }
+
+                evt.target.focus();
+
             }.bind(this));
+
+
+            // Arrow keys are only triggered by onkeydown, not onkeypress...
+            this.m_tree.addEventListener('keydown', function (e: KeyboardEvent)
+            {
+                e = e || <KeyboardEvent>window.event;
+                // use e.keyCode
+
+                // alert(e.keyCode);
+
+                // console.log("activeElement", document.activeElement);
+                console.log("targ", e.target);
+
+                //alert(e.keyCode);
+
+                let target = <HTMLElement>e.target;
+                
+                if (target.classList.contains("vtree-leaf-label"))
+                    return;
+
+                let id = target.getAttribute('data-vtree-id');
+                
+
+                if (e.keyCode === 38) // up arrow
+                {
+                    // inputs[ind - 1].click();
+                    let previous = this.getPreviousTab(document.activeElement);
+                    console.log("previous", previous);
+                    previous.click();
+                }
+                else if (e.keyCode === 40) // down arrow
+                {
+                    // inputs[ind + 1].click();
+                    let next = this.getNextTab(document.activeElement);
+                    console.log("next", next);
+                    next.click();
+                }
+                else if (e.keyCode === 37) // left arrow
+                {
+                    console.log("closing", id);
+                    this.close(id);
+                }
+                else if (e.keyCode === 39) // right arrow
+                {
+                    console.log("opening", id);
+                    this.open(id);
+                }
+
+            }.bind(this));
+
+
 
             if (options && options.contextmenu)
             {
@@ -194,6 +248,65 @@ namespace Tree
             } // End if (options && options.contextmenu) 
 
         } // End Constructor 
+
+
+        protected isVisible(ele: HTMLElement)
+        {
+            do
+            {
+                if (window.getComputedStyle(ele).display ==="none")
+                    return false;
+
+                // if (ele.classList.contains("li.vtree-leaf.closed")) return false;
+                // if (ele.classList.contains("li.vtree-leaf.closed")) return false;
+            } while ((ele = ele.parentElement) != this.m_tree );
+
+            return true;
+        }
+
+
+        protected getNextTab(el: HTMLElement): HTMLElement
+        {
+            let currentNode;
+            // https://developer.mozilla.org/en-US/docs/Web/API/Document/createNodeIterator
+            // https://developer.mozilla.org/en-US/docs/Web/API/Document/createTreeWalker
+
+            // let ni = document.createNodeIterator(el, NodeFilter.SHOW_ELEMENT);
+            let ni = document.createTreeWalker(this.m_tree, NodeFilter.SHOW_ELEMENT);
+
+            ni.currentNode = el;
+
+            while (currentNode = ni.nextNode())
+            {
+                if ((<HTMLElement>currentNode).tagName !== "LI")
+                    continue;
+
+                if (this.isVisible(<HTMLElement>currentNode))
+                    return <HTMLElement>currentNode;
+            }
+
+            return el;
+        }
+
+
+        protected getPreviousTab(el: HTMLElement): HTMLElement
+        {
+            let currentNode;
+            let ni = document.createTreeWalker(this.m_tree, NodeFilter.SHOW_ELEMENT);
+            ni.currentNode = el;
+
+            while (currentNode = ni.previousNode())
+            {
+                if ((<HTMLElement>currentNode).tagName !== "LI")
+                    continue;
+
+                if (this.isVisible(<HTMLElement>currentNode))
+                    return <HTMLElement>currentNode;
+            }
+
+            return el;
+        }
+
 
         // TODO:
         protected setProperties(obj: any // HTMLElement
@@ -307,7 +420,8 @@ namespace Tree
         {
             let id: string,
                 leaf: HTMLLIElement = <HTMLLIElement>this.create('li', {
-                    className: options.hasChildren ? 'vtree-leaf vtree-has-children' : 'vtree-leaf'
+                     className: options.hasChildren ? 'vtree-leaf vtree-has-children' : 'vtree-leaf'
+                    ,"tabIndex": "0"
                 }),
                 parentList: HTMLUListElement = this.getChildList(options.parent);
 

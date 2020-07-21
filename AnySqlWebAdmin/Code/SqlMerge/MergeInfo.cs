@@ -214,12 +214,12 @@ SET IDENTITY_INSERT {table_schema}.{table_name} OFF;
             {
                 string dataSQL = @"
 
-SELECT * FROM T_FMS_Navigation
-WHERE NA_NA_UID = 'F0000000-E000-0060-0003-000000000010' 
+SELECT * FROM T_ZO_SYS_Backoffice_Table 
+WHERE ZO_BOT_ID = 1 
 
 ";
 
-                dataSQL = null;
+               // dataSQL = null;
 
 
 
@@ -280,13 +280,15 @@ WHERE NA_NA_UID = 'F0000000-E000-0060-0003-000000000010'
             table_name = "T_VWS_ZO_Ref_Stempel_Stylizer";
             table_name = "T_VWS_Ref_Stylizer";
             table_name = "T_FMS_Translation";
-            
+            table_name = "T_ZO_SYS_Backoffice_Table";
+
             string cmd = null;
             using (System.Data.Common.DbConnection conn = service.Connection)
             {
                 cmd = MergeStatementForTable(table_schema, table_name, conn);
             } // End Using conn 
 
+            System.Console.WriteLine(cmd);
         } // End Sub Test 
 
 
