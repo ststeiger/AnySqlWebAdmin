@@ -214,8 +214,10 @@ SET IDENTITY_INSERT {table_schema}.{table_name} OFF;
             {
                 string dataSQL = @"
 
-SELECT * FROM T_ZO_SYS_Backoffice_Table 
-WHERE ZO_BOT_ID = 1 
+
+SELECT * 
+FROM T_ZO_SYS_Backoffice_Table 
+WHERE ZO_BOT_ID > 103 
 
 ";
 

@@ -265,6 +265,26 @@ namespace Tree
         }
 
 
+        protected createNodeFilter(fn?: (node:Node)=> number): NodeFilter
+        {
+            // Accept all currently filtered elements.
+            function acceptNode(node: Node): number 
+            {
+                return NodeFilter.FILTER_ACCEPT;
+            }
+
+            if (fn == null)
+                fn = acceptNode;
+            
+            // Work around Internet Explorer wanting a function instead of an object.
+            // IE also *requires* this argument where other browsers don't.
+            const safeFilter: NodeFilter = <NodeFilter><any>fn;
+            (<any>safeFilter).acceptNode = fn;
+
+            return safeFilter;
+        }
+
+
         protected getNextTab(el: HTMLElement): HTMLElement
         {
             let currentNode;
@@ -272,7 +292,8 @@ namespace Tree
             // https://developer.mozilla.org/en-US/docs/Web/API/Document/createTreeWalker
 
             // let ni = document.createNodeIterator(el, NodeFilter.SHOW_ELEMENT);
-            let ni = document.createTreeWalker(this.m_tree, NodeFilter.SHOW_ELEMENT);
+            // let ni = document.createTreeWalker(this.m_tree, NodeFilter.SHOW_ELEMENT);
+            let ni = document.createTreeWalker(this.m_tree, NodeFilter.SHOW_ELEMENT, this.createNodeFilter(), false);
 
             ni.currentNode = el;
 
@@ -292,7 +313,7 @@ namespace Tree
         protected getPreviousTab(el: HTMLElement): HTMLElement
         {
             let currentNode;
-            let ni = document.createTreeWalker(this.m_tree, NodeFilter.SHOW_ELEMENT);
+            let ni = document.createTreeWalker(this.m_tree, NodeFilter.SHOW_ELEMENT, this.createNodeFilter(), false);
             ni.currentNode = el;
 
             while (currentNode = ni.previousNode())

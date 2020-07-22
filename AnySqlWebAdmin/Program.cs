@@ -22,7 +22,7 @@ namespace AnySqlWebAdmin
 
         public static void Main(string[] args)
         {
-            // Code.SqlMerge.MergeInfo.Test();
+            Code.SqlMerge.MergeInfo.Test();
 
             // TestTransform.TestNetTopology.Test();
             // TestTransform.TestNetTopology.TestUnion();

@@ -21,9 +21,10 @@ namespace AnySqlWebAdmin
                 csb.DataSource = System.Environment.MachineName;
 
 
-            
+            csb.DataSource = "CORDB2016SP2";
             // csb.InitialCatalog = "COR_Basic_Demo_V4";
-            
+            csb.InitialCatalog = "HBD_CAFM4";
+
 
             csb.IntegratedSecurity = System.Environment.OSVersion.Platform != System.PlatformID.Unix;
             if (!csb.IntegratedSecurity)

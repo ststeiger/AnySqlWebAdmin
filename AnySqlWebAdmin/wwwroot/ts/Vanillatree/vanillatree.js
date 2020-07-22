@@ -141,9 +141,19 @@ var Tree;
             } while ((ele = ele.parentElement) != this.m_tree);
             return true;
         };
+        VanillaTree.prototype.createNodeFilter = function (fn) {
+            function acceptNode(node) {
+                return NodeFilter.FILTER_ACCEPT;
+            }
+            if (fn == null)
+                fn = acceptNode;
+            var safeFilter = fn;
+            safeFilter.acceptNode = fn;
+            return safeFilter;
+        };
         VanillaTree.prototype.getNextTab = function (el) {
             var currentNode;
-            var ni = document.createTreeWalker(this.m_tree, NodeFilter.SHOW_ELEMENT);
+            var ni = document.createTreeWalker(this.m_tree, NodeFilter.SHOW_ELEMENT, this.createNodeFilter(), false);
             ni.currentNode = el;
             while (currentNode = ni.nextNode()) {
                 if (currentNode.tagName !== "LI")
@@ -155,7 +165,7 @@ var Tree;
         };
         VanillaTree.prototype.getPreviousTab = function (el) {
             var currentNode;
-            var ni = document.createTreeWalker(this.m_tree, NodeFilter.SHOW_ELEMENT);
+            var ni = document.createTreeWalker(this.m_tree, NodeFilter.SHOW_ELEMENT, this.createNodeFilter(), false);
             ni.currentNode = el;
             while (currentNode = ni.previousNode()) {
                 if (currentNode.tagName !== "LI")
