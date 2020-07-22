@@ -181,7 +181,10 @@ class cScriptLoader
         // let loader = document.head.querySelector("script /@*[starts-with(name(), 's')]");
         // let loader = document.head.querySelector('script[contains("0000X1,0000X2", @src)]');
         let head: HTMLHeadElement = document.getElementsByTagName("head")[0];
-        let loader: HTMLScriptElement = <HTMLScriptElement>document.currentScript || <HTMLScriptElement>head.querySelector('script[src*="loader.js"][data-js],[src*="loader.js"][data-css]');
+        // no, this doesn't find loader if it isn't in head
+        // let loader: HTMLScriptElement = <HTMLScriptElement>document.currentScript || <HTMLScriptElement>head.querySelector('script[src*="loader.js"][data-js],[src*="loader.js"][data-css]');
+        let loader: HTMLScriptElement = <HTMLScriptElement>document.currentScript || <HTMLScriptElement>document.querySelector('script[src*="loader.js"][data-js],[src*="loader.js"][data-css]');
+        
 
         function arrayify(str: string): string[]
         {

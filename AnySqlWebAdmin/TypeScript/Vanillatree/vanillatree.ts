@@ -120,7 +120,6 @@ namespace Tree
                 }
 
                 evt.target.focus();
-
             }.bind(this));
 
 
@@ -133,7 +132,7 @@ namespace Tree
                 // alert(e.keyCode);
 
                 // console.log("activeElement", document.activeElement);
-                console.log("targ", e.target);
+                // console.log("targ", e.target);
 
                 //alert(e.keyCode);
 
@@ -143,32 +142,41 @@ namespace Tree
                     return;
 
                 let id = target.getAttribute('data-vtree-id');
-                
 
-                if (e.keyCode === 38) // up arrow
+                if (e.keyCode > 36 && e.keyCode < 41)
                 {
-                    // inputs[ind - 1].click();
-                    let previous = this.getPreviousTab(document.activeElement);
-                    console.log("previous", previous);
-                    previous.click();
-                }
-                else if (e.keyCode === 40) // down arrow
-                {
-                    // inputs[ind + 1].click();
-                    let next = this.getNextTab(document.activeElement);
-                    console.log("next", next);
-                    next.click();
-                }
-                else if (e.keyCode === 37) // left arrow
-                {
-                    console.log("closing", id);
-                    this.close(id);
-                }
-                else if (e.keyCode === 39) // right arrow
-                {
-                    console.log("opening", id);
-                    this.open(id);
-                }
+
+                    if (e.keyCode === 38) // up arrow
+                    {
+                        // inputs[ind - 1].click();
+                        let previous = this.getPreviousTab(document.activeElement);
+                        // console.log("previous", previous);
+                        previous.click();
+                    }
+                    else if (e.keyCode === 40) // down arrow
+                    {
+                        // inputs[ind + 1].click();
+                        let next = this.getNextTab(document.activeElement);
+                        // console.log("next", next);
+                        next.click();
+                    }
+                    else if (e.keyCode === 37) // left arrow
+                    {
+                        // console.log("closing", id);
+                        (<VanillaTree>this).select(id);
+                        this.close(id);
+                    }
+                    else if (e.keyCode === 39) // right arrow
+                    {
+                        // console.log("opening", id);
+                        (<VanillaTree>this).select(id);
+                        this.open(id);
+                    }
+
+                    // only prevent default if arrow-key, so we can reload with F5
+                    e.preventDefault();
+                    e.stopPropagation();
+                } // End if (e.keyCode > 36 && e.keyCode < 41) 
 
             }.bind(this));
 
@@ -250,22 +258,7 @@ namespace Tree
         } // End Constructor 
 
 
-        protected isVisible(ele: HTMLElement)
-        {
-            do
-            {
-                if (window.getComputedStyle(ele).display ==="none")
-                    return false;
-
-                // if (ele.classList.contains("li.vtree-leaf.closed")) return false;
-                // if (ele.classList.contains("li.vtree-leaf.closed")) return false;
-            } while ((ele = ele.parentElement) != this.m_tree );
-
-            return true;
-        }
-
-
-        protected createNodeFilter(fn?: (node:Node)=> number): NodeFilter
+        protected createFilter(fn?: (node: Node) => number): NodeFilter
         {
             // Accept all currently filtered elements.
             function acceptNode(node: Node): number 
@@ -275,7 +268,8 @@ namespace Tree
 
             if (fn == null)
                 fn = acceptNode;
-            
+
+
             // Work around Internet Explorer wanting a function instead of an object.
             // IE also *requires* this argument where other browsers don't.
             const safeFilter: NodeFilter = <NodeFilter><any>fn;
@@ -285,25 +279,46 @@ namespace Tree
         }
 
 
+
+        protected createVisibleListNodesFilter(): NodeFilter
+        {
+            // Accept all currently filtered elements.
+            function acceptNode(node: Node): number 
+            {
+                if (!node)
+                    return NodeFilter.FILTER_REJECT;
+
+                if (node.nodeType !== Node.ELEMENT_NODE)
+                    return NodeFilter.FILTER_REJECT;
+                
+                if (window.getComputedStyle(<Element>node).display === "none")
+                    return NodeFilter.FILTER_REJECT;
+
+                if ((<HTMLElement>node).tagName !== "LI") 
+                    return NodeFilter.FILTER_SKIP;
+
+                return NodeFilter.FILTER_ACCEPT;
+            }
+
+            return this.createFilter(acceptNode);
+        }
+
+
         protected getNextTab(el: HTMLElement): HTMLElement
         {
-            let currentNode;
+            let currentNode: Node;
             // https://developer.mozilla.org/en-US/docs/Web/API/Document/createNodeIterator
             // https://developer.mozilla.org/en-US/docs/Web/API/Document/createTreeWalker
 
             // let ni = document.createNodeIterator(el, NodeFilter.SHOW_ELEMENT);
             // let ni = document.createTreeWalker(this.m_tree, NodeFilter.SHOW_ELEMENT);
-            let ni = document.createTreeWalker(this.m_tree, NodeFilter.SHOW_ELEMENT, this.createNodeFilter(), false);
+            let ni = document.createTreeWalker(this.m_tree, NodeFilter.SHOW_ELEMENT, this.createVisibleListNodesFilter(), false);
 
             ni.currentNode = el;
 
             while (currentNode = ni.nextNode())
             {
-                if ((<HTMLElement>currentNode).tagName !== "LI")
-                    continue;
-
-                if (this.isVisible(<HTMLElement>currentNode))
-                    return <HTMLElement>currentNode;
+                return <HTMLElement>currentNode;
             }
 
             return el;
@@ -312,17 +327,13 @@ namespace Tree
 
         protected getPreviousTab(el: HTMLElement): HTMLElement
         {
-            let currentNode;
-            let ni = document.createTreeWalker(this.m_tree, NodeFilter.SHOW_ELEMENT, this.createNodeFilter(), false);
+            let currentNode: Node;
+            let ni = document.createTreeWalker(this.m_tree, NodeFilter.SHOW_ELEMENT, this.createVisibleListNodesFilter(), false);
             ni.currentNode = el;
 
             while (currentNode = ni.previousNode())
             {
-                if ((<HTMLElement>currentNode).tagName !== "LI")
-                    continue;
-
-                if (this.isVisible(<HTMLElement>currentNode))
-                    return <HTMLElement>currentNode;
+                return <HTMLElement>currentNode;
             }
 
             return el;

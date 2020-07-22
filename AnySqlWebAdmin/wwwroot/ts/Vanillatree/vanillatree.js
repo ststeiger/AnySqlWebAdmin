@@ -62,28 +62,29 @@ var Tree;
             }.bind(this));
             this.m_tree.addEventListener('keydown', function (e) {
                 e = e || window.event;
-                console.log("targ", e.target);
                 var target = e.target;
                 if (target.classList.contains("vtree-leaf-label"))
                     return;
                 var id = target.getAttribute('data-vtree-id');
-                if (e.keyCode === 38) {
-                    var previous = this.getPreviousTab(document.activeElement);
-                    console.log("previous", previous);
-                    previous.click();
-                }
-                else if (e.keyCode === 40) {
-                    var next = this.getNextTab(document.activeElement);
-                    console.log("next", next);
-                    next.click();
-                }
-                else if (e.keyCode === 37) {
-                    console.log("closing", id);
-                    this.close(id);
-                }
-                else if (e.keyCode === 39) {
-                    console.log("opening", id);
-                    this.open(id);
+                if (e.keyCode > 36 && e.keyCode < 41) {
+                    if (e.keyCode === 38) {
+                        var previous = this.getPreviousTab(document.activeElement);
+                        previous.click();
+                    }
+                    else if (e.keyCode === 40) {
+                        var next = this.getNextTab(document.activeElement);
+                        next.click();
+                    }
+                    else if (e.keyCode === 37) {
+                        this.select(id);
+                        this.close(id);
+                    }
+                    else if (e.keyCode === 39) {
+                        this.select(id);
+                        this.open(id);
+                    }
+                    e.preventDefault();
+                    e.stopPropagation();
                 }
             }.bind(this));
             if (options && options.contextmenu) {
@@ -134,14 +135,7 @@ var Tree;
             }
             return self;
         };
-        VanillaTree.prototype.isVisible = function (ele) {
-            do {
-                if (window.getComputedStyle(ele).display === "none")
-                    return false;
-            } while ((ele = ele.parentElement) != this.m_tree);
-            return true;
-        };
-        VanillaTree.prototype.createNodeFilter = function (fn) {
+        VanillaTree.prototype.createFilter = function (fn) {
             function acceptNode(node) {
                 return NodeFilter.FILTER_ACCEPT;
             }
@@ -151,27 +145,35 @@ var Tree;
             safeFilter.acceptNode = fn;
             return safeFilter;
         };
+        VanillaTree.prototype.createVisibleListNodesFilter = function () {
+            function acceptNode(node) {
+                if (!node)
+                    return NodeFilter.FILTER_REJECT;
+                if (node.nodeType !== Node.ELEMENT_NODE)
+                    return NodeFilter.FILTER_REJECT;
+                if (window.getComputedStyle(node).display === "none")
+                    return NodeFilter.FILTER_REJECT;
+                if (node.tagName !== "LI")
+                    return NodeFilter.FILTER_SKIP;
+                return NodeFilter.FILTER_ACCEPT;
+            }
+            return this.createFilter(acceptNode);
+        };
         VanillaTree.prototype.getNextTab = function (el) {
             var currentNode;
-            var ni = document.createTreeWalker(this.m_tree, NodeFilter.SHOW_ELEMENT, this.createNodeFilter(), false);
+            var ni = document.createTreeWalker(this.m_tree, NodeFilter.SHOW_ELEMENT, this.createVisibleListNodesFilter(), false);
             ni.currentNode = el;
             while (currentNode = ni.nextNode()) {
-                if (currentNode.tagName !== "LI")
-                    continue;
-                if (this.isVisible(currentNode))
-                    return currentNode;
+                return currentNode;
             }
             return el;
         };
         VanillaTree.prototype.getPreviousTab = function (el) {
             var currentNode;
-            var ni = document.createTreeWalker(this.m_tree, NodeFilter.SHOW_ELEMENT, this.createNodeFilter(), false);
+            var ni = document.createTreeWalker(this.m_tree, NodeFilter.SHOW_ELEMENT, this.createVisibleListNodesFilter(), false);
             ni.currentNode = el;
             while (currentNode = ni.previousNode()) {
-                if (currentNode.tagName !== "LI")
-                    continue;
-                if (this.isVisible(currentNode))
-                    return currentNode;
+                return currentNode;
             }
             return el;
         };

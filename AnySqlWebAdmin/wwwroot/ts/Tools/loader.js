@@ -157,7 +157,7 @@ var cScriptLoader = (function () {
             }
         })();
         var head = document.getElementsByTagName("head")[0];
-        var loader = document.currentScript || head.querySelector('script[src*="loader.js"][data-js],[src*="loader.js"][data-css]');
+        var loader = document.currentScript || document.querySelector('script[src*="loader.js"][data-js],[src*="loader.js"][data-css]');
         function arrayify(str) {
             return str.split('[').join(',').split(']').join(',')
                 .split('"').join(',').split("'").join(',').split(',')
