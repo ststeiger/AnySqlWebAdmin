@@ -279,7 +279,6 @@ namespace Tree
         }
 
 
-
         protected createVisibleListNodesFilter(): NodeFilter
         {
             // Accept all currently filtered elements.
@@ -290,11 +289,11 @@ namespace Tree
 
                 if (node.nodeType !== Node.ELEMENT_NODE)
                     return NodeFilter.FILTER_REJECT;
-                
+
                 if (window.getComputedStyle(<Element>node).display === "none")
                     return NodeFilter.FILTER_REJECT;
 
-                if ((<HTMLElement>node).tagName !== "LI") 
+                if ((<HTMLElement>node).tagName !== "LI")
                     return NodeFilter.FILTER_SKIP;
 
                 return NodeFilter.FILTER_ACCEPT;

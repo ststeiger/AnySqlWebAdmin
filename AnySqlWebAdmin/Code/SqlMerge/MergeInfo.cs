@@ -200,7 +200,19 @@ SET IDENTITY_INSERT {table_schema}.{table_name} OFF;
         } // End Function CreateXmlWriter 
 
 
-        public static string MergeStatementForTable(string table_schema, string table_name, System.Data.Common.DbConnection conn)
+
+        public static string MergeStatementForTable(System.Data.Common.DbConnection conn, string table_schema, string table_name)
+        {
+            return MergeStatementForTable( conn, table_schema, table_name, null);
+        }
+
+
+        public static string MergeStatementForTable(System.Data.Common.DbConnection conn, string table_schema, string table_name, string dataSQL
+            , object param = null
+            , System.Data.IDbTransaction transaction = null
+            , int? commandTimeout = null
+            , System.Data.CommandType? commandType = null
+            )
         {
             string sql = System.IO.Path.Combine("SQL", "Schema.Merge.sql");
             sql = System.IO.File.ReadAllText(sql, System.Text.Encoding.UTF8);
@@ -212,28 +224,289 @@ SET IDENTITY_INSERT {table_schema}.{table_name} OFF;
 
             using (System.Xml.XmlWriter writer = CreateXmlWriter(xmlBuilder))
             {
-                string dataSQL = @"
-
-
-SELECT * 
-FROM T_ZO_SYS_Backoffice_Table 
-WHERE ZO_BOT_ID > 103 
-
-";
-
-               // dataSQL = null;
-
-
-
-                conn.AsXml(table_schema, table_name, writer, dataSQL);
+                conn.AsXml(table_schema, table_name, writer, dataSQL, param, transaction, commandTimeout, commandType);
             } // End Using writer 
 
             return GetMergeScript(table_schema, table_name, true, mis, xmlBuilder);
         } // End Sub MergeStatementForTable 
 
 
+
+        internal static void SlickListBasedOnSample()
+        {
+            SlickListBasedOnSample("8E5523E3-32D1-4018-0000-000000000000");
+        }
+
+
+        internal static void SlickListBasedOnSample(string sampleId)
+        {
+            string newSlickListUID = System.Guid.NewGuid().ToString();
+
+            //return 
+                SlickListBasedOnSample(sampleId, newSlickListUID);
+        }
+
+
+        internal static void SlickListBasedOnSample(string sampleId, string newSlickListUID)
+        {
+
+            string table_schema = "dbo";
+            string table_name = null;
+            string sql = null;
+
+            sampleId = sampleId.Replace("'", "''");
+            newSlickListUID = newSlickListUID.Replace("'", "''");
+
+
+
+
+
+            SqlService service = new SqlService();
+            using (System.Data.Common.DbConnection conn = service.Connection)
+            {
+
+
+                sql = @"
+IF OBJECT_ID('tempdb..##tempSlickColumnInsertMapper') IS NOT NULL
+    EXECUTE('DROP TABLE ##tempSlickColumnInsertMapper; ');
+";
+
+                conn.Execute(sql);
+
+
+                table_name = "T_SYS_Language_Forms";
+
+                sql = @"
+SELECT TOP 1 
+	 '" + newSlickListUID + @"' AS LANG_UID 
+	,LANG_Modul 
+	,LANG_Object 
+	,LANG_Register 
+	,LANG_Position 
+	,LANG_DE 
+	,LANG_FR 
+	,LANG_EN 
+	,LANG_IT 
+	,LANG_Fieldname 
+	,LANG_FieldType 
+	,LANG_IsRequired 
+	,LANG_Validate 
+	,LANG_Reftable 
+	,LANG_CheckHistory 
+	,LANG_LUT_UID 
+	,LANG_IsValidity 
+	,CURRENT_TIMESTAMP AS LANG_ErfDate 
+	,LANG_Status 
+	,LANG_Tooltip_DE 
+	,LANG_Tooltip_EN 
+	,LANG_Tooltip_FR 
+	,LANG_Tooltip_IT 
+FROM T_SYS_Language_Forms 
+WHERE LANG_UID = ( SELECT TOP 1 SL_LANG_UID FROM T_COR_Slicklist WHERE SL_UID = '" + sampleId + @"' ) 
+";
+                string slickListTitle = MergeStatementForTable(conn, table_schema, table_name, sql);
+
+
+
+
+
+                table_name = "T_COR_Slicklist";
+                sql = @"
+
+SELECT 
+	 '" + newSlickListUID + @"' AS SL_UID 
+	,SL_SQL 
+	,SL_SQL_onChanges 
+	,SL_asyncEditorLoading 
+	,SL_autoEdit 
+	,SL_autoHeight 
+	,SL_defaultColumnWidth 
+	,SL_defaultSortString 
+	,SL_editable 
+	,SL_enableAddRow 
+	,SL_enableCellNavigation 
+	,SL_enableColumnReorder 
+	,SL_forceFitColumns 
+	,SL_hasCheckbox 
+	,SL_headerRowHeight 
+	,SL_leaveSpaceForNewRows 
+	,SL_multiSelect 
+	,SL_rowHeight 
+	,SL_showHeaderRow 
+	,SL_showTopPanel 
+	,SL_Lang_DE 
+	,SL_Lang_EN 
+	,SL_Lang_FR 
+	,SL_Lang_IT 
+	,SL_groupingKey 
+	,'" + newSlickListUID + @"' AS SL_LANG_UID 
+FROM T_COR_Slicklist 
+WHERE SL_UID = '" + sampleId + @"' 
+";
+                string slickList = MergeStatementForTable(conn, table_schema, table_name, sql);
+
+
+
+                sql = @"
+SELECT 
+	 NEWID() AS SLCOL_UID 
+	,NEWID() AS SLCOL_LANG_UID -- T_SYS_Language_Forms.LANG_UID 
+	,SLCOL_UID AS old_SLCOL_UID 
+	,SLCOL_LANG_UID AS old_SLCOL_LANG_UID 
+-- INTO ##tempSlickColumnInsertMapper 
+FROM T_COR_Ref_Slickcolumn 
+-- WHERE SLCOL_SL_UID = '8E5523E3-32D1-4018-0000-000000000000' 
+WHERE SLCOL_SL_UID =  '" + sampleId + @"' 
+ORDER BY SLCOL_Sort 
+";
+
+                
+
+
+                System.Text.StringBuilder xmlBuilder = new System.Text.StringBuilder();
+
+                using (System.Xml.XmlWriter writer = CreateXmlWriter(xmlBuilder))
+                {
+                    conn.AsXml(null, null, writer, sql);
+                } // End Using writer 
+
+
+                string xml = xmlBuilder.ToString();
+                xmlBuilder.Length = 0;
+                xmlBuilder = null;
+
+
+                /*
+                 DECLARE @foo xml 
+SET @foo = CONVERT(xml, @xmlColumnMap)
+
+
+SELECT
+   doc.col.value('SLCOL_UID[1]', 'uniqueidentifier') ponumber
+  ,doc.col.value('SLCOL_LANG_UID[1]', 'uniqueidentifier') podate 
+ 
+FROM @foo.nodes('//row/*') AS doc(col)
+
+                 */
+
+
+                table_name = "T_SYS_Language_Forms";
+                sql = @"
+SELECT 
+	 SLCOL_LANG_UID AS LANG_UID
+	,LANG_Modul
+	,LANG_Object
+	,LANG_Register
+	,LANG_Position
+	,LANG_DE
+	,LANG_FR
+	,LANG_EN
+	,LANG_IT
+	,LANG_Fieldname
+	,LANG_FieldType
+	,LANG_IsRequired
+	,LANG_Validate
+	,LANG_Reftable
+	,LANG_CheckHistory
+	,LANG_LUT_UID
+	,LANG_IsValidity
+	,CURRENT_TIMESTAMP AS LANG_ErfDate
+	,LANG_Status
+	,LANG_Tooltip_DE
+	,LANG_Tooltip_EN
+	,LANG_Tooltip_FR
+	,LANG_Tooltip_IT
+FROM ##tempSlickColumnInsertMapper 
+
+LEFT JOIN T_SYS_Language_Forms 
+	ON T_SYS_Language_Forms.LANG_UID = old_SLCOL_LANG_UID
+
+";
+                string slickListColumnNames = MergeStatementForTable(conn, table_schema, table_name, sql, new { xmlColumnMap = xml });
+
+
+
+                table_name = "T_COR_Ref_Slickcolumn";
+                sql = @"
+
+SELECT 
+	 tColumnMap.SLCOL_UID AS SLCOL_UID 
+	,'" + newSlickListUID + @"' AS SLCOL_SL_UID 
+	,SLCOL_MOD_UID 
+	,SLCOL_LANG_DE 
+	,SLCOL_LANG_EN 
+	,SLCOL_LANG_FR 
+	,SLCOL_LANG_IT 
+	,SLCOL_Sort 
+	,SLCOL_Status 
+	,SLCOL_asyncPostRender 
+	,SLCOL_backgroundcolorfield 
+	,SLCOL_cannotTriggerInsert 
+	,SLCOL_colorfield 
+	,SLCOL_cssClass 
+	,NULL AS SLCOL_displayfield 
+	,SLCOL_editor 
+	,SLCOL_field 
+	,SLCOL_footer 
+	,SLCOL_formatter 
+	,SLCOL_headerCssClass 
+	,SLCOL_minWidth 
+	,SLCOL_maxWidth 
+	,SLCOL_name 
+	,NULL AS SLCOL_referenceTablename 
+	,SLCOL_required 
+	,SLCOL_requiredFieldRead 
+	,SLCOL_requiredFieldWrite 
+	,SLCOL_rerenderOnResize 
+	,SLCOL_resizable 
+	,SLCOL_show 
+	,SLCOL_showInHeaderRow 
+	,SLCOL_sortable 
+	,NULL AS SLCOL_sorter 
+	,SLCOL_tooltip 
+	,SLCOL_unselectable 
+	,SLCOL_width 
+	,SLCOL_includeInExport 
+	,SLCOL_export 
+	,NULL AS SLCOL_referenceSQL 
+	,tColumnMap.SLCOL_LANG_UID -- T_SYS_Language_Forms.LANG_UID 
+	,0 AS SLCOL_multiple 
+	,SLCOL_formatString 
+FROM ##tempSlickColumnInsertMapper AS tColumnMap 
+
+LEFT JOIN T_COR_Ref_Slickcolumn 
+	ON T_COR_Ref_Slickcolumn.SLCOL_UID = tColumnMap.old_SLCOL_UID 
+
+WHERE SLCOL_SL_UID = '" + sampleId + @"' 
+-- WHERE SLCOL_SL_UID = '8E5523E3-32D1-4018-0000-000000000000' 
+ORDER BY SLCOL_Sort 
+
+";
+                string slickListColumns = MergeStatementForTable(conn, table_schema, table_name, sql);
+
+
+
+
+                sql = @"
+IF OBJECT_ID('tempdb..##tempSlickColumnInsertMapper') IS NOT NULL
+    EXECUTE('DROP TABLE ##tempSlickColumnInsertMapper; ');
+";
+
+
+                conn.Execute(sql);
+
+            } // End Using conn 
+
+
+
+        }
+
+
+
         internal static void Test()
         {
+            SlickListBasedOnSample();
+
             SqlService service = new SqlService();
             // System.Collections.Generic.Dictionary<string, object> pars = null;
             // service.AddParameterList(pars);
@@ -283,11 +556,16 @@ WHERE ZO_BOT_ID > 103
             table_name = "T_VWS_Ref_Stylizer";
             table_name = "T_FMS_Translation";
             table_name = "T_ZO_SYS_Backoffice_Table";
+            table_name = "T_COR_Slicklist";
+            table_name = "T_COR_Ref_Slickcolumn";
+            table_name = "T_SYS_Language_Forms";
+
+
 
             string cmd = null;
             using (System.Data.Common.DbConnection conn = service.Connection)
             {
-                cmd = MergeStatementForTable(table_schema, table_name, conn);
+                cmd = MergeStatementForTable(conn, table_schema, table_name);
             } // End Using conn 
 
             System.Console.WriteLine(cmd);
