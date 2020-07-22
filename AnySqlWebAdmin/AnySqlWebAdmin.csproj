@@ -47,6 +47,7 @@
   </ItemGroup>
   <ItemGroup>
     <TypeScriptCompile Include="TypeScript\Leaflet\externalTypes\leaflet-draw.d.ts" />
+    <TypeScriptCompile Include="TypeScript\Tools\MyRequire.ts" />
   </ItemGroup>
   <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
     <TypeScriptTarget>ES5</TypeScriptTarget>
