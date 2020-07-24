@@ -1,3 +1,4 @@
+"use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -34,23 +35,11 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-function sleepTwice(interval) {
-    return new Promise(function (resolve, reject) {
-        var wait = setTimeout(function () {
-            clearTimeout(wait);
-            resolve();
-            resolve();
-        }, interval);
-    });
-}
-sleepTwice(2000).then(function () {
-    console.log("howdy");
-});
 var fs = {
-    file: "\n    // module.exports = \"Hello World\";\n        \n    module.exports = function(){ return 5*3;};\n    \n    \n    \n    ",
-    getFileAsync: function (fileName, encoding) {
+    file: "\n    // module.exports = \"Hello World\";\n        \n    module.exports = function(){ return 5*3;};\n    \n    ",
+    readFileAsync: function (fileName, encoding) {
         return __awaiter(this, void 0, void 0, function () {
-            var textDecoder, response, reader, result, chunks, partN, file;
+            var textDecoder, response, buffer, file;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -58,22 +47,13 @@ var fs = {
                         return [4, fetch(fileName)];
                     case 1:
                         response = _a.sent();
+                        console.log(response.ok);
+                        console.log(response.status);
                         console.log(response.statusText);
-                        reader = response.body.getReader();
-                        chunks = [];
-                        _a.label = 2;
-                    case 2: return [4, reader.read()];
-                    case 3:
-                        result = _a.sent();
-                        partN = textDecoder.decode(result.value);
-                        console.log("result: ", result.value, partN);
-                        chunks.push(partN);
-                        _a.label = 4;
-                    case 4:
-                        if (!result.done) return [3, 2];
-                        _a.label = 5;
-                    case 5:
-                        file = chunks.join('');
+                        return [4, response.arrayBuffer()];
+                    case 2:
+                        buffer = _a.sent();
+                        file = textDecoder.decode(buffer);
                         return [2, file];
                 }
             });
@@ -81,7 +61,6 @@ var fs = {
     },
     getFile: function (fileName, encoding) {
         var client = new XMLHttpRequest();
-        client.setRequestHeader("Content-Type", "text/plain;charset=UTF-8");
         client.open("GET", fileName, false);
         client.send();
         if (client.status === 200)
@@ -109,6 +88,46 @@ myRequire.cache = Object.create(null);
 window.require = myRequire;
 var stuff = window.require('./main.js');
 console.log(stuff);
+function myRequireAsync(name) {
+    return __awaiter(this, void 0, void 0, function () {
+        var code, module, wrapper;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    console.log("Evaluating file " + name);
+                    if (!!(name in myRequireAsync.cache)) return [3, 3];
+                    console.log(name + " is not in cache; reading from disk");
+                    return [4, fs.readFileAsync(name, 'utf8')];
+                case 1:
+                    code = _a.sent();
+                    module = { exports: {} };
+                    myRequireAsync.cache[name] = module;
+                    wrapper = Function("asyncRequire, exports, module", code);
+                    return [4, wrapper(myRequireAsync, module.exports, module)];
+                case 2:
+                    _a.sent();
+                    _a.label = 3;
+                case 3:
+                    console.log(name + " is in cache. Returning it...");
+                    return [2, myRequireAsync.cache[name].exports];
+            }
+        });
+    });
+}
+myRequireAsync.cache = Object.create(null);
+window.asyncRequire = myRequireAsync;
+(function () { return __awaiter(void 0, void 0, void 0, function () {
+    var asyncStuff;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4, window.asyncRequire('./main.js')];
+            case 1:
+                asyncStuff = _a.sent();
+                console.log(asyncStuff);
+                return [2];
+        }
+    });
+}); });
 function get(url, timeoutMS) {
     function urlJoinChar(u) {
         return u.indexOf('?') >= 0 ? '&' : '?';
@@ -147,3 +166,15 @@ function get(url, timeoutMS) {
 function getJSON(url) {
     return get(url).then(JSON.parse);
 }
+function sleepTwice(interval) {
+    return new Promise(function (resolve, reject) {
+        var wait = setTimeout(function () {
+            clearTimeout(wait);
+            resolve();
+            resolve();
+        }, interval);
+    });
+}
+sleepTwice(2000).then(function () {
+    console.log("Do I resolve twice, or not ?");
+});

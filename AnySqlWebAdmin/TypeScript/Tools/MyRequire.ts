@@ -1,33 +1,19 @@
-interface Window
-{
-    require: (fileName: string) => string;
-}
 
+"use strict"; 
 
-function sleepTwice(interval: number)
-    : Promise<void>
-{
-    return new Promise(
-        function (resolve: () => void, reject: (reason?: any) => void)
-        {
-            let wait:number = setTimeout(
-                function ()
-                {
-                    clearTimeout(wait);
-                    //reject(new Error(`Promise timed out ! (timeout = ${timeout})`));
-                    resolve();
-                    resolve();
-                }, interval);
-        }
-    );
-}
+// declare global
+// {
+    interface Window
+    {
+        require: (fileName: string) => any;
+        asyncRequire: (name: string) => Promise<any>;
+    }
+// }
 
-
-sleepTwice(2000).then(function(){
-    console.log("howdy");
-});
-
-
+// https://mariusschulz.com/blog/declaring-global-variables-in-typescript
+// global scope without window
+declare var require: (fileName: string) => string;
+declare var asyncRequire: (fileName: string) => Promise<string>;
 
 
 
@@ -37,14 +23,15 @@ const fs = {
         
     module.exports = function(){ return 5*3;};
     
-    
-    
     `
-    ,async getFileAsync(fileName: string, encoding: string):string
+    , async readFileAsync(fileName: string, encoding: string)
+        : Promise<string>
     {
         const textDecoder = new TextDecoder(encoding);
+        // textDecoder.ignoreBOM = true;
+
         const response = await fetch(fileName);
-        
+
         console.log(response.ok);
         console.log(response.status);
         console.log(response.statusText);
@@ -53,81 +40,43 @@ const fs = {
         // let blo:Blob = response.blob();
         // let ab:ArrayBuffer = await response.arrayBuffer();
         // let fd = await response.formData()
-        
-        
-        // https://developer.mozilla.org/en-US/docs/Web/API/ReadableStream/getReader
-        const reader = response.body.getReader();
-        let result:ReadableStreamReadResult<Uint8Array>;
-        let chunks:Uint8Array[] = [];
-        
-        // due to done, this is unlike C#:
-        // byte[] buffer = new byte[32768];
-        // int read;
-        // while ((read = input.Read(buffer, 0, buffer.Length)) > 0)
-        // {
-        //     output.Write (buffer, 0, read);
-        // }
 
-        // let responseBuffer:ArrayBuffer = await response.arrayBuffer();
-        // let text:string = textDecoder.decode(responseBuffer);
-        
-        do
-        {
-            result = await reader.read();
-            chunks.push(result.value);
-            let partN = textDecoder.decode(result.value);
-            // chunks.push(partN);
-            console.log("result: ", result.value, partN);
-            
-        } while(!result.done)
+        // Read file almost by line
+        // https://developer.mozilla.org/en-US/docs/Web/API/ReadableStreamDefaultReader/read#Example_2_-_handling_text_line_by_line
 
-        let chunkLength:number = chunks.reduce(
-            function(a, b)
-            {
-                return a + (b||[]).length;
-            }
-            , 0
-        );
-        
-        let mergedArray = new Uint8Array(chunkLength);
-        let currentPosition = 0;
-        for(let i = 0; i < chunks.length; ++i)
-        {
-            mergedArray.set(chunks[i],currentPosition);
-            currentPosition += (chunks[i]||[]).length;
-        } // Next i 
-
-        let file:string = textDecoder.decode(mergedArray);
-        
-        // let file:string = chunks.join('');
+        let buffer: ArrayBuffer = await response.arrayBuffer();
+        let file: string = textDecoder.decode(buffer);
         return file;
     } // End Function getFileAsync
-    
-    ,getFile(fileName: string, encoding: string): string
+
+    , getFile(fileName: string, encoding: string): string
     {
         // https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/Synchronous_and_Asynchronous_Requests
         let client = new XMLHttpRequest();
-        client.setRequestHeader("Content-Type", "text/plain;charset=UTF-8");
-        
+        // client.setRequestHeader("Content-Type", "text/plain;charset=UTF-8");
+
         // open(method, url, async)
         client.open("GET", fileName, false);
         client.send();
-        if (client.status === 200) 
+        if (client.status === 200)
             return client.responseText;
-        
+
         return null;
     }
-    
-    
-    ,readFileSync: function (fileName: string, encoding: string): string
+
+
+    , readFileSync: function (fileName: string, encoding: string): string
     {
-        return this.file;
+        // this.getFile(fileName, encoding);
+        return this.file; // Example 
     }
 };
 
 
+
+
 // https://michelenasti.com/2018/10/02/let-s-write-a-simple-version-of-the-require-function.html
-function myRequire(name: string)
+function myRequire(name: string): any 
 {
     console.log(`Evaluating file ${name}`);
 
@@ -135,7 +84,8 @@ function myRequire(name: string)
     {
         console.log(`${name} is not in cache; reading from disk`);
         let code = fs.readFileSync(name, 'utf8');
-        let module = {exports: {}};
+        // let code = await fs.readFileAsync(name, 'utf8');
+        let module = { exports: {} };
         myRequire.cache[name] = module;
         let wrapper = Function("require, exports, module", code);
         wrapper(myRequire, module.exports, module);
@@ -151,6 +101,40 @@ window.require = myRequire;
 
 const stuff = window.require('./main.js');
 console.log(stuff);
+
+
+
+async function myRequireAsync(name: string)
+    : Promise<any>
+{
+    console.log(`Evaluating file ${name}`);
+
+    if (!(name in myRequireAsync.cache))
+    {
+        console.log(`${name} is not in cache; reading from disk`);
+        let code = await fs.readFileAsync(name, 'utf8');
+        let module = { exports: {} };
+        myRequireAsync.cache[name] = module;
+        let wrapper = Function("asyncRequire, exports, module", code);
+        await wrapper(myRequireAsync, module.exports, module);
+    }
+
+    console.log(`${name} is in cache. Returning it...`);
+    return myRequireAsync.cache[name].exports;
+}
+
+myRequireAsync.cache = Object.create(null);
+window.asyncRequire = myRequireAsync;
+
+
+async () =>
+{
+    const asyncStuff = await window.asyncRequire('./main.js');
+    console.log(asyncStuff);
+}
+
+
+
 
 
 // jsonp Promise
@@ -212,3 +196,31 @@ function getJSON(url: string)
 {
     return get(url).then(JSON.parse);
 }
+
+
+
+
+function sleepTwice(interval: number)
+    : Promise<void>
+{
+    return new Promise(
+        function (resolve: () => void, reject: (reason?: any) => void)
+        {
+            let wait: number = setTimeout(
+                function ()
+                {
+                    clearTimeout(wait);
+                    //reject(new Error(`Promise timed out ! (timeout = ${timeout})`));
+                    resolve();
+                    resolve();
+                }, interval);
+        }
+    );
+}
+
+
+sleepTwice(2000).then(function ()
+{
+    console.log("Do I resolve twice, or not ?");
+});
+
