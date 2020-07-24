@@ -19,10 +19,8 @@ declare var asyncRequire: (fileName: string) => Promise<string>;
 
 const fs = {
     file: `
-    // module.exports = \"Hello World\";
-        
     module.exports = function(){ return 5*3;};
-    
+    module.exports.hello_world = \"Hello World\";
     `
     , async readFileAsync(fileName: string, encoding: string)
         : Promise<string>

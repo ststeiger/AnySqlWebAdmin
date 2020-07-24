@@ -36,7 +36,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 var fs = {
-    file: "\n    // module.exports = \"Hello World\";\n        \n    module.exports = function(){ return 5*3;};\n    \n    ",
+    file: "\n    module.exports = function(){ return 5*3;};\n    module.exports.hello_world = \"Hello World\";\n    ",
     readFileAsync: function (fileName, encoding) {
         return __awaiter(this, void 0, void 0, function () {
             var textDecoder, response, buffer, file;
