@@ -3,6 +3,34 @@ interface Window
     require: (fileName: string) => string;
 }
 
+
+function sleepTwice(interval: number)
+    : Promise<void>
+{
+    return new Promise(
+        function (resolve: () => void, reject: (reason?: any) => void)
+        {
+            let wait:number = setTimeout(
+                function ()
+                {
+                    clearTimeout(wait);
+                    //reject(new Error(`Promise timed out ! (timeout = ${timeout})`));
+                    resolve();
+                    resolve();
+                }, interval);
+        }
+    );
+}
+
+
+sleepTwice(2000).then(function(){
+    console.log("howdy");
+});
+
+
+
+
+
 const fs = {
     file: `
     // module.exports = \"Hello World\";
@@ -10,27 +38,70 @@ const fs = {
     module.exports = function(){ return 5*3;};
     
     
+    
     `
-    ,async getFileAsync(fileName: string, encoding: string)
+    ,async getFileAsync(fileName: string, encoding: string):string
     {
-        const utf8Decoder = new TextDecoder(encoding);
+        const textDecoder = new TextDecoder(encoding);
         const response = await fetch(fileName);
         
+        console.log(response.ok);
+        console.log(response.status);
         console.log(response.statusText);
         // let json = await response.json();
         // let txt = await response.text();
-        // let ab:ArrayBuffer = await response.arrayBuffer();
         // let blo:Blob = response.blob();
+        // let ab:ArrayBuffer = await response.arrayBuffer();
+        // let fd = await response.formData()
+        
         
         // https://developer.mozilla.org/en-US/docs/Web/API/ReadableStream/getReader
         const reader = response.body.getReader();
-        let result:ReadableStreamReadResult<Uint8Array> = await reader.read();
-        // result.done
-        // result.value
+        let result:ReadableStreamReadResult<Uint8Array>;
+        let chunks:Uint8Array[] = [];
         
+        // due to done, this is unlike C#:
+        // byte[] buffer = new byte[32768];
+        // int read;
+        // while ((read = input.Read(buffer, 0, buffer.Length)) > 0)
+        // {
+        //     output.Write (buffer, 0, read);
+        // }
+
+        // let responseBuffer:ArrayBuffer = await response.arrayBuffer();
+        // let text:string = textDecoder.decode(responseBuffer);
         
-        //let chunk = chunk ? utf8Decoder.decode(chunk) : ''
-    }
+        do
+        {
+            result = await reader.read();
+            chunks.push(result.value);
+            let partN = textDecoder.decode(result.value);
+            // chunks.push(partN);
+            console.log("result: ", result.value, partN);
+            
+        } while(!result.done)
+
+        let chunkLength:number = chunks.reduce(
+            function(a, b)
+            {
+                return a + (b||[]).length;
+            }
+            , 0
+        );
+        
+        let mergedArray = new Uint8Array(chunkLength);
+        let currentPosition = 0;
+        for(let i = 0; i < chunks.length; ++i)
+        {
+            mergedArray.set(chunks[i],currentPosition);
+            currentPosition += (chunks[i]||[]).length;
+        } // Next i 
+
+        let file:string = textDecoder.decode(mergedArray);
+        
+        // let file:string = chunks.join('');
+        return file;
+    } // End Function getFileAsync
     
     ,getFile(fileName: string, encoding: string): string
     {

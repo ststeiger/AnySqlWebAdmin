@@ -34,24 +34,47 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
+function sleepTwice(interval) {
+    return new Promise(function (resolve, reject) {
+        var wait = setTimeout(function () {
+            clearTimeout(wait);
+            resolve();
+            resolve();
+        }, interval);
+    });
+}
+sleepTwice(2000).then(function () {
+    console.log("howdy");
+});
 var fs = {
-    file: "\n    // module.exports = \"Hello World\";\n        \n    module.exports = function(){ return 5*3;};\n    \n    \n    ",
+    file: "\n    // module.exports = \"Hello World\";\n        \n    module.exports = function(){ return 5*3;};\n    \n    \n    \n    ",
     getFileAsync: function (fileName, encoding) {
         return __awaiter(this, void 0, void 0, function () {
-            var utf8Decoder, response, reader, result;
+            var textDecoder, response, reader, result, chunks, partN, file;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        utf8Decoder = new TextDecoder(encoding);
+                        textDecoder = new TextDecoder(encoding);
                         return [4, fetch(fileName)];
                     case 1:
                         response = _a.sent();
                         console.log(response.statusText);
                         reader = response.body.getReader();
-                        return [4, reader.read()];
-                    case 2:
+                        chunks = [];
+                        _a.label = 2;
+                    case 2: return [4, reader.read()];
+                    case 3:
                         result = _a.sent();
-                        return [2];
+                        partN = textDecoder.decode(result.value);
+                        console.log("result: ", result.value, partN);
+                        chunks.push(partN);
+                        _a.label = 4;
+                    case 4:
+                        if (!result.done) return [3, 2];
+                        _a.label = 5;
+                    case 5:
+                        file = chunks.join('');
+                        return [2, file];
                 }
             });
         });
