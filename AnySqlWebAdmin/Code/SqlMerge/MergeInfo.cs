@@ -1,4 +1,5 @@
 ﻿
+using Cassandra.Data.Linq;
 using Dapper;
 using System.Linq;
 
@@ -17,13 +18,23 @@ namespace AnySqlWebAdmin.Code.SqlMerge
             public string column_sql_datatype;
             public string column_of_pk;
             public int is_identity;
+            public string is_nullable;
         } // End Class MergeInfo 
 
 
-        private static string GetMergeScript(string table_schema, string table_name, bool with_merge,
-            System.Collections.Generic.IEnumerable<MergeSchemaInfo> mis, System.Text.StringBuilder xml)
+        private static string GetMergeScript(
+              string table_schema
+            , string table_name
+            , string dataSQL
+            , bool with_merge
+            , System.Collections.Generic.IEnumerable<MergeSchemaInfo> mis
+            , System.Text.StringBuilder xml
+        )
         {
             xml = xml.Replace("'", "''");
+
+            if (string.IsNullOrWhiteSpace(dataSQL))
+                dataSQL = "SELECT * FROM " + table_schema + "." + table_name + "; ";
 
             string[] selectColumns = mis.Select(x => x.column_name).ToArray();
             string[] xqueryColumns = mis.Select(x =>
@@ -49,10 +60,10 @@ namespace AnySqlWebAdmin.Code.SqlMerge
 
 
             string updateStatement = string.Join(System.Environment.NewLine + double_padding + padding + ",", updateColumns);
-
+            /*
             if (joinCondition.Length == 0)
                 throw new System.InvalidOperationException("Cannot generate MERGE-statement for table without primary-key");
-
+                */
 
 
             xml.Insert(0, $@"
@@ -61,7 +72,7 @@ namespace AnySqlWebAdmin.Code.SqlMerge
 DECLARE @xml XML 
 SET @xml = ( SELECT ( 
 
-SELECT * FROM {table_schema}.{table_name} 
+{dataSQL} 
 
 FOR XML PATH('row'), ROOT('table'),  ELEMENTS xsinil) AS outerXml ) 
 SELECT @xml 
@@ -200,18 +211,26 @@ SET IDENTITY_INSERT {table_schema}.{table_name} OFF;
         } // End Function CreateXmlWriter 
 
 
-        public static string MergeStatementForTable(System.Data.Common.DbConnection conn, string table_schema, string table_name)
+        public static string MergeStatementForTable(
+            System.Data.Common.DbConnection conn
+            , string table_schema
+            , string table_name
+        ) 
         {
             return MergeStatementForTable(conn, table_schema, table_name, null);
         } // End Function MergeStatementForTable 
 
 
-        public static string MergeStatementForTable(System.Data.Common.DbConnection conn, string table_schema, string table_name, string dataSQL
+        public static string MergeStatementForTable(
+              System.Data.Common.DbConnection conn
+            , string table_schema
+            , string table_name
+            , string dataSQL
             , object param = null
             , System.Data.IDbTransaction transaction = null
             , int? commandTimeout = null
             , System.Data.CommandType? commandType = null
-            )
+        )
         {
             string sql = System.IO.Path.Combine("SQL", "Schema.Merge.sql");
             sql = System.IO.File.ReadAllText(sql, System.Text.Encoding.UTF8);
@@ -226,9 +245,8 @@ SET IDENTITY_INSERT {table_schema}.{table_name} OFF;
                 conn.AsXml(table_schema, table_name, writer, dataSQL, param, transaction, commandTimeout, commandType);
             } // End Using writer 
 
-            return GetMergeScript(table_schema, table_name, true, mis, xmlBuilder);
+            return GetMergeScript(table_schema, table_name, dataSQL, true, mis, xmlBuilder);
         } // End Sub MergeStatementForTable 
-
 
 
         internal static void SlickListBasedOnSample()
@@ -244,7 +262,6 @@ SET IDENTITY_INSERT {table_schema}.{table_name} OFF;
             //return 
             SlickListBasedOnSample(sampleId, newSlickListUID);
         } // End Sub SlickListBasedOnSample
-
 
 
         internal static string SlickListBasedOnSample(string sampleId, string newSlickListUID)
@@ -682,7 +699,7 @@ IF OBJECT_ID('tempdb..##tempSlickColumnInsertMapper') IS NOT NULL
 
         internal static void Test()
         {
-            SlickListBasedOnSample();
+            // SlickListBasedOnSample();
 
             SqlService service = new SqlService();
             // System.Collections.Generic.Dictionary<string, object> pars = null;
@@ -736,12 +753,42 @@ IF OBJECT_ID('tempdb..##tempSlickColumnInsertMapper') IS NOT NULL
             table_name = "T_COR_Slicklist";
             table_name = "T_COR_Ref_Slickcolumn";
             table_name = "T_SYS_Language_Forms";
+            table_name = "T_SYS_Ref_Register";
+            table_name = "T_SYS_Registerrechte";
+            table_name = "T_SM2_ZO_Stoerungschritt_Benutzergruppe";
+            table_name = "T_SM2_ZO_Stoerungschritte";
+            table_name = "T_ZO_SYS_DokumentKategorie_Benutzergruppe";
+            table_name = "T_VWS_ZO_NavigationRechte_Lesen";
+            table_name = "T_VWS_ZO_DarstellungRechte_Lesen";
 
+            table_name = "T_VWS_Ref_Navigation";
+            table_name = "T_VWS_Ref_NavigationGruppe";
+            table_name = "T_VWS_ZO_NavigationGruppe";
+
+            table_name = "T_VWS_ZO_Ref_Darstellung_Ref_DarstellungGruppe ";
+            table_name = "T_VWS_Ref_Darstellung";
+            table_name = "T_VWS_Ref_DarstellungGruppe";
+
+
+            table_name = "T_SYS_Ref_BackOfficeMenue";
+            table_name = "T_SYS_Ref_BackOfficeSubMenue";
+            table_name = "T_SYS_Ref_MimeTypes";
+
+            table_name = "T_BO_Menu";
+            table_name = "T_BO_Menu_CheckDelete";
+            table_name = "T_FMS_Navigation";
+            table_name = "T_SYS_Ref_Layerset";
+            table_name = "T_AP_Ref_DokumentKategorie";
+            table_name = "T_VWS_Ref_Darstellung";
+            table_name = "T_SYS_Module";
 
             string cmd = null;
             using (System.Data.Common.DbConnection conn = service.Connection)
             {
-                cmd = MergeStatementForTable(conn, table_schema, table_name);
+                string dataSQL = @"";
+                // string dataSQL = null;
+
+                cmd = MergeStatementForTable(conn, table_schema, table_name, dataSQL);
             } // End Using conn 
 
             System.Console.WriteLine(cmd);
