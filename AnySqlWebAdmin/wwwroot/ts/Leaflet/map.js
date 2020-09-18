@@ -825,6 +825,7 @@ function loadMarkers() {
                             .bindPopup(popup)
                             .addTo(map);
                         marker.on("click", function (uuid, e) {
+                            console.log('marker.on("click",', uuid);
                             map.setView(e.latlng, 18, { animate: true });
                             if (marker && marker.popup)
                                 marker.popup();
@@ -855,14 +856,17 @@ function loadMarkers() {
                         spn.appendChild(sup2);
                         dd.appendChild(spn);
                         polygon.addTo(map);
-                        polygon.on("click", function (uuid, e) {
+                        polygon.on("click", function (uuid, polygon, e) {
+                            console.log('polygon.on("click",', e, uuid, polygon);
+                            console.log("polygon latlngs", polygon.getLatLngs());
+                            polygon.editing.enable();
                             var t = "{@basic}gebaeude.aspx?uid={@obj}&muid=@GB&env=ov&ro=false&proc={@BE_Hash}";
                             t = SetDefaultVariables(t);
                             var ml = window.parent.document.querySelector('#frameDWGForm');
                             if (ml)
                                 ml.src = t.replace("{@obj}", uuid);
                             observeIframe();
-                        }.bind(this_1, uid));
+                        }.bind(this_1, uid, polygon));
                         polygons[uid] = marker;
                     };
                     this_1 = this;
@@ -1514,7 +1518,7 @@ function initMap() {
                         });
                     }
                     map.on("click", function (e) {
-                        console.log(e.latlng);
+                        console.log('map.on("click",', e.latlng);
                     });
                     return [2];
             }

@@ -1396,6 +1396,8 @@ async function loadMarkers()
         // console.log(uid);
         marker.on("click", function (uuid: string, e: L.LeafletMouseEvent) // uid is now called uuid
         {
+            console.log('marker.on("click",', uuid);
+
             // console.log("onclick");
             map.setView(e.latlng, 18, { animate: true });
             if (marker && marker.popup)
@@ -1467,9 +1469,15 @@ async function loadMarkers()
             //.openPopup()
             ;
 
+        
+
         // polygon.on("dblclick", function (uuid, e)
-        polygon.on("click", function (uuid: string, e: L.LeafletMouseEvent)
+        polygon.on("click", function (uuid: string, polygon: L.Polygon, e: L.LeafletMouseEvent)
         {
+            console.log('polygon.on("click",', e, uuid, polygon);
+            console.log("polygon latlngs", polygon.getLatLngs());
+            (<any>polygon).editing.enable();
+
             let t = "{@basic}gebaeude.aspx?uid={@obj}&muid=@GB&env=ov&ro=false&proc={@BE_Hash}";
             t = SetDefaultVariables(t);
 
@@ -1480,7 +1488,7 @@ async function loadMarkers()
                 ml.src = t.replace("{@obj}", uuid);
 
             observeIframe();
-        }.bind(this, uid));
+        }.bind(this, uid, polygon));
 
         polygons[uid] = marker;
     } // next i
@@ -2550,11 +2558,12 @@ async function initMap()
         });
     }
 
+    
     map.on("click", function (e:L.LeafletMouseEvent)
     {
-        console.log(e.latlng);
+        console.log('map.on("click",', e.latlng);
     });
-
+    
 
     //map.on("dblclick", function (e: L.LeafletMouseEvent)
     //{

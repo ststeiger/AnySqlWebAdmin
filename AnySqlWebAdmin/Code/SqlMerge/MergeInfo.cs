@@ -679,13 +679,13 @@ IF OBJECT_ID('tempdb..##tempSlickColumnInsertMapper') IS NOT NULL
             System.IO.File.WriteAllText(@"D:\01_slickListTitle.sql", slickListTitle, System.Text.Encoding.UTF8);
 
             System.Console.WriteLine(slickList);
-            System.IO.File.WriteAllText(@"D:\02_slickList.sql", slickListTitle, System.Text.Encoding.UTF8);
+            System.IO.File.WriteAllText(@"D:\02_slickList.sql", slickList, System.Text.Encoding.UTF8);
 
             System.Console.WriteLine(slickListColumnNames);
-            System.IO.File.WriteAllText(@"D:\03_slickListColumnNames.sql", slickListTitle, System.Text.Encoding.UTF8);
+            System.IO.File.WriteAllText(@"D:\03_slickListColumnNames.sql", slickListColumnNames, System.Text.Encoding.UTF8);
 
             System.Console.WriteLine(slickListColumns);
-            System.IO.File.WriteAllText(@"D:\04_slickListColumns.sql", slickListTitle, System.Text.Encoding.UTF8);
+            System.IO.File.WriteAllText(@"D:\04_slickListColumns.sql", slickListColumns, System.Text.Encoding.UTF8);
 
 
 
@@ -781,6 +781,26 @@ IF OBJECT_ID('tempdb..##tempSlickColumnInsertMapper') IS NOT NULL
             table_name = "T_AP_Ref_DokumentKategorie";
             table_name = "T_VWS_Ref_Darstellung";
             table_name = "T_SYS_Module";
+            table_name = "T_SYS_Module";
+            table_name = "T_COR_Slicklist";
+
+
+            table_name = "T_AV_Ref_AdresseRollen";
+            table_name = "T_SYS_AdresseRollenrechte";
+
+            table_name = "T_FMS_Configuration";
+
+            table_name = "T_AP_Ref_Land";
+            table_name = "T_ZO_Objekt_Wgs84Polygon";
+
+
+            table_name = "T_VWS_PdfLegende";
+            table_name = "T_VWS_Ref_PdfLegendenKategorie";
+
+            table_name = "T_VWS_Ref_PaperSize";
+
+
+
 
             string cmd = null;
             using (System.Data.Common.DbConnection conn = service.Connection)

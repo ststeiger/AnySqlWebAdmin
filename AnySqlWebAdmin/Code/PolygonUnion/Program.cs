@@ -494,6 +494,8 @@ namespace TestTransform
             if (!poly.IsValid)
                 throw new System.IO.InvalidDataException("Polygon is invalid.");
 
+            
+
             return poly.Area;
         } // End Function CalculateArea 
 
