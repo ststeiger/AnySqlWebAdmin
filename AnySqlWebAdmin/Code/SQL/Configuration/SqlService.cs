@@ -38,6 +38,9 @@ namespace AnySqlWebAdmin
             csb.MultipleActiveResultSets = false;
             csb.WorkstationID = System.Environment.MachineName;
 
+            csb.InitialCatalog = "COR_Basic_Demo_V4";
+            
+            
             // https://github.com/dotnet/runtime/issues/14945
             // SQL server alias recognized with CLR runtime but not CoreCLR
             // The SQL server alias is defined on each client machine and it points to a SQL server instance. 
