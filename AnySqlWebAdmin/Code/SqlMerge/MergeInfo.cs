@@ -29,10 +29,11 @@ namespace AnySqlWebAdmin.Code.SqlMerge
             , bool with_merge
             , System.Collections.Generic.IEnumerable<MergeSchemaInfo> mis
             , System.Text.StringBuilder xml
+            ,bool with_xml 
         )
         {
             xml = xml.Replace("'", "''");
-
+            
             if (string.IsNullOrWhiteSpace(dataSQL))
                 dataSQL = "SELECT * FROM " + table_schema + "." + table_name + "; ";
 
@@ -65,7 +66,7 @@ namespace AnySqlWebAdmin.Code.SqlMerge
                 throw new System.InvalidOperationException("Cannot generate MERGE-statement for table without primary-key");
                 */
 
-
+            if(with_xml)
             xml.Insert(0, $@"
 /* 
 -- How to create the XML 
@@ -83,7 +84,8 @@ DECLARE @xml xml
 SET @xml = N'");
 
 
-            xml.Append(@"'
+            if (with_xml)
+                xml.Append(@"'
 
 
 DECLARE @handle int 
@@ -174,8 +176,10 @@ WHEN NOT MATCHED BY TARGET THEN
     ) 
 -- WHEN NOT MATCHED BY SOURCE THEN DELETE 
 ;
+");
 
-
+                if(with_xml)
+                xml.Append(@" 
 EXEC sp_xml_removedocument @handle 
 ");
 
@@ -227,6 +231,7 @@ SET IDENTITY_INSERT {table_schema}.{table_name} OFF;
             , string table_name
             , string dataSQL
             , object param = null
+            , bool with_xml = true
             , System.Data.IDbTransaction transaction = null
             , int? commandTimeout = null
             , System.Data.CommandType? commandType = null
@@ -240,12 +245,15 @@ SET IDENTITY_INSERT {table_schema}.{table_name} OFF;
 
             System.Text.StringBuilder xmlBuilder = new System.Text.StringBuilder();
 
-            using (System.Xml.XmlWriter writer = CreateXmlWriter(xmlBuilder))
+            if (with_xml)
             {
-                conn.AsXml(table_schema, table_name, writer, dataSQL, param, transaction, commandTimeout, commandType);
-            } // End Using writer 
+                using (System.Xml.XmlWriter writer = CreateXmlWriter(xmlBuilder))
+                {
+                    conn.AsXml(table_schema, table_name, writer, dataSQL, param, transaction, commandTimeout, commandType);
+                } // End Using writer 
+            } // End if (with_xml) 
 
-            return GetMergeScript(table_schema, table_name, dataSQL, true, mis, xmlBuilder);
+            return GetMergeScript(table_schema, table_name, dataSQL, true, mis, xmlBuilder, with_xml);
         } // End Sub MergeStatementForTable 
 
 
@@ -800,12 +808,100 @@ IF OBJECT_ID('tempdb..##tempSlickColumnInsertMapper') IS NOT NULL
             table_name = "T_VWS_Ref_PaperSize";
 
 
+            table_name = "T_VWS_PdfLegende";
+            table_name = "T_VWS_Ref_PdfLegendenKategorie";
 
+
+            table_name = "T_FMS_ZO_Filter";
+            table_name = "T_FMS_Navigation";
+            table_name = "T_FMS_Translation";
+            table_name = "T_SYS_Navigationrechte";
+
+            table_name = "T_COR_Slicklist";
+            table_name = "T_COR_Ref_Slickcolumn";
+
+
+            table_name = "T_ZO_SYS_Module_AP_Ref_Mandant";
+            table_name = "T_FMS_ZO_Filter";
+            table_name = "T_FMS_Filter";
+            table_name = "T_FMS_Navigation";
+            table_name = "T_FMS_Translation";
+            table_name = "T_FMS_Navigation";
+            table_name = "T_COR_ZO_ObjektRechte_Lesen";
+            table_name = "T_SYS_Navigationrechte";
+            table_name = "T_Benutzergruppen";
+            table_name = "___ssrs_folders";
+            table_name = "T_RPT_Translations";
+            table_name = "T_Benutzer";
+            table_name = "T_Benutzer_Benutzergruppen";
+            table_name = "T_Benutzerrechte";
+            table_name = "T_AP_Kontakte";
+            table_name = "T_AP_Anlage";
+            table_name = "T_AV_AdresseKontaktpersonen";
+            table_name = "T_AV_Ref_AdresseAnrede";
+            table_name = "T_AV_Ref_AdresseRollen";
+            table_name = "T_AV_Ref_Region";
+            table_name = "T_AV_Adressen";
+            table_name = "T_AP_Ref_KontaktGeschlecht";
+            table_name = "T_FMS_Navigation";
+            table_name = "T_FMS_Translation";
+            table_name = "T_SYS_Navigationrechte";
+            table_name = "T_SYS_Anlagerechte";
+            table_name = "T_SYS_AdresseRollenrechte";
+            table_name = "T_AP_Ref_AnlageBauform";
+            table_name = "T_AP_Ref_AnlageBetriebsart";
+            table_name = "T_AP_Ref_AnlageEnergietraeger";
+            table_name = "T_AP_Ref_AnlageKaeltemittel";
+            table_name = "T_AP_Ref_AnlageKategorie";
+            table_name = "T_AP_Ref_AnlageKategorieSchema";
+            table_name = "T_AP_Ref_AnlageKategorieVerfuegbarkeit";
+            table_name = "T_AP_Ref_AnlagePrioritaet";
+            table_name = "T_AP_Ref_AnlageRueckkuehlung";
+            table_name = "T_AP_Ref_AnlageWRG";
+            table_name = "T_AP_Ref_AnlageZustand";
+
+            
+            
+            table_name = "T_AP_Ref_Landesteile";
+            table_name = "T_AP_Ref_Land";
+            table_name = "T_AP_Ref_Region";
+            table_name = "T_AP_Ref_Ort";
+
+            table_name = "T_AP_Standort";
+
+
+            table_name = "T_AP_Ref_GebaeudeKategorie";
+            table_name = "T_AP_Ref_GebaeudeUmlaufkonto";
+
+            table_name = "T_AP_Gebaeude";
+
+
+
+            table_name = "T_AP_Geschoss";
+            table_name = "T_AP_Ref_Geschosstyp";
+            
+            table_name = "T_AP_Raum";
+            table_name = "T_AP_Kunst";
+            table_name = "T_AP_Ref_AnlageKategorie";
+            table_name = "T_AV_Adressen";
+            table_name = "T_AP_Ref_Land";
+            table_name = "T_AP_Anlage";
+            table_name = "T_ZO_AV_Adresse_AV_Ref_AdresseRollen";
+            table_name = "T_TM_Tasks";
+            table_name = "T_AP_Anlage";
+            table_name = "T_AV_Ref_AdresseRollen";
+            table_name = "T_PSM_TeilchenGruppe";
+            table_name = "T_AP_Dokumente";
+            table_name = "T_AP_Ref_DokumentKategorie";
+            table_name = "T_SYS_Ref_MimeTypes";
 
             string cmd = null;
             using (System.Data.Common.DbConnection conn = service.Connection)
             {
-                string dataSQL = @"";
+                string dataSQL = @"SELECT * FROM T_Benutzer WHERE (1=2) ";
+                dataSQL = @"
+SELECT TOP 1 * FROM T_SYS_Ref_MimeTypes
+                "; 
                 // string dataSQL = null;
 
                 cmd = MergeStatementForTable(conn, table_schema, table_name, dataSQL);
