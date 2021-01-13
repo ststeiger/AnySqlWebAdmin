@@ -894,17 +894,28 @@ IF OBJECT_ID('tempdb..##tempSlickColumnInsertMapper') IS NOT NULL
             table_name = "T_AP_Dokumente";
             table_name = "T_AP_Ref_DokumentKategorie";
             table_name = "T_SYS_Ref_MimeTypes";
+            table_name = "T_AP_Ref_Bodenbelag";
+            table_name = "T_AP_Ref_DIN277";
+            table_name = "T_AP_Ref_Fluchtwegmarkierung";
+            table_name = "T_AP_Ref_Nutzungsart";
+            table_name = "T_AP_Ref_NutzungsartGruppe";
+            table_name = "T_AP_Ref_Reinigungsprio";
+            table_name = "T_AP_Ref_RaumSicherheitszone";
+            table_name = "T_AP_Ref_RaumDeckenkonstruktion";
+            table_name = "T_AP_Ref_RaumWandoberflaeche";
+            
+
+
+
 
             string cmd = null;
             using (System.Data.Common.DbConnection conn = service.Connection)
             {
                 string dataSQL = @"SELECT * FROM T_Benutzer WHERE (1=2) ";
-                dataSQL = @"
-SELECT TOP 1 * FROM T_SYS_Ref_MimeTypes
-                "; 
+                // dataSQL = @""; 
                 // string dataSQL = null;
 
-                cmd = MergeStatementForTable(conn, table_schema, table_name, dataSQL);
+                cmd = MergeStatementForTable(conn, table_schema, table_name, dataSQL, null, false);
             } // End Using conn 
 
             System.Console.WriteLine(cmd);

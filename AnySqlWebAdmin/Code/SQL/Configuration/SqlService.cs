@@ -10,15 +10,20 @@ namespace AnySqlWebAdmin
         private static System.Data.Common.DbProviderFactory s_Factory;
 
 
+
         private static string GetMsCs()
         {
-            var csb = new System.Data.SqlClient.SqlConnectionStringBuilder();
+            System.Data.SqlClient.SqlConnectionStringBuilder csb = new System.Data.SqlClient.SqlConnectionStringBuilder();
 
             if (System.Environment.OSVersion.Platform == System.PlatformID.Unix)
                 csb.DataSource = System.Environment.MachineName + ",2017";
             else
                 //csb.DataSource = System.Environment.MachineName + @"\SQLEXPRESS";
                 csb.DataSource = System.Environment.MachineName;
+
+
+            csb.DataSource = System.Environment.MachineName;
+            csb.InitialCatalog = "COR_Basic_Demo_V4";
 
 
             csb.IntegratedSecurity = System.Environment.OSVersion.Platform != System.PlatformID.Unix;
