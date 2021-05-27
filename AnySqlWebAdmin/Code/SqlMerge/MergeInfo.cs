@@ -904,8 +904,10 @@ IF OBJECT_ID('tempdb..##tempSlickColumnInsertMapper') IS NOT NULL
             table_name = "T_AP_Ref_RaumDeckenkonstruktion";
             table_name = "T_AP_Ref_RaumWandoberflaeche";
             
-
-
+            table_name = "T_VWS_PdfLegende";
+            table_name = "T_VWS_Ref_PdfLegendenKategorie";
+            table_name = "T_ZO_Objekt_Wgs84Polygon";
+            table_name = "T_RPT_Translations";
 
 
             string cmd = null;
@@ -913,9 +915,12 @@ IF OBJECT_ID('tempdb..##tempSlickColumnInsertMapper') IS NOT NULL
             {
                 string dataSQL = @"SELECT * FROM T_Benutzer WHERE (1=2) ";
                 // dataSQL = @""; 
-                // string dataSQL = null;
+                dataSQL = @"
+SELECT * FROM T_RPT_Translations
+WHERE RTR_UID = '52CFC167-CD0B-46FC-8ABF-5111D1603904' 
+";
 
-                cmd = MergeStatementForTable(conn, table_schema, table_name, dataSQL, null, false);
+                cmd = MergeStatementForTable(conn, table_schema, table_name, dataSQL, null, true);
             } // End Using conn 
 
             System.Console.WriteLine(cmd);

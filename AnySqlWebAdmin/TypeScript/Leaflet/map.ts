@@ -1227,6 +1227,48 @@ function addTextLabel(map: L.Map, poly: L.LatLng[], label: HTMLElement)
 }
 
 
+
+function createVertexLabelDiv(i: number)
+{
+    let indexDiv = document.createElement("div");
+    let span = document.createElement("span");
+    span.appendChild(document.createTextNode(i.toString()));
+    indexDiv.appendChild(span);
+    
+    return indexDiv;
+}
+
+
+function createVertexLabels(map: L.Map, poly: L.LatLng[])
+{
+    for (let i = 0; i < poly.length; ++i)
+    {
+        var label = createVertexLabelDiv(i);
+        label.style.display = "hidden";
+        document.body.appendChild(label);
+        let ow = label.offsetWidth;
+        let oh = label.offsetHeight;
+        label.parentElement.removeChild(label);
+
+        
+        let textIcon = L.divIcon(
+            {
+                className: "customTextIcon",
+                iconSize: [ow, oh],
+                iconAnchor: [ow / 2, oh / 2],
+                popupAnchor: [0, 0],
+                html: label.outerHTML
+            }
+        );
+
+        let textMarker = L.marker(poly[i], { icon: textIcon }).addTo(map);
+    }
+
+}
+    
+
+
+
 interface IGbMarkerTable
 {
     uid: string;
@@ -1440,6 +1482,9 @@ async function loadMarkers()
         let polygon = L.polygon(poly);
         let polygonStamp = createBuildingContentDiv(null, null, label);
         addTextLabel(map, poly, polygonStamp);
+        createVertexLabels(map, poly);
+        
+
 
         /*
         polygon.setStyle({

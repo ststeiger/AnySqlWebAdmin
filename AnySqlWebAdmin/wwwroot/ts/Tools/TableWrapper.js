@@ -51,21 +51,21 @@ var TableWrapper = (function () {
         get: function () {
             return this.rows.length;
         },
-        enumerable: true,
+        enumerable: false,
         configurable: true
     });
     Object.defineProperty(TableWrapper.prototype, "columnCount", {
         get: function () {
             return this.m_columns.length;
         },
-        enumerable: true,
+        enumerable: false,
         configurable: true
     });
     Object.defineProperty(TableWrapper.prototype, "columns", {
         get: function () {
             return this.m_columns;
         },
-        enumerable: true,
+        enumerable: false,
         configurable: true
     });
     TableWrapper.prototype.setColumns = function (cols) {

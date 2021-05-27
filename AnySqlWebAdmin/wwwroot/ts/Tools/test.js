@@ -8,7 +8,7 @@ var DemonstrateScopingProblems = (function () {
         get: function () {
             return this.status;
         },
-        enumerable: true,
+        enumerable: false,
         configurable: true
     });
     DemonstrateScopingProblems.prototype.run = function () {
