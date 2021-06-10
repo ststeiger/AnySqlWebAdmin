@@ -3,7 +3,7 @@ var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {
         extendStatics = Object.setPrototypeOf ||
             ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
         return extendStatics(d, b);
     };
     return function (d, b) {
@@ -754,6 +754,31 @@ function addTextLabel(map, poly, label) {
     });
     var textMarker = L.marker(centroid, { icon: textIcon }).addTo(map);
 }
+function createVertexLabelDiv(i) {
+    var indexDiv = document.createElement("div");
+    var span = document.createElement("span");
+    span.appendChild(document.createTextNode(i.toString()));
+    indexDiv.appendChild(span);
+    return indexDiv;
+}
+function createVertexLabels(map, poly) {
+    for (var i = 0; i < poly.length; ++i) {
+        var label = createVertexLabelDiv(i);
+        label.style.display = "hidden";
+        document.body.appendChild(label);
+        var ow = label.offsetWidth;
+        var oh = label.offsetHeight;
+        label.parentElement.removeChild(label);
+        var textIcon = L.divIcon({
+            className: "customTextIcon",
+            iconSize: [ow, oh],
+            iconAnchor: [ow / 2, oh / 2],
+            popupAnchor: [0, 0],
+            html: label.outerHTML
+        });
+        var textMarker = L.marker(poly[i], { icon: textIcon }).addTo(map);
+    }
+}
 function loadMarkers() {
     return __awaiter(this, void 0, void 0, function () {
         var markerUrl, result, table, index_uid, index_code, index_label, index_latitude, index_longitude, index_category, index_color, index_poly, allCoords, markerHtmlStyles, options, _loop_1, this_1, i, initialBounds;
@@ -846,6 +871,7 @@ function loadMarkers() {
                         var polygon = L.polygon(poly);
                         var polygonStamp = createBuildingContentDiv(null, null, label);
                         addTextLabel(map, poly, polygonStamp);
+                        createVertexLabels(map, poly);
                         var dd = document.createElement("div");
                         var spn = document.createElement("span");
                         spn.appendChild(document.createTextNode("Fläche" + ": "));

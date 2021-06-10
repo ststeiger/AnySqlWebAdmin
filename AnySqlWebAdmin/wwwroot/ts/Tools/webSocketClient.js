@@ -6,14 +6,14 @@ var WebSocketClient = (function () {
         get: function () {
             return this._socket != null && this._socket.readyState === WebSocket.OPEN;
         },
-        enumerable: true,
+        enumerable: false,
         configurable: true
     });
     Object.defineProperty(WebSocketClient.prototype, "dataAvailable", {
         get: function () {
             return this._receiveDataQueue.length;
         },
-        enumerable: true,
+        enumerable: false,
         configurable: true
     });
     WebSocketClient.prototype.connect = function (url, protocols) {

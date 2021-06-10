@@ -8,7 +8,7 @@ var SpatialDistance;
             get: function () {
                 return this._value;
             },
-            enumerable: true,
+            enumerable: false,
             configurable: true
         });
         Radian.RADIANS_PER_DEGREE = Math.PI / 180.0;
@@ -27,7 +27,7 @@ var SpatialDistance;
             get: function () {
                 return this.Normalize()._decimalDegrees;
             },
-            enumerable: true,
+            enumerable: false,
             configurable: true
         });
         Latitude.prototype.ToRadians = function () {
@@ -37,7 +37,7 @@ var SpatialDistance;
             get: function () {
                 return this._decimalDegrees >= -90 && this._decimalDegrees <= 90;
             },
-            enumerable: true,
+            enumerable: false,
             configurable: true
         });
         Latitude.prototype.Normalize = function () {
@@ -71,7 +71,7 @@ var SpatialDistance;
             get: function () {
                 return this.Normalize()._decimalDegrees;
             },
-            enumerable: true,
+            enumerable: false,
             configurable: true
         });
         Longitude.prototype.ToRadians = function () {
@@ -81,7 +81,7 @@ var SpatialDistance;
             get: function () {
                 return this._decimalDegrees >= -180 && this._decimalDegrees <= 180;
             },
-            enumerable: true,
+            enumerable: false,
             configurable: true
         });
         Longitude.prototype.Normalize = function () {
@@ -118,21 +118,21 @@ var SpatialDistance;
             get: function () {
                 return this._value;
             },
-            enumerable: true,
+            enumerable: false,
             configurable: true
         });
         Object.defineProperty(Speed.prototype, "Units", {
             get: function () {
                 return this._units;
             },
-            enumerable: true,
+            enumerable: false,
             configurable: true
         });
         Object.defineProperty(Speed.prototype, "IsEmpty", {
             get: function () {
                 return this._value == 0;
             },
-            enumerable: true,
+            enumerable: false,
             configurable: true
         });
         Object.defineProperty(Speed.prototype, "IsMetric", {
@@ -141,14 +141,14 @@ var SpatialDistance;
                     || this._units == SpatialDistance.SpeedUnit.KilometersPerSecond
                     || this._units == SpatialDistance.SpeedUnit.MetersPerSecond;
             },
-            enumerable: true,
+            enumerable: false,
             configurable: true
         });
         Object.defineProperty(Speed.prototype, "IsInvalid", {
             get: function () {
                 return isNaN(this._value);
             },
-            enumerable: true,
+            enumerable: false,
             configurable: true
         });
         Speed.prototype.ToKilometersPerSecond = function () {
@@ -362,21 +362,21 @@ var SpatialDistance;
             get: function () {
                 return this._units;
             },
-            enumerable: true,
+            enumerable: false,
             configurable: true
         });
         Object.defineProperty(Distance.prototype, "Value", {
             get: function () {
                 return this._value;
             },
-            enumerable: true,
+            enumerable: false,
             configurable: true
         });
         Object.defineProperty(Distance.prototype, "IsEmpty", {
             get: function () {
                 return this._value == 0;
             },
-            enumerable: true,
+            enumerable: false,
             configurable: true
         });
         Distance.prototype.ToCentimeters = function () {
@@ -609,42 +609,42 @@ var SpatialDistance;
             get: function () {
                 return this._eccentricity;
             },
-            enumerable: true,
+            enumerable: false,
             configurable: true
         });
         Object.defineProperty(Ellipsoid.prototype, "EquatorialRadius", {
             get: function () {
                 return this._equatorialRadius;
             },
-            enumerable: true,
+            enumerable: false,
             configurable: true
         });
         Object.defineProperty(Ellipsoid.prototype, "PolarRadius", {
             get: function () {
                 return this._polarRadius;
             },
-            enumerable: true,
+            enumerable: false,
             configurable: true
         });
         Object.defineProperty(Ellipsoid.prototype, "PolarRadiusMeters", {
             get: function () {
                 return this._polarRadiusMeters;
             },
-            enumerable: true,
+            enumerable: false,
             configurable: true
         });
         Object.defineProperty(Ellipsoid.prototype, "EquatorialRadiusMeters", {
             get: function () {
                 return this._equatorialRadiusMeters;
             },
-            enumerable: true,
+            enumerable: false,
             configurable: true
         });
         Object.defineProperty(Ellipsoid.prototype, "Flattening", {
             get: function () {
                 return this._flattening;
             },
-            enumerable: true,
+            enumerable: false,
             configurable: true
         });
         Ellipsoid.prototype.Calculate = function () {
@@ -681,14 +681,14 @@ var SpatialDistance;
             get: function () {
                 return this._latitude;
             },
-            enumerable: true,
+            enumerable: false,
             configurable: true
         });
         Object.defineProperty(Position.prototype, "Longitude", {
             get: function () {
                 return this._longitude;
             },
-            enumerable: true,
+            enumerable: false,
             configurable: true
         });
         Position.prototype.Equals = function (f) {

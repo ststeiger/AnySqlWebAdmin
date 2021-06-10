@@ -16,7 +16,7 @@ var SimpleTable;
             set: function (value) {
                 this.m_data = value;
             },
-            enumerable: true,
+            enumerable: false,
             configurable: true
         });
         NonVirtual.prototype.defaultFormatter = function (cellData) {

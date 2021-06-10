@@ -50,7 +50,7 @@ var Tools;
                 }
                 return qs;
             },
-            enumerable: true,
+            enumerable: false,
             configurable: true
         });
         UrlModifier.prototype.autoBind = function (self) {
