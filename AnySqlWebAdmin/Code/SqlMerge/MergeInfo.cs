@@ -903,21 +903,51 @@ IF OBJECT_ID('tempdb..##tempSlickColumnInsertMapper') IS NOT NULL
             table_name = "T_AP_Ref_RaumSicherheitszone";
             table_name = "T_AP_Ref_RaumDeckenkonstruktion";
             table_name = "T_AP_Ref_RaumWandoberflaeche";
-            
-
-
-
+            table_name = "T_FMS_Configuration";
+            table_name = "T_AP_Trakt";
+            table_name = "T_ZO_AP_Anlage_AP_Ref_AnlageMeta";
+            table_name = "T_COR_MetaKatalog";
+            table_name = "T_COR_MetaTyp";
+            table_name = "T_COR_MetaFelder";
+            table_name = "T_SYS_Anlagerechte";
+            table_name = "T_PSM_ZO_TeilchenGruppe_Objekte";
+            table_name = "T_AP_Ref_DokumentStatus";
+            table_name = "T_ZO_SYS_Module_AP_Ref_Mandant";
+            table_name = "T_SYS_Navigationrechte";
+            table_name = "T_FMS_Navigation";
+            table_name = "T_ZO_Objekt_Wgs84Polygon";
+            table_name = "T_ZO_AP_Dokumente_AP_Ref_DokumentMetadaten";
+            table_name = "T_AV_AdresseKontaktpersonen";
+            table_name = "T_PSM_Ref_Kategorie";
+            table_name = "T_AP_Ref_AnlageMeta";
+            table_name = "T_ZO_SYS_Metadatenrechte_Benutzergruppe";
+            table_name = "T_ZO_SYS_DokumentKategorie_Benutzergruppe";
+            table_name = "T_ZO_SYS_Mimetyperechte_Benutzergruppe";
+            table_name = "T_ZO_AP_Dokumentkategorie_Metadaten";
+            table_name = "T_ZO_AP_Dokumentkategorie_Metadaten";
+            table_name = "T_SYS_Standortrechte";
+            table_name = "T_SYS_Gebaeuderechte";
+            table_name = "T_COR_ZO_ObjektRechte_Lesen";
+            table_name = "T_SYS_AdresseRollenrechte";
+            table_name = "T_SYS_Module";
+            table_name = "T_SYS_Standortrechte";
+            table_name = "T_VWS_Ref_PaperSize";
+            table_name = "T_VWS_Ref_PdfLegendenKategorie";
+            table_name = "T_VWS_PdfLegende";
+            table_name = "T_ZO_OV_Ref_ObjektNr";
+            table_name = "T_ZO_Objekt_Wgs84Polygon";
+            table_name = "T_VWS_PdfLegende";
+            table_name = "T_VWS_Ref_PdfLegendenKategorie";
 
             string cmd = null;
             using (System.Data.Common.DbConnection conn = service.Connection)
             {
                 string dataSQL = @"SELECT * FROM T_Benutzer WHERE (1=2) ";
-                // dataSQL = @""; 
-                // string dataSQL = null;
-
-                cmd = MergeStatementForTable(conn, table_schema, table_name, dataSQL, null, false);
+                dataSQL = null;
+                cmd = MergeStatementForTable(conn, table_schema, table_name, dataSQL, null, true);
             } // End Using conn 
 
+            
             System.Console.WriteLine(cmd);
         } // End Sub Test 
 
