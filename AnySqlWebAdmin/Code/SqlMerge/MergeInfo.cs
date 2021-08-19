@@ -228,6 +228,11 @@ SET IDENTITY_INSERT {table_schema}.{table_name} OFF;
             if (with_xml)
             {
                 conn.AsXml(table_schema, table_name, xmlBuilder, dataSQL, param, transaction, commandTimeout, commandType);
+
+                // System.Threading.Tasks.Task.Run(async () => {
+                //    await conn.AsJSON(xmlBuilder, dataSQL, RenderType_t.Array | RenderType_t.Indented, param, transaction, commandTimeout, commandType);
+                // }).Wait();
+                
             } // End if (with_xml) 
 
             return GetMergeScript(table_schema, table_name, dataSQL, true, mis, xmlBuilder, with_xml);

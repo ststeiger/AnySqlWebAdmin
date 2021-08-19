@@ -39,8 +39,12 @@ namespace Dapper
             writer.WriteStartDocument(true);
             writer.WriteStartElement("table");
             // writer.WriteStartElement(table_name);
-            writer.WriteAttributeString(null, "table_schema", null, table_schema);
-            writer.WriteAttributeString(null, "table_name", null, table_name);
+
+            if(!string.IsNullOrWhiteSpace(table_schema))
+                writer.WriteAttributeString(null, "table_schema", null, table_schema);
+
+            if (!string.IsNullOrWhiteSpace(table_name))
+                writer.WriteAttributeString(null, "table_name", null, table_name);
 
             writer.WriteAttributeString("xmlns", "xsi", null, System.Xml.Schema.XmlSchema.InstanceNamespace);
             // writer.WriteAttributeString("xsi", "schemaLocation", null, System.Xml.Schema.XmlSchema.InstanceNamespace);
@@ -119,6 +123,22 @@ namespace Dapper
 
         } // End Sub AsXml 
 
+        public static void AsXml(
+             this System.Data.IDbConnection cnn
+           , System.Xml.XmlWriter writer
+           , string sql 
+           , object param = null
+           , System.Data.IDbTransaction transaction = null
+           , int? commandTimeout = null
+           , System.Data.CommandType? commandType = null)
+        {
+            using (System.Data.IDataReader reader = cnn.ExecuteReader(sql, param, transaction, commandTimeout, commandType))
+            {
+                LargeDataToXML(null, null, writer, reader);
+            } // End Using reader 
+
+        } // End Sub AsXml 
+
 
         private static System.Xml.XmlWriter CreateXmlWriter(System.Text.StringBuilder builder)
         {
@@ -144,7 +164,7 @@ namespace Dapper
               this System.Data.IDbConnection cnn
             , string table_schema
             , string table_name
-            , System.Text.StringBuilder sb 
+            , System.Text.StringBuilder sb
             , string sql = null
             , object param = null
             , System.Data.IDbTransaction transaction = null
@@ -155,6 +175,24 @@ namespace Dapper
             using (System.Xml.XmlWriter writer = CreateXmlWriter(sb))
             {
                 AsXml(cnn, table_schema, table_name, writer, sql, param, transaction, commandTimeout, commandType);
+            } // End Using writer 
+
+        } // End Sub AsXml 
+
+
+        public static void AsXml(
+              this System.Data.IDbConnection cnn 
+            , System.Text.StringBuilder sb
+            , string sql 
+            , object param = null
+            , System.Data.IDbTransaction transaction = null
+            , int? commandTimeout = null
+            , System.Data.CommandType? commandType = null)
+        {
+
+            using (System.Xml.XmlWriter writer = CreateXmlWriter(sb))
+            {
+                AsXml(cnn, null, null, writer, sql, param, transaction, commandTimeout, commandType);
             } // End Using writer 
 
         } // End Sub AsXml 

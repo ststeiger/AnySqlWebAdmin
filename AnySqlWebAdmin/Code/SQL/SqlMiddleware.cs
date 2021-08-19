@@ -1,9 +1,7 @@
 ﻿
-using Microsoft.AspNetCore.Http;
+using Dapper;
 using Microsoft.AspNetCore.Builder;
 
-
-using Dapper;
 
 
 // https://docs.microsoft.com/en-us/aspnet/core/fundamentals/middleware/?view=aspnetcore-2.1&tabs=aspnetcore2x
@@ -70,10 +68,10 @@ namespace AnySqlWebAdmin
 
                 using (System.Data.Common.DbConnection cnn = this.m_service.Connection)
                 {
-                    System.Exception hasErrors = await cnn.AsJSON(context.Response.Body, sql, (Dapper.RenderType_t)format, pars);
+                    System.Exception hasErrors = await cnn.AsJSON(context.Response.Body,sql, format, pars);
                     
                     // TOOD: Log if not NULL
-                    
+
                 }
                 
 
