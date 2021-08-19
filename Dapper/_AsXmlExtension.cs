@@ -7,6 +7,29 @@ namespace Dapper
     {
 
 
+        private class StringWriterWithEncoding
+            : System.IO.StringWriter
+        {
+            private readonly System.Text.Encoding m_Encoding;
+
+
+            public StringWriterWithEncoding(System.Text.StringBuilder sb, System.Text.Encoding encoding)
+                : base(sb)
+            {
+                this.m_Encoding = encoding;
+            }
+
+
+            public override System.Text.Encoding Encoding
+            {
+                get { return this.m_Encoding; }
+            }
+
+
+        } // End Class StringWriterWithEncoding
+
+
+
         private static void LargeDataToXML(
               string table_schema
             , string table_name
@@ -72,12 +95,14 @@ namespace Dapper
                 throw new System.ArgumentNullException("objectName");
 
             return "\"" + objectName.Replace("\"", "\"\"") + "\"";
-        }
+        } // End Function QuoteObject 
 
-        public static void AsXml(this System.Data.IDbConnection cnn
+
+        public static void AsXml(
+              this System.Data.IDbConnection cnn
             , string table_schema
             , string table_name
-            , System.Xml.XmlWriter writer 
+            , System.Xml.XmlWriter writer
             , string sql = null
             , object param = null
             , System.Data.IDbTransaction transaction = null
@@ -85,12 +110,52 @@ namespace Dapper
             , System.Data.CommandType? commandType = null)
         {
             if (string.IsNullOrEmpty(sql))
-                sql = $"SELECT * FROM {QuoteObject(table_schema)}.{QuoteObject(table_name)} ;";
+                sql = "SELECT * FROM " + QuoteObject(table_schema) + "." + QuoteObject(table_name) + "; ";
 
             using (System.Data.IDataReader reader = cnn.ExecuteReader(sql, param, transaction, commandTimeout, commandType))
             {
                 LargeDataToXML(table_schema, table_name, writer, reader);
             } // End Using reader 
+
+        } // End Sub AsXml 
+
+
+        private static System.Xml.XmlWriter CreateXmlWriter(System.Text.StringBuilder builder)
+        {
+            System.Xml.XmlWriterSettings xs = new System.Xml.XmlWriterSettings();
+            xs.Indent = true;
+            xs.IndentChars = "    ";
+            xs.NewLineChars = System.Environment.NewLine;
+            xs.OmitXmlDeclaration = false; // // <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+            // xs.Encoding = System.Text.Encoding.UTF8; // doesn't work with pgsql 
+            // xs.Encoding = new System.Text.UTF8Encoding(false);
+            xs.Encoding = new System.Text.UnicodeEncoding(false, false);
+
+
+            StringWriterWithEncoding sw = new StringWriterWithEncoding(builder, xs.Encoding);
+
+            // string exportFilename = System.IO.Path.Combine(@"d:\", table_name + ".xml");
+            // using (System.Xml.XmlWriter writer = System.Xml.XmlWriter.Create(exportFilename, xs))
+            return System.Xml.XmlWriter.Create(sw, xs);
+        } // End Function CreateXmlWriter 
+
+
+        public static void AsXml(
+              this System.Data.IDbConnection cnn
+            , string table_schema
+            , string table_name
+            , System.Text.StringBuilder sb 
+            , string sql = null
+            , object param = null
+            , System.Data.IDbTransaction transaction = null
+            , int? commandTimeout = null
+            , System.Data.CommandType? commandType = null)
+        {
+
+            using (System.Xml.XmlWriter writer = CreateXmlWriter(sb))
+            {
+                AsXml(cnn, table_schema, table_name, writer, sql, param, transaction, commandTimeout, commandType);
+            } // End Using writer 
 
         } // End Sub AsXml 
 

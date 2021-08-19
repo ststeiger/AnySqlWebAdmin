@@ -195,26 +195,6 @@ SET IDENTITY_INSERT {table_schema}.{table_name} OFF;
         } // End Function GetMergeScript 
 
 
-        private static System.Xml.XmlWriter CreateXmlWriter(System.Text.StringBuilder builder)
-        {
-            System.Xml.XmlWriterSettings xs = new System.Xml.XmlWriterSettings();
-            xs.Indent = true;
-            xs.IndentChars = "    ";
-            xs.NewLineChars = System.Environment.NewLine;
-            xs.OmitXmlDeclaration = false; // // <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-            // xs.Encoding = System.Text.Encoding.UTF8; // doesn't work with pgsql 
-            // xs.Encoding = new System.Text.UTF8Encoding(false);
-            xs.Encoding = new System.Text.UnicodeEncoding(false, false);
-
-
-            StringWriterWithEncoding sw = new StringWriterWithEncoding(builder, xs.Encoding);
-
-            // string exportFilename = System.IO.Path.Combine(@"d:\", table_name + ".xml");
-            // using (System.Xml.XmlWriter writer = System.Xml.XmlWriter.Create(exportFilename, xs))
-            return System.Xml.XmlWriter.Create(sw, xs);
-        } // End Function CreateXmlWriter 
-
-
         public static string MergeStatementForTable(
             System.Data.Common.DbConnection conn
             , string table_schema
@@ -247,10 +227,7 @@ SET IDENTITY_INSERT {table_schema}.{table_name} OFF;
 
             if (with_xml)
             {
-                using (System.Xml.XmlWriter writer = CreateXmlWriter(xmlBuilder))
-                {
-                    conn.AsXml(table_schema, table_name, writer, dataSQL, param, transaction, commandTimeout, commandType);
-                } // End Using writer 
+                conn.AsXml(table_schema, table_name, xmlBuilder, dataSQL, param, transaction, commandTimeout, commandType);
             } // End if (with_xml) 
 
             return GetMergeScript(table_schema, table_name, dataSQL, true, mis, xmlBuilder, with_xml);
@@ -414,12 +391,7 @@ ORDER BY SLCOL_Sort
 
 
                 System.Text.StringBuilder xmlBuilder = new System.Text.StringBuilder();
-
-                using (System.Xml.XmlWriter writer = CreateXmlWriter(xmlBuilder))
-                {
-                    conn.AsXml(null, null, writer, sql);
-                } // End Using writer 
-
+                conn.AsXml(null, null, xmlBuilder, sql);
 
                 string xml = xmlBuilder.ToString();
                 xmlBuilder.Length = 0;
@@ -938,6 +910,8 @@ IF OBJECT_ID('tempdb..##tempSlickColumnInsertMapper') IS NOT NULL
             table_name = "T_ZO_Objekt_Wgs84Polygon";
             table_name = "T_VWS_PdfLegende";
             table_name = "T_VWS_Ref_PdfLegendenKategorie";
+            table_name = "T_SYS_Raumrechte";
+
 
             string cmd = null;
             using (System.Data.Common.DbConnection conn = service.Connection)

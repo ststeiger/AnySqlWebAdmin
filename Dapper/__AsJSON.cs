@@ -148,11 +148,22 @@ namespace Dapper
         } // End Sub WriteArray 
 
 
+        private static string QuoteObject(string objectName)
+        {
+            if (string.IsNullOrEmpty(objectName))
+                throw new System.ArgumentNullException("objectName");
+
+            return "\"" + objectName.Replace("\"", "\"\"") + "\"";
+        } // End Function QuoteObject 
+
+
         public static async System.Threading.Tasks.Task<System.Exception> AsJSON(
               this IDbConnection cnn
+            , string table_schema
+            , string table_name
             , System.IO.TextWriter output
-            , string sql
-            , RenderType_t format
+            , RenderType_t format 
+            , string sql = null 
             , object param = null
             , IDbTransaction transaction = null
             , int? commandTimeout = null
@@ -160,6 +171,9 @@ namespace Dapper
         {
             try
             {
+                if (string.IsNullOrEmpty(sql))
+                    sql = "SELECT * FROM " + QuoteObject(table_schema) + "." + QuoteObject(table_name) + "; ";
+
                 using (System.Data.Common.DbDataReader dr = cnn.ExecuteDbReader(sql, param, transaction, commandTimeout, commandType))
                 {
                     using (Newtonsoft.Json.JsonTextWriter jsonWriter =
@@ -282,9 +296,11 @@ namespace Dapper
 
         public static async System.Threading.Tasks.Task<System.Exception> AsJSON(
             this IDbConnection cnn
+          , string table_schema
+          , string table_name
           , System.IO.Stream strm
-          , string sql
           , RenderType_t format
+          , string sql = null
           , object param = null
           , IDbTransaction transaction = null
           , int? commandTimeout = null
@@ -293,7 +309,30 @@ namespace Dapper
             System.Exception ex = null;
             using (System.IO.TextWriter output = new System.IO.StreamWriter(strm, new System.Text.UTF8Encoding(false)))
             {
-                ex = await AsJSON(cnn, output, sql, format, param, transaction, commandTimeout, commandType);
+                ex = await AsJSON(cnn, table_schema, table_name, output, format, sql, param, transaction, commandTimeout, commandType);
+            } // End Using output 
+
+            return ex;
+        } // End Task AsJSON 
+
+
+        public static async System.Threading.Tasks.Task<System.Exception> AsJSON(
+            this System.Data.IDbConnection cnn
+          , string table_schema
+          , string table_name
+          , System.Text.StringBuilder sb
+          , RenderType_t format
+          , string sql = null
+          , object param = null
+          , System.Data.IDbTransaction transaction = null
+          , int? commandTimeout = null
+          , System.Data.CommandType? commandType = null)
+        {
+            System.Exception ex = null;
+
+            using (System.IO.TextWriter output = new System.IO.StringWriter(sb))
+            {
+                ex = await AsJSON(cnn, table_schema, table_name, output, format, sql, param, transaction, commandTimeout, commandType);
             } // End Using output 
 
             return ex;
