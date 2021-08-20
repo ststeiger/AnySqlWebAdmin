@@ -22,10 +22,19 @@ namespace AnySqlWebAdmin.Code.SqlMerge
         } // End Class MergeInfo 
 
 
+        private static string QuoteObject(string objectName)
+        {
+            if (string.IsNullOrEmpty(objectName))
+                throw new System.ArgumentNullException("objectName");
+
+            return "\"" + objectName.Replace("\"", "\"\"") + "\"";
+        } // End Function QuoteObject 
+
+
         private static string GetMergeScript(
               string table_schema
             , string table_name
-            , string dataSQL
+            , string query
             , bool with_merge
             , System.Collections.Generic.IEnumerable<MergeSchemaInfo> mis
             , System.Text.StringBuilder xml
@@ -34,8 +43,8 @@ namespace AnySqlWebAdmin.Code.SqlMerge
         {
             xml = xml.Replace("'", "''");
             
-            if (string.IsNullOrWhiteSpace(dataSQL))
-                dataSQL = "SELECT * FROM " + table_schema + "." + table_name + "; ";
+            if (string.IsNullOrWhiteSpace(query))
+                query = "SELECT * FROM " + QuoteObject(table_schema) + "." + QuoteObject(table_name) + "; ";
 
             string[] selectColumns = mis.Select(x => x.column_name).ToArray();
             string[] xqueryColumns = mis.Select(x =>
@@ -73,7 +82,7 @@ namespace AnySqlWebAdmin.Code.SqlMerge
 DECLARE @xml XML 
 SET @xml = ( SELECT ( 
 
-{dataSQL} 
+{query} 
 
 FOR XML PATH('row'), ROOT('table'),  ELEMENTS xsinil) AS outerXml ) 
 SELECT @xml 
@@ -209,7 +218,7 @@ SET IDENTITY_INSERT {table_schema}.{table_name} OFF;
               System.Data.Common.DbConnection conn
             , string table_schema
             , string table_name
-            , string dataSQL
+            , string query
             , object param = null
             , bool with_xml = true
             , System.Data.IDbTransaction transaction = null
@@ -227,15 +236,15 @@ SET IDENTITY_INSERT {table_schema}.{table_name} OFF;
 
             if (with_xml)
             {
-                conn.AsXml(table_schema, table_name, xmlBuilder, dataSQL, param, transaction, commandTimeout, commandType);
+                conn.AsXml(table_schema, table_name, xmlBuilder, query, param, transaction, commandTimeout, commandType);
 
                 // System.Threading.Tasks.Task.Run(async () => {
-                //    await conn.AsJSON(xmlBuilder, dataSQL, RenderType_t.Array | RenderType_t.Indented, param, transaction, commandTimeout, commandType);
+                //     await conn.AsJSON(xmlBuilder, query, RenderType_t.Array | RenderType_t.Indented, param, transaction, commandTimeout, commandType);
                 // }).Wait();
-                
+
             } // End if (with_xml) 
 
-            return GetMergeScript(table_schema, table_name, dataSQL, true, mis, xmlBuilder, with_xml);
+            return GetMergeScript(table_schema, table_name, query, true, mis, xmlBuilder, with_xml);
         } // End Sub MergeStatementForTable 
 
 
@@ -921,9 +930,9 @@ IF OBJECT_ID('tempdb..##tempSlickColumnInsertMapper') IS NOT NULL
             string cmd = null;
             using (System.Data.Common.DbConnection conn = service.Connection)
             {
-                string dataSQL = @"SELECT * FROM T_Benutzer WHERE (1=2) ";
-                dataSQL = null;
-                cmd = MergeStatementForTable(conn, table_schema, table_name, dataSQL, null, true);
+                string query = @"SELECT * FROM T_Benutzer WHERE (1=2) ";
+                query = null;
+                cmd = MergeStatementForTable(conn, table_schema, table_name, query, null, true);
             } // End Using conn 
 
             
