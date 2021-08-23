@@ -33,7 +33,7 @@ function groupBy(array: any[], grouping: GroupBy): Group[]
 // https://stackoverflow.com/questions/20310369/declare-a-delegate-type-in-typescript
 // type Predicate<T, TKey> = (item: T) => TKey;
 
-interface Predicate<T, TKey>  {
+interface Predicate<T, TKey> {
     (item: T): TKey;
 }
 
@@ -62,3 +62,25 @@ function LinqGroupBy<TSource, TKey>(source: TSource[], keySelector: Predicate<TS
 
     return dict;
 }
+
+
+interface selectorCallback_t<TSource> {
+    (item: TSource): boolean;
+}
+
+
+function Any<TSource>(source: TSource[], predicate: selectorCallback_t<TSource> )
+{
+    if (source == null)
+        throw new Error("ArgumentNullException: source");
+    if (predicate == null)
+        throw new Error("ArgumentNullException: predicate");
+
+    for (let i = 0; i < source.length; ++i)
+    {
+        if (predicate(source[i]))
+            return true;
+    }
+
+    return false;
+} // End Function Any

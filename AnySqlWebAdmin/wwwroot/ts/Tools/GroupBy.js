@@ -68,3 +68,14 @@ function LinqGroupBy(source, keySelector) {
     }
     return dict;
 }
+function Any(source, predicate) {
+    if (source == null)
+        throw new Error("ArgumentNullException: source");
+    if (predicate == null)
+        throw new Error("ArgumentNullException: predicate");
+    for (var i = 0; i < source.length; ++i) {
+        if (predicate(source[i]))
+            return true;
+    }
+    return false;
+}
