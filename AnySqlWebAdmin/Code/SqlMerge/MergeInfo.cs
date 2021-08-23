@@ -21,6 +21,19 @@ namespace AnySqlWebAdmin.Code.SqlMerge
             public string is_nullable;
         } // End Class MergeInfo 
 
+        internal class ForeignKeyRelationships
+        {
+            public string FK_CONSTRAINT_NAME;
+            public string FK_TABLE_SCHEMA;
+            public string FK_TABLE_NAME;
+            public int cnt;
+            public string FK_COLUMN_NAME;
+            public string FK_ORDINAL_POSITION;
+            public string REFERENCED_TABLE_SCHEMA;
+            public string REFERENCED_TABLE_NAME;
+            public string REFERENCED_COLUMN_NAME;
+        }
+
 
         private static string QuoteObject(string objectName)
         {
@@ -32,7 +45,8 @@ namespace AnySqlWebAdmin.Code.SqlMerge
 
 
         private static string GetMergeScript(
-              string table_schema
+              System.Data.Common.DbConnection conn
+            , string table_schema
             , string table_name
             , string query
             , bool with_merge
@@ -122,7 +136,61 @@ SET IDENTITY_INSERT {table_schema}.{table_name} ON;
     ) AS tSource 
     
     -- TODO: INNER JOIN ON FOREIGN KEYS 
-    
+");
+
+
+
+
+            string sql = System.IO.Path.Combine("SQL", "Schema.ForeignKeyJOINS.sql");
+            sql = System.IO.File.ReadAllText(sql, System.Text.Encoding.UTF8);
+
+            System.Collections.Generic.IEnumerable<ForeignKeyRelationships> lsFKs = conn.Query<ForeignKeyRelationships>(sql, new { __table_schema = table_schema, __table_name = table_name });
+
+            // INNER JOIN T_Benutzer ON T_Benutzer.BE_ID = tSource.ZO_SLCOLBE_BE_ID
+            if (lsFKs.Count() > 0)
+            {
+                int i = 0;
+                foreach (IGrouping<string, ForeignKeyRelationships> group in lsFKs.GroupBy(x => x.FK_CONSTRAINT_NAME))
+                {
+                    int j = 0;
+                    foreach (ForeignKeyRelationships thisColumn in group)
+                    {
+                        if (j == 0)
+                        {
+                            xml.Append("    INNER JOIN ");
+                            xml.Append(QuoteObject(thisColumn.REFERENCED_TABLE_SCHEMA));
+                            xml.Append(".");
+                            xml.Append(QuoteObject(thisColumn.REFERENCED_TABLE_NAME));
+                            xml.Append(" AS ");
+                            xml.Append("tAlias");
+                            xml.Append(i.ToString().PadLeft(3, '0'));
+                            xml.Append(" ");
+                            xml.Append(System.Environment.NewLine);
+                            xml.Append("        ON ");
+                        } // End if (j == 0)
+                        else
+                            xml.Append("        AND ");
+
+                        xml.Append("tAlias");
+                        xml.Append(i.ToString().PadLeft(3, '0'));
+                        xml.Append(".");
+                        xml.Append(QuoteObject(thisColumn.REFERENCED_COLUMN_NAME));
+                        xml.Append(" = tSource.");
+                        xml.Append(QuoteObject(thisColumn.FK_COLUMN_NAME));
+                        xml.Append(" ");
+                        xml.AppendLine();
+                        ++j;
+                    } // Next thisColumn 
+
+                    xml.AppendLine();
+                    ++i;
+                } // Next group
+
+            } // End if (lsFKs.Count > 0) 
+
+
+            xml.Append(
+    $@"
     WHERE (1=1) 
     
     /* 
@@ -244,7 +312,7 @@ SET IDENTITY_INSERT {table_schema}.{table_name} OFF;
 
             } // End if (with_xml) 
 
-            return GetMergeScript(table_schema, table_name, query, true, mis, xmlBuilder, with_xml);
+            return GetMergeScript(conn, table_schema, table_name, query, true, mis, xmlBuilder, with_xml);
         } // End Sub MergeStatementForTable 
 
 
