@@ -30,8 +30,12 @@ function groupBy(array: any[], grouping: GroupBy): Group[]
     return grouping.thenby ? groups.map((g: { items: any[]; }) => ({ ...g, items: groupBy(g.items, grouping.thenby) })) : groups;
 }
 
+// https://stackoverflow.com/questions/20310369/declare-a-delegate-type-in-typescript
+// type Predicate<T, TKey> = (item: T) => TKey;
 
-type Predicate<T, TKey> = (item: T) => TKey;
+interface Predicate<T, TKey>  {
+    (item: T): TKey;
+}
 
 
 function LinqGroupBy<TSource, TKey>(source: TSource[], keySelector: Predicate<TSource, TKey>)
