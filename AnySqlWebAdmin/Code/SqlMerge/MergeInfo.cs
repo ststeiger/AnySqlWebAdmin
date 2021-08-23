@@ -74,7 +74,7 @@ namespace AnySqlWebAdmin.Code.SqlMerge
             const string padding = "    ";
             const string double_padding = padding + padding;
 
-            string select = double_padding + " " + string.Join(" " + System.Environment.NewLine + double_padding + ",", selectColumns);
+            string select = double_padding + " " + "tSource." + string.Join(" " + System.Environment.NewLine + double_padding + ",tSource.", selectColumns);
             string from = double_padding + " " + string.Join(" " + System.Environment.NewLine + double_padding + ",", xqueryColumns);
             string insert = double_padding + " " + string.Join(" " + System.Environment.NewLine + double_padding + ",", selectColumns);
             string insert_select = double_padding + " CTE." + string.Join(" " + System.Environment.NewLine + double_padding + ",CTE.", selectColumns);
