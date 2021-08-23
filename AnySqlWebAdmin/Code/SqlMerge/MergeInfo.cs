@@ -45,14 +45,15 @@ namespace AnySqlWebAdmin.Code.SqlMerge
 
 
         private static string GetMergeScript(
-              System.Data.Common.DbConnection conn
-            , string table_schema
-            , string table_name
-            , string query
-            , bool with_merge
-            , System.Collections.Generic.IEnumerable<MergeSchemaInfo> mis
-            , System.Text.StringBuilder xml
-            ,bool with_xml 
+              System.Data.Common.DbConnection conn 
+            , string table_schema 
+            , string table_name 
+            , string query 
+            , System.Collections.Generic.IEnumerable<MergeSchemaInfo> mis 
+            , System.Text.StringBuilder xml 
+            , bool with_merge 
+            , bool with_remove 
+            , bool with_xml 
         )
         {
             xml = xml.Replace("'", "''");
@@ -135,7 +136,7 @@ SET IDENTITY_INSERT {table_schema}.{table_name} ON;
 {from} 
     ) AS tSource 
     
-    -- TODO: INNER JOIN ON FOREIGN KEYS 
+    -- REM: INNER JOIN ON FOREIGN KEYS should not be done here, because this removes entries with value ""NULL"" 
 ");
 
 
@@ -147,7 +148,7 @@ SET IDENTITY_INSERT {table_schema}.{table_name} ON;
             System.Collections.Generic.IEnumerable<ForeignKeyRelationships> lsFKs = conn.Query<ForeignKeyRelationships>(sql, new { __table_schema = table_schema, __table_name = table_name });
 
             // INNER JOIN T_Benutzer ON T_Benutzer.BE_ID = tSource.ZO_SLCOLBE_BE_ID
-            if (lsFKs.Count() > 0)
+            if (false && lsFKs.Count() > 0)
             {
                 int i = 0;
                 foreach (IGrouping<string, ForeignKeyRelationships> group in lsFKs.GroupBy(x => x.FK_CONSTRAINT_NAME))
@@ -192,17 +193,74 @@ SET IDENTITY_INSERT {table_schema}.{table_name} ON;
             xml.Append(
     $@"
     WHERE (1=1) 
-    
-    /* 
-    AND NOT EXISTS 
+");
+
+
+
+            // AND 
+            // (
+            //    tSource."NA_Guide_UID" IS NULL 
+            //    OR EXISTS( SELECT* FROM "dbo"."T_AP_Dokumente" AS tAlias000 WHERE tAlias000."DK_UID" = tSource."NA_Guide_UID" )
+            // )
+
+            if (lsFKs.Count() > 0)
+            {
+                int i = 0;
+                foreach (IGrouping<string, ForeignKeyRelationships> group in lsFKs.GroupBy(x => x.FK_CONSTRAINT_NAME))
+                {
+                    int j = 0;
+                    foreach (ForeignKeyRelationships thisColumn in group)
+                    {
+                        if (j == 0)
+                        {
+                            xml.Append(@"    AND 
     ( 
-	    SELECT T_Benutzer.* FROM T_Benutzer WHERE T_Benutzer.BE_ID = tSource.BE_ID 
-    ) 
-    */ 
-) 
+        tSource.");
+                            xml.Append(QuoteObject(thisColumn.FK_COLUMN_NAME));
+
+                            xml.AppendLine(" IS NULL ");
+                            xml.AppendLine("        OR EXISTS ");
+                            xml.AppendLine("        ( ");
+                            xml.Append("            SELECT * FROM ");
+                            xml.Append(QuoteObject(thisColumn.REFERENCED_TABLE_SCHEMA));
+                            xml.Append(".");
+                            xml.Append(QuoteObject(thisColumn.REFERENCED_TABLE_NAME));
+                            xml.Append(" AS ");
+                            xml.Append("tAlias");
+                            xml.Append(i.ToString().PadLeft(3, '0'));
+                            xml.Append(" ");
+                            xml.Append(System.Environment.NewLine);
+                            xml.AppendLine("            WHERE (1=1) ");
+                            xml.Append("            AND ");
+                        } // End if (j == 0)
+                        else
+                            xml.Append("            AND ");
+
+                        xml.Append("tAlias");
+                        xml.Append(i.ToString().PadLeft(3, '0'));
+                        xml.Append(".");
+                        xml.Append(QuoteObject(thisColumn.REFERENCED_COLUMN_NAME));
+                        xml.Append(" = tSource.");
+                        xml.Append(QuoteObject(thisColumn.FK_COLUMN_NAME));
+                        xml.AppendLine(" ");
+
+                        ++j;
+                    } // Next thisColumn 
+
+                    xml.AppendLine("        ) ");
+                    xml.AppendLine("    ) ");
+                    xml.AppendLine();
+                    ++i;
+                } // Next group
+
+            } // End if (lsFKs.Count > 0) 
+
+
+            xml.Append(@") -- End CTE 
 ");
             if (with_merge)
                 xml.Append("-- ");
+
 
 
             xml.Append(@"SELECT * FROM CTE 
@@ -248,15 +306,19 @@ WHEN NOT MATCHED BY TARGET THEN
     VALUES 
     ( ");
                 xml.Append(insert_select);
-
                 xml.Append(@" 
     ) 
--- WHEN NOT MATCHED BY SOURCE THEN DELETE 
+");
+                if (!with_remove)
+                    xml.Append(" -- ");
+
+                xml.Append(@"WHEN NOT MATCHED BY SOURCE THEN DELETE ");
+                xml.Append(@"
 ;
 ");
 
-                if(with_xml)
-                xml.Append(@" 
+                if (with_xml)
+                    xml.Append(@" 
 EXEC sp_xml_removedocument @handle 
 ");
 
@@ -289,6 +351,7 @@ SET IDENTITY_INSERT {table_schema}.{table_name} OFF;
             , string query
             , object param = null
             , bool with_xml = true
+            , bool with_remove = false
             , System.Data.IDbTransaction transaction = null
             , int? commandTimeout = null
             , System.Data.CommandType? commandType = null
@@ -312,7 +375,7 @@ SET IDENTITY_INSERT {table_schema}.{table_name} OFF;
 
             } // End if (with_xml) 
 
-            return GetMergeScript(conn, table_schema, table_name, query, true, mis, xmlBuilder, with_xml);
+            return GetMergeScript(conn, table_schema, table_name, query, mis, xmlBuilder, true, with_remove, with_xml);
         } // End Sub MergeStatementForTable 
 
 
@@ -991,8 +1054,8 @@ IF OBJECT_ID('tempdb..##tempSlickColumnInsertMapper') IS NOT NULL
             table_name = "T_ZO_OV_Ref_ObjektNr";
             table_name = "T_ZO_Objekt_Wgs84Polygon";
             table_name = "T_VWS_PdfLegende";
-            table_name = "T_VWS_Ref_PdfLegendenKategorie";
-            table_name = "T_SYS_Raumrechte";
+            // table_name = "T_VWS_Ref_PdfLegendenKategorie";
+            // table_name = "T_SYS_Raumrechte";
 
 
             string cmd = null;
