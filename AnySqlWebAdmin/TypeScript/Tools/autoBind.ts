@@ -3,7 +3,7 @@ export namespace autoBind
 {
     
     
-    export function  autoBind(self: any) : any
+    export function autoBind(self: any) : any
     {
         for (const key of Object.getOwnPropertyNames(self.constructor.prototype))
         {
@@ -11,25 +11,41 @@ export namespace autoBind
             if (key !== 'constructor')
             {
                 // console.log(key);
-
-                let isFunction = true;
+                // function has a propertyDescriptor as well, with function as value 
                 let desc = Object.getOwnPropertyDescriptor(self.constructor.prototype, key);
 
-                if (desc.get != null)
+                if (desc != null)
                 {
+                    // We can only redefine configurable properties !
+                    if (!desc.configurable)
+                    {
+                        console.log("AUTOBIND-WARNING: Property \"" + key + "\" not configurable ! (" + self.constructor.name + ")");
+                        continue;
+                    }
 
-                    desc.get = desc.get.bind(self);
-                    isFunction = false;
-                }
+                    let g = desc.get != null;
+                    let s = desc.set != null;
 
-                if (desc.set != null)
-                {
-                    desc.set = desc.set.bind(self);
-                    isFunction = false;
+                    if (g || s)
+                    {
+                        let newDescriptor: PropertyDescriptor = {};
+                        newDescriptor.enumerable = desc.enumerable;
+                        newDescriptor.configurable = desc.configurable
+
+                        if (g)
+                            newDescriptor.get = desc.get.bind(self);
+
+                        if (s)
+                            newDescriptor.set = desc.set.bind(self);
+
+                        Object.defineProperty(self, key, newDescriptor);
+                        continue; // if it's a property, it can't be a function 
+                    } // End if (g || s) 
+
                 }
 
                 // const val = self[key]; // NO ! key could be a property ! 
-                if (isFunction && typeof(self[key]) === 'function')
+                if (typeof(self[key]) === 'function')
                 {
                     let val = self[key];
                     self[key] = val.bind(self);

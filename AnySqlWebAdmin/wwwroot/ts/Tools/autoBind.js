@@ -17,17 +17,27 @@ export var autoBind;
             for (var _b = __values(Object.getOwnPropertyNames(self.constructor.prototype)), _c = _b.next(); !_c.done; _c = _b.next()) {
                 var key = _c.value;
                 if (key !== 'constructor') {
-                    var isFunction = true;
                     var desc = Object.getOwnPropertyDescriptor(self.constructor.prototype, key);
-                    if (desc.get != null) {
-                        desc.get = desc.get.bind(self);
-                        isFunction = false;
+                    if (desc != null) {
+                        if (!desc.configurable) {
+                            console.log("AUTOBIND-WARNING: Property \"" + key + "\" not configurable ! (" + self.constructor.name + ")");
+                            continue;
+                        }
+                        var g = desc.get != null;
+                        var s = desc.set != null;
+                        if (g || s) {
+                            var newDescriptor = {};
+                            newDescriptor.enumerable = desc.enumerable;
+                            newDescriptor.configurable = desc.configurable;
+                            if (g)
+                                newDescriptor.get = desc.get.bind(self);
+                            if (s)
+                                newDescriptor.set = desc.set.bind(self);
+                            Object.defineProperty(self, key, newDescriptor);
+                            continue;
+                        }
                     }
-                    if (desc.set != null) {
-                        desc.set = desc.set.bind(self);
-                        isFunction = false;
-                    }
-                    if (isFunction && typeof (self[key]) === 'function') {
+                    if (typeof (self[key]) === 'function') {
                         var val = self[key];
                         self[key] = val.bind(self);
                     }
