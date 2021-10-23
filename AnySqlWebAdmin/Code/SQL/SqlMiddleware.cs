@@ -42,7 +42,7 @@ namespace AnySqlWebAdmin
 
             try
             {   
-                pars = SqlServiceHelper.GetParameters(context);
+                pars = await SqlServiceHelper.GetParameters(context);
                 pars["BE_Hash"] = 12435;
                 pars["__stichtag"] = System.DateTime.Now.ToString("yyyyMMdd", System.Globalization.CultureInfo.InvariantCulture);
                 
@@ -69,9 +69,13 @@ namespace AnySqlWebAdmin
                 using (System.Data.Common.DbConnection cnn = this.m_service.Connection)
                 {
                     System.Exception hasErrors = await cnn.AsJSON(context.Response.Body,sql, format, pars);
-                    
-                    // TOOD: Log if not NULL
 
+                    if (hasErrors != null)
+                    {
+                        // TOOD: Log if not NULL
+                        throw new System.Exception("SQL-Error", hasErrors);
+                    }
+                    
                 }
                 
 

@@ -1,6 +1,4 @@
 ﻿
-using Microsoft.ApplicationInsights.Extensibility.Implementation.Tracing;
-
 namespace AnySqlWebAdmin
 {
 
@@ -90,7 +88,7 @@ namespace AnySqlWebAdmin
         } // End Function MapJTokenTypeToDotNet
 
 
-        public static System.Collections.Generic.Dictionary<string, object>
+        public static async System.Threading.Tasks.Task<System.Collections.Generic.Dictionary<string, object>>
             GetParameters(Microsoft.AspNetCore.Http.HttpContext context)
         {
             // Note: 
@@ -106,7 +104,7 @@ namespace AnySqlWebAdmin
             //} // Next kvp 
 
 
-            System.Collections.Generic.List<System.Collections.Generic.Dictionary<string, object>> lss = GetJsonObjectAsParameterList(context);
+            System.Collections.Generic.List<System.Collections.Generic.Dictionary<string, object>> lss = await GetJsonObjectAsParameterList(context);
             if (lss != null && lss.Count == 1)
             {
                 dict = lss[0];
@@ -116,7 +114,7 @@ namespace AnySqlWebAdmin
                 dict = new System.Collections.Generic.Dictionary<string, object>
                         (System.StringComparer.InvariantCultureIgnoreCase);
             }
-            
+
 
             if (context.Request.HasFormContentType)
             {
@@ -148,7 +146,7 @@ namespace AnySqlWebAdmin
         }
 
 
-        public static System.Collections.Generic.List<System.Collections.Generic.Dictionary<string, object>>
+        public static async System.Threading.Tasks.Task<System.Collections.Generic.List<System.Collections.Generic.Dictionary<string, object>>>
             GetJsonObjectAsParameterList(Microsoft.AspNetCore.Http.HttpContext context)
         {
             System.Collections.Generic.List<System.Collections.Generic.Dictionary<string, object>> lss = new System.Collections.Generic.List<System.Collections.Generic.Dictionary<string, object>>();
@@ -167,9 +165,9 @@ namespace AnySqlWebAdmin
                 {
 
                     // https://github.com/JamesNK/Newtonsoft.Json/issues/1773
-                    if (jsonReader.Read())
+                    if (await jsonReader.ReadAsync())
                     {
-                        jsonData = Newtonsoft.Json.Linq.JToken.Load(jsonReader);
+                        jsonData = await Newtonsoft.Json.Linq.JToken.LoadAsync(jsonReader);
 
                         if (jsonData != null)
                         {
@@ -286,7 +284,7 @@ namespace AnySqlWebAdmin
         } // End Function Json2List 
 
 
-        public static System.Collections.Generic.List<System.Collections.Generic.Dictionary<string, object>>
+        public static async System.Threading.Tasks.Task<System.Collections.Generic.List<System.Collections.Generic.Dictionary<string, object>>>
             Json2List(System.IO.Stream inputStream, System.Text.Encoding enc)
         {
             if (inputStream == null)
@@ -300,7 +298,7 @@ namespace AnySqlWebAdmin
             {
                 using (Newtonsoft.Json.JsonTextReader jsonReader = new Newtonsoft.Json.JsonTextReader(tr))
                 {
-                    jsonData = Newtonsoft.Json.Linq.JToken.ReadFrom(jsonReader);
+                    jsonData = await Newtonsoft.Json.Linq.JToken.ReadFromAsync(jsonReader);
                 } // End Using jsonReader 
 
             } // End Using tr 
@@ -309,10 +307,10 @@ namespace AnySqlWebAdmin
         } // End Function Json2List 
 
 
-        public static System.Collections.Generic.List<System.Collections.Generic.Dictionary<string, object>>
+        public static async System.Threading.Tasks.Task<System.Collections.Generic.List<System.Collections.Generic.Dictionary<string, object>>>
             Json2List(System.IO.Stream inputStream)
         {
-            return Json2List(inputStream, System.Text.Encoding.UTF8);
+            return await Json2List(inputStream, System.Text.Encoding.UTF8);
         }
 
 
