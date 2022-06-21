@@ -18,20 +18,21 @@ interface IProps
 
 interface IState
 {
-    viewportHeight: number;
-    viewportItemCount: number; // not in oldState
-    totalItems: number; // not in oldState
-    scrollHeightInItems: number;
-    avgRowHeight: number;
+    items?: any;
+    viewportHeight?: number;
+    viewportItemCount?: number; // not in oldState
+    totalItems?: number; // not in oldState
+    scrollHeightInItems?: number;
+    avgRowHeight?: number;
 
-    targetHeight: number; // not in oldState
-    topPlaceholderHeight: number; // not in oldState
-    firstMiddleItem: number; // not in oldState
-    middleItemCount: number; // not in oldState
-    middlePlaceholderHeight: number; // not in oldState
-    lastItemCount: number; // not in oldState
+    targetHeight?: number; // not in oldState
+    topPlaceholderHeight?: number; // not in oldState
+    firstMiddleItem?: number; // not in oldState
+    middleItemCount?: number; // not in oldState
+    middlePlaceholderHeight?: number; // not in oldState
+    lastItemCount?: number; // not in oldState
 
-    lastItemsTotalHeight: number;
+    lastItemsTotalHeight?: number;
 
     [index: string]: number;
 }
@@ -60,6 +61,7 @@ interface IState
 // export
 function virtualScrollDriver(props: IProps, oldState: IState, getRenderedItemHeight: (height: number) => any)
 {
+    // debugger;
     const viewportHeight = props.viewportHeight;
     const viewportItemCount = Math.ceil(viewportHeight / props.minRowHeight); // +border?
     const newState = {
@@ -207,3 +209,133 @@ function virtualScrollDriver(props: IProps, oldState: IState, getRenderedItemHei
 
     return newState;
 }
+
+
+
+
+
+
+function testRun()
+{
+    const items = [];
+    for (let i = 0; i < 1000; i++) {
+        items[i] = 30 + Math.round(Math.random() * 50);
+    }
+
+
+
+   
+
+    var old_state: IState = {
+        //viewportHeight: 199,
+        //viewportItemCount: 100, // not in oldState
+        //totalItems: 1000, // not in oldState
+        //scrollHeightInItems: 100,
+        //avgRowHeight: 100,
+
+        //targetHeight: 100, // not in oldState
+        //topPlaceholderHeight: 100, // not in oldState
+        //firstMiddleItem: 100, // not in oldState
+        //middleItemCount: 100, // not in oldState
+        //middlePlaceholderHeight: 100, // not in oldState
+        //lastItemCount: 100, // not in oldState
+        //lastItemsTotalHeight: 100
+        "items": items
+    };
+
+    
+    
+    var props: IProps = {
+        "totalItems": items.length,
+        "minRowHeight": 30,
+        // "viewportHeight": this.viewport.clientHeight - (this.useFixedHeader ? 30 : 0),
+        "viewportHeight": 100,
+        //"scrollTop": this.viewport.scrollTop,
+        "scrollTop": 0,
+    };
+
+
+    const newState = virtualScrollDriver(props, old_state,
+        function getRenderedItemHeight(itemIndex) {
+            return 60;
+        }
+    );
+
+    console.log(newState);
+}
+
+
+// https://github.com/vitalif/dynamic-virtual-scroll/blob/master/DynamicVirtualScrollExample.js
+// http://yourcmc.ru/dynamic-virtual-scroll/
+
+
+/*
+<div style="position: relative; width: 400px;">
+    <div tabindex="1" style="overflow-y: scroll; height: 400px; width: 400px; overflow-anchor: none; outline: none;">
+        <div style="height: 50462.8px;">
+        <div style="height: 30px;"></div>
+        <div style="height: 68px; color: white; text-align: center; line-height: 68px; background: rgb(217, 0, 0);">№ 0: 68px</div>
+        <div style="height: 41px; color: white; text-align: center; line-height: 41px; background: rgb(131, 0, 0);">№ 1: 41px</div>
+        <div style="height: 37px; color: white; text-align: center; line-height: 37px; background: rgb(118, 0, 0);">№ 2: 37px</div>
+        <div style="height: 70px; color: white; text-align: center; line-height: 70px; background: rgb(223, 0, 0);">№ 3: 70px</div>
+        <div style="height: 30px; color: white; text-align: center; line-height: 30px; background: rgb(96, 0, 0);">№ 4: 30px</div>
+        <div style="height: 61px; color: white; text-align: center; line-height: 61px; background: rgb(194, 0, 0);">№ 5: 61px</div>
+        <div style="height: 56px; color: white; text-align: center; line-height: 56px; background: rgb(179, 0, 0);">№ 6: 56px</div>
+        <div style="height: 39px; color: white; text-align: center; line-height: 39px; background: rgb(124, 0, 0);">№ 7: 39px</div>
+        <div style="height: 35px; color: white; text-align: center; line-height: 35px; background: rgb(112, 0, 0);">№ 8: 35px</div>
+        <div style="height: 71px; color: white; text-align: center; line-height: 71px; background: rgb(226, 0, 0);">№ 9: 71px</div>
+        <div style="height: 42px; color: white; text-align: center; line-height: 42px; background: rgb(134, 0, 0);">№ 10: 42px</div>
+        <div style="height: 59px; color: white; text-align: center; line-height: 59px; background: rgb(188, 0, 0);">№ 11: 59px</div>
+        <div style="height: 58px; color: white; text-align: center; line-height: 58px; background: rgb(185, 0, 0);">№ 12: 58px</div>
+    </div>
+
+    <div style="position: absolute; top: 0px; left: 0px; height: 30px; background: rgb(0, 128, 192); color: white; text-align: center; line-height: 30px; right: 17px;">
+        fixed header
+    </div>
+</div>
+*/
+
+
+// https://www.davrous.com/2013/06/13/tutorial-series-learning-how-to-write-a-3d-soft-engine-from-scratch-in-c-typescript-or-javascript/
+// https://dev.to/adamklein/build-your-own-virtual-scroll-part-i-11ib
+// https://dev.to/adamklein/build-your-own-virtual-scroll-part-ii-3j86
+// https://github.com/adamkleingit/react-rich-tree/blob/master/src/models/tree-virtual-scroll.model.ts
+// https://github.com/CirclonGroup/angular-tree-component/tree/master/projects/angular-tree-component/src
+// http://localhost:5080/dvirtual.htm
+// https://www.geeksforgeeks.org/implementation-binary-search-tree-javascript/
+
+
+
+
+
+
+// https://fubardevelopment.github.io/WebDavServer/articles/getting-started.html
+// https://github.com/FubarDevelopment/WebDavServer
+// https://www.webdavsystem.com/server/server_examples/cross_platform_asp_net_core_file_system/
+// https://github.com/skazantsev/WebDavClient
+// https://nugetmusthaves.com/tag/webdav
+// https://realtimelogic.com/ba/examples/WebDAV/readme.html
+// https://www.akadia.com/services/mod_dav.html
+// https://wiki.ubuntuusers.de/WebDAV/
+
+// "http" ersetzt man dabei aber durch "dav",
+// "https" entsprechend durch "davs".Also beispielsweise
+// davs://webdav.mc.gmx.net/
+
+// (universe)
+// sudo apt-get install ca-certificates davfs2
+// dpkg-reconfigure ca-certificates
+// sudo mount - t davfs https://mediacenter.gmx.net /mountpoint
+
+
+// Falls ein normaler Benutzer die Freigabe einhängen soll,
+// muss das über die Datei /etc/fstab erlaubt werden.
+// Dazu wird diese in einem Editor[3] mit Root - Rechten geöffnet und folgende Zeile eingetragen:
+
+// # Allgemein
+// http://<webdavurl> <mountpunkt> davfs user,noauto 0 0
+// # Allgemein mit verschlüsselter Übertragung
+// https://<webdavurl> <mountpunkt> davfs user,noauto 0 0
+// # Beispiel gmx.mediacenter
+// https://mediacenter.gmx.net /home/otto/mnt/gmx davfs noauto,user,rw 0 0
+

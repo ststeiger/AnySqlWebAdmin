@@ -110,3 +110,21 @@ function virtualScrollDriver(props, oldState, getRenderedItemHeight) {
     }
     return newState;
 }
+function testRun() {
+    var items = [];
+    for (var i = 0; i < 1000; i++) {
+        items[i] = 30 + Math.round(Math.random() * 50);
+    }
+    var old_state = {};
+    old_state["items"] = items;
+    var props = {
+        "totalItems": items.length,
+        "minRowHeight": 30,
+        "viewportHeight": 100,
+        "scrollTop": 0,
+    };
+    var newState = virtualScrollDriver(props, old_state, function getRenderedItemHeight(itemIndex) {
+        return 60;
+    });
+    console.log(newState);
+}
