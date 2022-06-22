@@ -110,13 +110,55 @@ function virtualScrollDriver(props, oldState, getRenderedItemHeight) {
     }
     return newState;
 }
+function foo(ev) {
+    var hd = ev.currentTarget;
+    console.log(hd.scrollTop);
+    console.log(hd.scrollLeft);
+    console.log(hd.scrollWidth);
+    console.log(hd.scrollHeight);
+    console.log(hd.scroll);
+    console.log(hd.scrollBy);
+}
+function myrender() {
+    var itemElements = [];
+    var useFixedHeader = true;
+    var topPlaceholderHeight = true;
+    var middlePlaceholderHeight = true;
+    var scrollbarWidth = 123;
+    var baseDiv = document.createElement("DIV");
+    baseDiv.setAttribute("style", "position: relative; width: 400px;");
+    var overflowDiv = document.createElement("DIV");
+    overflowDiv.setAttribute("style", "overflow-y: scroll; width: 400px;height: 400px; overflow-anchor: none; outline: none;");
+    overflowDiv.setAttribute("tabIndex", "1");
+    overflowDiv.onscroll = foo;
+    if (useFixedHeader) {
+        var fixedHeader = document.createElement("DIV");
+        fixedHeader.setAttribute("style", "height: 30px;");
+    }
+    if (topPlaceholderHeight) {
+        var topPlaceHolder = document.createElement("DIV");
+        topPlaceHolder.setAttribute("style", "height: " + topPlaceholderHeight + "px;");
+    }
+    if (middlePlaceholderHeight) {
+        var middlePlaceHolder = document.createElement("DIV");
+        middlePlaceHolder.setAttribute("style", "height: " + middlePlaceholderHeight + "px;");
+    }
+    if (useFixedHeader) {
+        var fixedHeader = document.createElement("DIV");
+        fixedHeader.setAttribute("style", "position: absolute; top: 0; left: 0; right: " + scrollbarWidth + "px; height: 30px; background: #0080c0; color: white; text-align: center; line-height: 30px;");
+    }
+}
 function testRun() {
+    var vb = document.getElementById("viewBox");
+    console.log(vb);
+    vb.onscroll = foo;
     var items = [];
     for (var i = 0; i < 1000; i++) {
         items[i] = 30 + Math.round(Math.random() * 50);
     }
-    var old_state = {};
-    old_state["items"] = items;
+    var old_state = {
+        "items": items
+    };
     var props = {
         "totalItems": items.length,
         "minRowHeight": 30,
