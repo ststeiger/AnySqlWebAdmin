@@ -16,15 +16,14 @@ namespace AnySqlWebAdmin
             System.Data.SqlClient.SqlConnectionStringBuilder csb = new System.Data.SqlClient.SqlConnectionStringBuilder();
 
             if (System.Environment.OSVersion.Platform == System.PlatformID.Unix)
-                csb.DataSource = System.Environment.MachineName + ",2017";
+                csb.DataSource = System.Environment.MachineName + ",2019";
             else
                 //csb.DataSource = System.Environment.MachineName + @"\SQLEXPRESS";
                 csb.DataSource = System.Environment.MachineName;
-
-
-            csb.DataSource = System.Environment.MachineName;
+            
+            // csb.DataSource = System.Environment.MachineName;
             csb.InitialCatalog = "COR_Basic_Demo_V4";
-            csb.InitialCatalog = "COR_Basic_SNB";
+            // csb.InitialCatalog = "COR_Basic_SNB";
 
 
 
@@ -35,6 +34,7 @@ namespace AnySqlWebAdmin
                 csb.Password = TestPlotly.SecretManager.GetSecret<string>("DefaultDbPassword");
             }
 
+            
             csb.PacketSize = 4096;
             csb.PersistSecurityInfo = false;
             csb.ApplicationName = "BlueMine";
@@ -67,7 +67,7 @@ namespace AnySqlWebAdmin
 
             string cs = csb.ConnectionString;
             csb = null;
-
+            
             return cs;
         } // End Function GetMsCs 
 
