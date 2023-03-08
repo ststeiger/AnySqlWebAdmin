@@ -131,6 +131,7 @@
             /*font-family: 'Comic Sans MS';*/
             text-align: center;
         }
+
     </style>
 
     <!--<link rel="shortcut icon" type="image/png" href="../favicon.png" />-->
@@ -201,7 +202,9 @@
 
     <script type="text/javascript" src="leaflet/leaflet.js" charset="utf-8"></script>
     <script type="text/javascript" src="leaflet/leaflet-osm.js" charset="utf-8"></script>
-    
+    <script type="text/javascript" src="leaflet/proj4-src.js" charset="utf-8"></script>
+    <script type="text/javascript" src="leaflet/proj4leaflet.js" charset="utf-8"></script>
+
     <!--
     <script type="text/javascript" src="leaflet-draw/leaflet.draw-src.js?v=7" charset="utf-8"></script>
     -->
@@ -232,36 +235,42 @@
         }
         */
 
-        .osm_data_polygon {
+        .osm_data_polygon
+        {
             fill: green;
             opacity: 1;
         }
 
-            .osm_data_polygon:hover {
-                fill: palegoldenrod;
-                opacity: 1;
-            }
+        .osm_data_polygon:hover
+        {
+            fill: palegoldenrod;
+            opacity: 1;
+        }
 
-            .osm_data_polygon.active {
-                fill: #58ff00;
-            }
+        .osm_data_polygon.active
+        {
+            fill: #58ff00;
+        }
 
 
 
 
-        .osm_data_polygon_nearest {
+        .osm_data_polygon_nearest
+        {
             fill: hotpink;
             opacity: 1;
         }
 
-            .osm_data_polygon_nearest:hover {
-                fill: hotpink;
-                opacity: 1;
-            }
+        .osm_data_polygon_nearest:hover
+        {
+            fill: hotpink;
+            opacity: 1;
+        }
 
-            .osm_data_polygon_nearest.active {
-                fill: hotpink;
-            }
+        .osm_data_polygon_nearest.active
+        {
+            fill: hotpink;
+        }
     </style>
 
 </body>

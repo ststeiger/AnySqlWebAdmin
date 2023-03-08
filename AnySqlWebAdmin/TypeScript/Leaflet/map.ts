@@ -2323,6 +2323,70 @@ async function initMap()
     ).addTo(map);
     */
 
+    /**/
+
+
+    // https://github.com/kartena/Proj4Leaflet
+    // https://kartena.github.io/Proj4Leaflet/api/
+    // https://opendatazurich.github.io/geoportal/#wmswmts-in-leaflet-einbinden
+    // https://opendatazurich.github.io/
+    // https://codesandbox.io/s/geoadmin-with-vanilla-openlayers-z3dij?file=/src/index.js
+
+
+    var lv95 = {
+        epsg: 'EPSG:2056',
+        def: '+proj=somerc +lat_0=46.95240555555556 +lon_0=7.439583333333333 +k_0=1 +x_0=2600000 +y_0=1200000 +ellps=bessel +towgs84=674.374,15.056,405.346,0,0,0,0 +units=m +no_defs',
+        resolutions: [4000, 3750, 3500, 3250, 3000, 2750, 2500, 2250, 2000, 1750, 1500, 1250, 1000, 750, 650, 500, 250, 100, 50, 20, 10, 5, 2.5, 2, 1.5, 1, 0.5, 0.2, 0.1],
+        origin: [2420000, 1350000]
+    };
+
+
+
+
+
+
+
+    var crs = new (<any>L).Proj.CRS(lv95.epsg, lv95.def, {
+        resolutions: lv95.resolutions,
+        origin: lv95.origin
+    });
+
+
+    // Add a map layer
+    // https://api3.geo.admin.ch/api/doc.html
+    // https://api3.geo.admin.ch/services/sdiservices.html
+    // https://codesandbox.io/s/geoadmin-with-vanilla-openlayers-z3dij?file=/src/index.js
+    // https://api3.geo.admin.ch/services/sdiservices.html#mapbox-vector-tiles
+    L.tileLayer("{server}/{style}/{z}/{x}/{y}.jpeg?lang={language}",
+        {
+              attribution: '<a target="blank" href="https://map.geo.admin.ch/">map.geo.admin.ch</a> | Map data &copy; <a target="blank" href="http://openstreetmap.org/copyright">OpenStreetMap contributors</a>'
+            , server: "https://wmts100.geo.admin.ch/"
+            // , server: "https://wmts.geo.admin.ch/"
+            // warning: projection-system after current
+            // Supported values: 21781(LV03), 2056(LV95), 4326(WGS84) and 3857(Web Pseudo- Mercator).
+            // Defaults to “21781”.
+            // , style: "1.0.0/ch.swisstopo.pixelkarte-farbe/default/current/2056"
+            , style: `1.0.0/ch.swisstopo.pixelkarte-farbe/default/current/3857`
+            , scalex: scalex
+            , language: getUserLanguage() // fr, it, en
+
+            // https://stackoverflow.com/questions/33632608/markers-do-not-appear-on-continuous-world-in-leaflet
+            , continuousWorld: false 
+            , minZoom: 8
+            , maxZoom: 19
+
+            // web or spherical mercator (EPSG:900913 et al.)
+            // , crs: crs // EPSG:2056 - Swiss CH1903+ / LV95
+            // , crs: L.CRS.EPSG3395 // WGS 84 / World Mercator - EPSG:3395
+            // , crs: L.CRS.EPSG4326 // used in GPS 
+            , crs: L.CRS.EPSG3857 // WGS 84 / Pseudo-Mercator - EPSG:3857
+            // , crs: L.CRS.Simple
+        }
+    ).addTo(map);
+    
+
+
+    /*
     let gl = L.mapboxGL(
         {
             accessToken: 'no-token',
@@ -2336,6 +2400,9 @@ async function initMap()
     ).addTo(map);
 
     map.gl = gl;
+    */
+
+    
 
     let drawnItems = new L.FeatureGroup();
     map.addLayer(drawnItems);

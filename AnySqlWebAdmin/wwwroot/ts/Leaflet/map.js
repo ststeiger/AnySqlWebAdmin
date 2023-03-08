@@ -1379,7 +1379,7 @@ function IEdetection() {
 }
 function initMap() {
     return __awaiter(this, void 0, void 0, function () {
-        var ml, southWest, northEast, bounds, scale, scalex, gl, drawnItems, options, drawControl;
+        var ml, southWest, northEast, bounds, scale, scalex, lv95, crs, drawnItems, options, drawControl;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
@@ -1394,13 +1394,27 @@ function initMap() {
                     map.fitBounds(bounds, null);
                     scale = bracketDevicePixelRatio();
                     scalex = (scale === 1) ? '' : ('@' + scale + 'x');
-                    gl = L.mapboxGL({
-                        accessToken: 'no-token',
-                        updateInterval: IEdetection().crap ? 5 : 20,
-                        attribution: '<a target="blank" href="https://github.com/ststeiger/VectorTileServer ">Steiger&apos;s public vector tile server</a> | <a target="blank" href="https://openmaptiles.org ">OpenMapTiles</a> | Map data &copy; <a target="blank" href="http://openstreetmap.org/copyright">OpenStreetMap contributors</a>',
-                        style: "https://corpool.cor-asp.ch/VectorTileServer/styles/bright/style.json"
+                    lv95 = {
+                        epsg: 'EPSG:2056',
+                        def: '+proj=somerc +lat_0=46.95240555555556 +lon_0=7.439583333333333 +k_0=1 +x_0=2600000 +y_0=1200000 +ellps=bessel +towgs84=674.374,15.056,405.346,0,0,0,0 +units=m +no_defs',
+                        resolutions: [4000, 3750, 3500, 3250, 3000, 2750, 2500, 2250, 2000, 1750, 1500, 1250, 1000, 750, 650, 500, 250, 100, 50, 20, 10, 5, 2.5, 2, 1.5, 1, 0.5, 0.2, 0.1],
+                        origin: [2420000, 1350000]
+                    };
+                    crs = new L.Proj.CRS(lv95.epsg, lv95.def, {
+                        resolutions: lv95.resolutions,
+                        origin: lv95.origin
+                    });
+                    L.tileLayer("{server}/{style}/{z}/{x}/{y}.jpeg?lang={language}", {
+                        attribution: '<a target="blank" href="https://map.geo.admin.ch/">map.geo.admin.ch</a> | Map data &copy; <a target="blank" href="http://openstreetmap.org/copyright">OpenStreetMap contributors</a>',
+                        server: "https://wmts100.geo.admin.ch/",
+                        style: "1.0.0/ch.swisstopo.pixelkarte-farbe/default/current/3857",
+                        scalex: scalex,
+                        language: getUserLanguage(),
+                        continuousWorld: false,
+                        minZoom: 8,
+                        maxZoom: 19,
+                        crs: L.CRS.EPSG3857
                     }).addTo(map);
-                    map.gl = gl;
                     drawnItems = new L.FeatureGroup();
                     map.addLayer(drawnItems);
                     options = {
