@@ -1379,7 +1379,67 @@ function IEdetection() {
 }
 function initMap() {
     return __awaiter(this, void 0, void 0, function () {
-        var ml, southWest, northEast, bounds, scale, scalex, lv95, crs, drawnItems, options, drawControl;
+        function straightLine() {
+            var pointA = new L.LatLng(47.54297305496059, 9.186017817687999);
+            var pointB = new L.LatLng(40.69245766686793, -74.04423198459618);
+            var pointList = [pointA, pointB];
+            var firstpolyline = new L.Polyline(pointList, {
+                color: 'red',
+                weight: 3,
+                opacity: 0.5,
+                smoothFactor: 1
+            });
+            firstpolyline.addTo(map);
+        }
+        function calcCrow(p1, p2) {
+            function toRad(val) {
+                return val * Math.PI / 180;
+            }
+            var lat1 = p1.lat;
+            var lon1 = p1.lng;
+            var lat2 = p2.lat;
+            var lon2 = p2.lng;
+            var R = 6371;
+            var dLat = toRad(lat2 - lat1);
+            var dLon = toRad(lon2 - lon1);
+            lat1 = toRad(lat1);
+            lat2 = toRad(lat2);
+            var a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+                Math.sin(dLon / 2) * Math.sin(dLon / 2) * Math.cos(lat1) * Math.cos(lat2);
+            var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+            var d = R * c;
+            return d;
+        }
+        function flugLinie2() {
+            var options = {
+                color: 'rgb(145, 146, 150)',
+                fillColor: 'rgb(145, 146, 150)',
+                dashArray: 8,
+                opacity: 0.8,
+                weight: '1',
+                iconTravelLength: 0.5,
+                iconMaxWidth: 50,
+                iconMaxHeight: 50,
+                fullAnimatedTime: 7000,
+                easeOutPiece: 4,
+                easeOutTime: 2500,
+            };
+            var pointA = new L.LatLng(47.54297305496059, 9.186017817687999);
+            var pointB = new L.LatLng(46.1538928965763, 8.80292035094359);
+            console.log("distance:", calcCrow(pointA, pointB));
+            L.bezier({
+                path: [
+                    [pointA, pointB]
+                ],
+                icon: { path: "plane.png" }
+            }, options).addTo(map);
+        }
+        function flugLinie() {
+            var pointA = new L.LatLng(47.54297305496059, 9.186017817687999);
+            var pointB = new L.LatLng(46.1538928965763, 8.80292035094359);
+            var geodesic = new L.Geodesic([pointA, pointB]).addTo(map);
+        }
+        var ml, southWest, northEast, bounds, scale, scalex, lv95, crs, useWebGL, gl, drawnItems, options, drawControl;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
@@ -1404,17 +1464,29 @@ function initMap() {
                         resolutions: lv95.resolutions,
                         origin: lv95.origin
                     });
-                    L.tileLayer("{server}/{style}/{z}/{x}/{y}.jpeg?lang={language}", {
-                        attribution: '<a target="blank" href="https://map.geo.admin.ch/">map.geo.admin.ch</a> | Map data &copy; <a target="blank" href="http://openstreetmap.org/copyright">OpenStreetMap contributors</a>',
-                        server: "https://wmts100.geo.admin.ch/",
-                        style: "1.0.0/ch.swisstopo.pixelkarte-farbe/default/current/3857",
-                        scalex: scalex,
-                        language: getUserLanguage(),
-                        continuousWorld: false,
-                        minZoom: 8,
-                        maxZoom: 19,
-                        crs: L.CRS.EPSG3857
-                    }).addTo(map);
+                    useWebGL = true;
+                    if (!useWebGL) {
+                        L.tileLayer("{server}/{style}/{z}/{x}/{y}.jpeg?lang={language}", {
+                            attribution: '<a target="blank" href="https://map.geo.admin.ch/">map.geo.admin.ch</a> | Map data &copy; <a target="blank" href="http://openstreetmap.org/copyright">OpenStreetMap contributors</a>',
+                            server: "https://wmts100.geo.admin.ch/",
+                            style: "1.0.0/ch.swisstopo.pixelkarte-farbe/default/current/3857",
+                            scalex: scalex,
+                            language: getUserLanguage(),
+                            continuousWorld: false,
+                            minZoom: 8,
+                            maxZoom: 19,
+                            crs: L.CRS.EPSG3857
+                        }).addTo(map);
+                    }
+                    if (useWebGL) {
+                        gl = L.mapboxGL({
+                            accessToken: 'no-token',
+                            updateInterval: IEdetection().crap ? 5 : 20,
+                            attribution: '<a target="blank" href="https://github.com/ststeiger/VectorTileServer ">Steiger&apos;s public vector tile server</a> | <a target="blank" href="https://openmaptiles.org ">OpenMapTiles</a> | Map data &copy; <a target="blank" href="http://openstreetmap.org/copyright">OpenStreetMap contributors</a>',
+                            style: "https://corpool.cor-asp.ch/VectorTileServer/styles/bright/style.json"
+                        }).addTo(map);
+                        map.gl = gl;
+                    }
                     drawnItems = new L.FeatureGroup();
                     map.addLayer(drawnItems);
                     options = {
@@ -1560,6 +1632,7 @@ function initMap() {
                     map.on("click", function (e) {
                         console.log('map.on("click",', e.latlng);
                     });
+                    flugLinie();
                     return [2];
             }
         });

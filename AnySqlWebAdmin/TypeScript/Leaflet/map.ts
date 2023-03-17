@@ -2352,55 +2352,61 @@ async function initMap()
     });
 
 
-    // Add a map layer
-    // https://api3.geo.admin.ch/api/doc.html
-    // https://api3.geo.admin.ch/services/sdiservices.html
-    // https://codesandbox.io/s/geoadmin-with-vanilla-openlayers-z3dij?file=/src/index.js
-    // https://api3.geo.admin.ch/services/sdiservices.html#mapbox-vector-tiles
-    L.tileLayer("{server}/{style}/{z}/{x}/{y}.jpeg?lang={language}",
-        {
-              attribution: '<a target="blank" href="https://map.geo.admin.ch/">map.geo.admin.ch</a> | Map data &copy; <a target="blank" href="http://openstreetmap.org/copyright">OpenStreetMap contributors</a>'
-            , server: "https://wmts100.geo.admin.ch/"
-            // , server: "https://wmts.geo.admin.ch/"
-            // warning: projection-system after current
-            // Supported values: 21781(LV03), 2056(LV95), 4326(WGS84) and 3857(Web Pseudo- Mercator).
-            // Defaults to “21781”.
-            // , style: "1.0.0/ch.swisstopo.pixelkarte-farbe/default/current/2056"
-            , style: `1.0.0/ch.swisstopo.pixelkarte-farbe/default/current/3857`
-            , scalex: scalex
-            , language: getUserLanguage() // fr, it, en
 
-            // https://stackoverflow.com/questions/33632608/markers-do-not-appear-on-continuous-world-in-leaflet
-            , continuousWorld: false 
-            , minZoom: 8
-            , maxZoom: 19
+    let useWebGL = true;
 
-            // web or spherical mercator (EPSG:900913 et al.)
-            // , crs: crs // EPSG:2056 - Swiss CH1903+ / LV95
-            // , crs: L.CRS.EPSG3395 // WGS 84 / World Mercator - EPSG:3395
-            // , crs: L.CRS.EPSG4326 // used in GPS 
-            , crs: L.CRS.EPSG3857 // WGS 84 / Pseudo-Mercator - EPSG:3857
-            // , crs: L.CRS.Simple
-        }
-    ).addTo(map);
-    
+    if (!useWebGL)
+    { 
+        // Add a map layer
+        // https://api3.geo.admin.ch/api/doc.html
+        // https://api3.geo.admin.ch/services/sdiservices.html
+        // https://codesandbox.io/s/geoadmin-with-vanilla-openlayers-z3dij?file=/src/index.js
+        // https://api3.geo.admin.ch/services/sdiservices.html#mapbox-vector-tiles
+        L.tileLayer("{server}/{style}/{z}/{x}/{y}.jpeg?lang={language}",
+            {
+                  attribution: '<a target="blank" href="https://map.geo.admin.ch/">map.geo.admin.ch</a> | Map data &copy; <a target="blank" href="http://openstreetmap.org/copyright">OpenStreetMap contributors</a>'
+                , server: "https://wmts100.geo.admin.ch/"
+                // , server: "https://wmts.geo.admin.ch/"
+                // warning: projection-system after current
+                // Supported values: 21781(LV03), 2056(LV95), 4326(WGS84) and 3857(Web Pseudo- Mercator).
+                // Defaults to “21781”.
+                // , style: "1.0.0/ch.swisstopo.pixelkarte-farbe/default/current/2056"
+                , style: `1.0.0/ch.swisstopo.pixelkarte-farbe/default/current/3857`
+                , scalex: scalex
+                , language: getUserLanguage() // fr, it, en
+
+                // https://stackoverflow.com/questions/33632608/markers-do-not-appear-on-continuous-world-in-leaflet
+                , continuousWorld: false 
+                , minZoom: 8
+                , maxZoom: 19
+
+                // web or spherical mercator (EPSG:900913 et al.)
+                // , crs: crs // EPSG:2056 - Swiss CH1903+ / LV95
+                // , crs: L.CRS.EPSG3395 // WGS 84 / World Mercator - EPSG:3395
+                // , crs: L.CRS.EPSG4326 // used in GPS 
+                , crs: L.CRS.EPSG3857 // WGS 84 / Pseudo-Mercator - EPSG:3857
+                // , crs: L.CRS.Simple
+            }
+        ).addTo(map);
+    } // End if (!useWebGL)
 
 
-    /*
-    let gl = L.mapboxGL(
-        {
-            accessToken: 'no-token',
-            // updateInterval: https://github.com/mapbox/mapbox-gl-leaflet/issues/55
-            // updateInterval: 5, // per 200 ms
-            // updateInterval: IEdetection().crap ? 5 : 32, // per 200 ms
-            updateInterval: IEdetection().crap ? 5 : 20, // per 50 ms
-            attribution: '<a target="blank" href="https://github.com/ststeiger/VectorTileServer ">Steiger&apos;s public vector tile server</a> | <a target="blank" href="https://openmaptiles.org ">OpenMapTiles</a> | Map data &copy; <a target="blank" href="http://openstreetmap.org/copyright">OpenStreetMap contributors</a>',
-            style: "https://corpool.cor-asp.ch/VectorTileServer/styles/bright/style.json"
-        }
-    ).addTo(map);
+    if (useWebGL)
+    {
+        let gl = L.mapboxGL(
+            {
+                accessToken: 'no-token',
+                // updateInterval: https://github.com/mapbox/mapbox-gl-leaflet/issues/55
+                // updateInterval: 5, // per 200 ms
+                // updateInterval: IEdetection().crap ? 5 : 32, // per 200 ms
+                updateInterval: IEdetection().crap ? 5 : 20, // per 50 ms
+                attribution: '<a target="blank" href="https://github.com/ststeiger/VectorTileServer ">Steiger&apos;s public vector tile server</a> | <a target="blank" href="https://openmaptiles.org ">OpenMapTiles</a> | Map data &copy; <a target="blank" href="http://openstreetmap.org/copyright">OpenStreetMap contributors</a>',
+                style: "https://corpool.cor-asp.ch/VectorTileServer/styles/bright/style.json"
+            }
+        ).addTo(map);
 
-    map.gl = gl;
-    */
+        map.gl = gl;
+    } // End if (useWebGL) 
 
     
 
@@ -2699,6 +2705,113 @@ async function initMap()
     // .openPopup()
     ;
     */
+
+
+    function straightLine()
+    {
+        let pointA = new L.LatLng(47.54297305496059, 9.186017817687999);
+        // let pointB = new L.LatLng(46.1538928965763, 8.80292035094359);
+        let pointB = new L.LatLng(40.69245766686793, -74.04423198459618);
+
+
+        let pointList = [pointA, pointB];
+
+        let firstpolyline = new L.Polyline(pointList, {
+            color: 'red',
+            weight: 3,
+            opacity: 0.5,
+            smoothFactor: 1
+        });
+        firstpolyline.addTo(map);
+    }
+
+
+
+    function calcCrow(p1: L.LatLng, p2: L.LatLng) 
+    {
+        // converts numeric degrees to radians
+        function toRad(val:number) 
+        {
+            return val * Math.PI / 180;
+        }
+
+
+        let lat1 = p1.lat;
+        let lon1 = p1.lng;
+        let lat2 = p2.lat;
+        let lon2 = p2.lng;
+        
+
+
+        let R = 6371; // km
+        let dLat = toRad(lat2 - lat1);
+        let dLon = toRad(lon2 - lon1);
+        lat1 = toRad(lat1);
+        lat2 = toRad(lat2);
+
+        let a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+            Math.sin(dLon / 2) * Math.sin(dLon / 2) * Math.cos(lat1) * Math.cos(lat2);
+        let c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        let d = R * c;
+
+        return d;
+    }
+
+    // C
+    
+    // requires leaflet.bezier.js which requires snap.svg-min.js
+    function flugLinie2()
+    {
+        var options = {
+            color: 'rgb(145, 146, 150)',
+            fillColor: 'rgb(145, 146, 150)',
+            dashArray: 8,
+            opacity: 0.8,
+            weight: '1',
+            iconTravelLength: 0.5, //How far icon should go. 0.5 = 50%
+            iconMaxWidth: 50,
+            iconMaxHeight: 50,
+            fullAnimatedTime: 7000,// animation time in ms
+            easeOutPiece: 4, // animation easy ou time in ms
+            easeOutTime: 2500, // animation easy ou time in ms
+        };
+
+        let pointA = new L.LatLng(47.54297305496059, 9.186017817687999);
+        let pointB = new L.LatLng(46.1538928965763, 8.80292035094359);
+        // let pointB = new L.LatLng(40.69245766686793, -74.04423198459618);
+
+
+        console.log("distance:", calcCrow(pointA, pointB));
+
+        (<any>L).bezier({
+            path: [
+                [pointA, pointB]
+            ],
+
+            icon: { path: "plane.png" }
+        }, options).addTo(map);
+    }
+
+
+    function flugLinie()
+    {
+        // let pointA = { lat: 52.5, lng: 13.35 }; // Berlin
+        let pointA = new L.LatLng(47.54297305496059, 9.186017817687999); // Sulgen
+
+        // let pointB = { lat: 33.82, lng: -118.38 }; // LosAngeles
+        // let pointB = new L.LatLng(40.68921685910933, -74.04456477296566);// Statue of liberty, NY
+        let pointB = new L.LatLng(46.1538928965763, 8.80292035094359); // Locarno 
+        // let pointB = new L.LatLng(47.373505958350876, 9.558968171113646); // Im Hebler
+        // let pointB = new L.LatLng(43.971231250127026, 4.278893717779308); // Rue du Four 
+
+
+        // Requires: https://github.com/henrythasler/Leaflet.Geodesic
+        let geodesic = new (<any>L).Geodesic([pointA, pointB]).addTo(map);
+    }
+
+
+    flugLinie();
+    
 
 } // End Function initMap 
 
