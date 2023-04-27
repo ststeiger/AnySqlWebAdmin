@@ -918,7 +918,7 @@ function getParamNames(func: Function): RegExpMatchArray
     let fnStr = func.toString().replace(STRIP_COMMENTS, '');
     let result = fnStr.slice(fnStr.indexOf('(') + 1, fnStr.indexOf(')')).match(ARGUMENT_NAMES);
     if (result === null)
-        result = [];
+        result = <RegExpMatchArray><any>[];
 
     return result;
 } // End Function getParamNames 

@@ -7,6 +7,8 @@ var __extends = (this && this.__extends) || (function () {
         return extendStatics(d, b);
     };
     return function (d, b) {
+        if (typeof b !== "function" && b !== null)
+            throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
         extendStatics(d, b);
         function __() { this.constructor = d; }
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
@@ -27,7 +29,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     function verb(n) { return function (v) { return step([n, v]); }; }
     function step(op) {
         if (f) throw new TypeError("Generator is already executing.");
-        while (_) try {
+        while (g && (g = 0, op[0] && (_ = 0)), _) try {
             if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
             if (y = 0, t) op = [op[0] & 2, t.value];
             switch (op[0]) {
@@ -1710,7 +1712,7 @@ function createInsertScriptSQL(latlongs) {
     for (var i = 0; i < latlongs.length; ++i) {
         if (i !== 0)
             insertString += " \r\n\r\n\r\nUNION ALL \r\n\r\n";
-        insertString += "\nSELECT\n     NEWID() AS ZO_OBJ_WGS84_UID\n    ,CAST(@GB_UID AS uniqueidentifier) AS ZO_OBJ_WGS84_GB_UID\n    ,CAST(@SO_UID AS uniqueidentifier) AS ZO_OBJ_WGS84_SO_UID\n    ,CAST(" + i + " AS integer) + 1 AS ZO_OBJ_WGS84_Sort\n    ," + latlongs[i].lat + " AS ZO_OBJ_WGS84_GM_Lat -- decimal(23, 20)\n    ," + latlongs[i].lng + " AS ZO_OBJ_WGS84_GM_Lng -- decimal(23, 20) ";
+        insertString += "\nSELECT\n     NEWID() AS ZO_OBJ_WGS84_UID\n    ,CAST(@GB_UID AS uniqueidentifier) AS ZO_OBJ_WGS84_GB_UID\n    ,CAST(@SO_UID AS uniqueidentifier) AS ZO_OBJ_WGS84_SO_UID\n    ,CAST(".concat(i, " AS integer) + 1 AS ZO_OBJ_WGS84_Sort\n    ,").concat(latlongs[i].lat, " AS ZO_OBJ_WGS84_GM_Lat -- decimal(23, 20)\n    ,").concat(latlongs[i].lng, " AS ZO_OBJ_WGS84_GM_Lng -- decimal(23, 20) ");
     }
     insertString += " \r\n; \r\n\r\n";
     return insertString;

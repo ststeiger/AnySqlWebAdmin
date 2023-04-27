@@ -8,7 +8,7 @@ function observe(target) {
         var finish = performance.now();
         mutations.forEach(function (mutation) {
             if (mutation.addedNodes.length) {
-                console.log("MutationObserver observed childList as " + target.textContent);
+                console.log("MutationObserver observed childList as ".concat(target.textContent));
             }
             if (mutation.type === 'childList') {
             }

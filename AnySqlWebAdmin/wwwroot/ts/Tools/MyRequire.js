@@ -14,7 +14,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     function verb(n) { return function (v) { return step([n, v]); }; }
     function step(op) {
         if (f) throw new TypeError("Generator is already executing.");
-        while (_) try {
+        while (g && (g = 0, op[0] && (_ = 0)), _) try {
             if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
             if (y = 0, t) op = [op[0] & 2, t.value];
             switch (op[0]) {
@@ -72,16 +72,16 @@ var fs = {
     }
 };
 function myRequire(name) {
-    console.log("Evaluating file " + name);
+    console.log("Evaluating file ".concat(name));
     if (!(name in myRequire.cache)) {
-        console.log(name + " is not in cache; reading from disk");
+        console.log("".concat(name, " is not in cache; reading from disk"));
         var code = fs.readFileSync(name, 'utf8');
         var module = { exports: {} };
         myRequire.cache[name] = module;
         var wrapper = Function("require, exports, module", code);
         wrapper(myRequire, module.exports, module);
     }
-    console.log(name + " is in cache. Returning it...");
+    console.log("".concat(name, " is in cache. Returning it..."));
     return myRequire.cache[name].exports;
 }
 myRequire.cache = Object.create(null);
@@ -94,9 +94,9 @@ function myRequireAsync(name) {
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
-                    console.log("Evaluating file " + name);
+                    console.log("Evaluating file ".concat(name));
                     if (!!(name in myRequireAsync.cache)) return [3, 3];
-                    console.log(name + " is not in cache; reading from disk");
+                    console.log("".concat(name, " is not in cache; reading from disk"));
                     return [4, fs.readFileAsync(name, 'utf8')];
                 case 1:
                     code = _a.sent();
@@ -108,7 +108,7 @@ function myRequireAsync(name) {
                     _a.sent();
                     _a.label = 3;
                 case 3:
-                    console.log(name + " is in cache. Returning it...");
+                    console.log("".concat(name, " is in cache. Returning it..."));
                     return [2, myRequireAsync.cache[name].exports];
             }
         });

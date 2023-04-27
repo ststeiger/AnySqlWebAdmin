@@ -311,7 +311,11 @@ namespace Tree
 
             // let ni = document.createNodeIterator(el, NodeFilter.SHOW_ELEMENT);
             // let ni = document.createTreeWalker(this.m_tree, NodeFilter.SHOW_ELEMENT);
-            let ni = document.createTreeWalker(this.m_tree, NodeFilter.SHOW_ELEMENT, this.createVisibleListNodesFilter(), false);
+            let ni = document.createTreeWalker(this.m_tree
+                , NodeFilter.SHOW_ELEMENT
+                , this.createVisibleListNodesFilter()
+                // , false
+            );
 
             ni.currentNode = el;
 
@@ -327,7 +331,13 @@ namespace Tree
         protected getPreviousTab(el: HTMLElement): HTMLElement
         {
             let currentNode: Node;
-            let ni = document.createTreeWalker(this.m_tree, NodeFilter.SHOW_ELEMENT, this.createVisibleListNodesFilter(), false);
+            let ni = document.createTreeWalker(
+                this.m_tree,
+                NodeFilter.SHOW_ELEMENT,
+                this.createVisibleListNodesFilter()
+                // ,false
+            );
+
             ni.currentNode = el;
 
             while (currentNode = ni.previousNode())

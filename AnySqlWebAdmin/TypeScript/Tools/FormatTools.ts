@@ -43,7 +43,7 @@ let FormatTools =
         }
 
         // Pad with n "0"-chars
-        , mp: function (d:Date, n:Number)
+        , mp: function (d: Date, n: number)
         {
             let i = 3, res = this.p(d.getMilliseconds(), 3).substr(0, n);
             

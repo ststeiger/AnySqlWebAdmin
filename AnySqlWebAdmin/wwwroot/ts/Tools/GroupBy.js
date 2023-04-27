@@ -25,9 +25,14 @@ var __read = (this && this.__read) || function (o, n) {
     }
     return ar;
 };
-var __spread = (this && this.__spread) || function () {
-    for (var ar = [], i = 0; i < arguments.length; i++) ar = ar.concat(__read(arguments[i]));
-    return ar;
+var __spreadArray = (this && this.__spreadArray) || function (to, from, pack) {
+    if (pack || arguments.length === 2) for (var i = 0, l = from.length, ar; i < l; i++) {
+        if (ar || !(i in from)) {
+            if (!ar) ar = Array.prototype.slice.call(from, 0, i);
+            ar[i] = from[i];
+        }
+    }
+    return to.concat(ar || Array.prototype.slice.call(from));
 };
 function groupBy(array, grouping) {
     var keys = grouping.keys;
@@ -40,8 +45,8 @@ function groupBy(array, grouping) {
             return (__assign(__assign({}, o), (_a = {}, _a[key] = item[key], _a)));
         }, {});
         return group
-            ? groups.map(function (g) { return (g === group ? __assign(__assign({}, g), { items: __spread(g.items, [data]) }) : g); })
-            : __spread(groups, [
+            ? groups.map(function (g) { return (g === group ? __assign(__assign({}, g), { items: __spreadArray(__spreadArray([], __read(g.items), false), [data], false) }) : g); })
+            : __spreadArray(__spreadArray([], __read(groups), false), [
                 {
                     key: keys.reduce(function (o, key) {
                         var _a;
@@ -49,7 +54,7 @@ function groupBy(array, grouping) {
                     }, {}),
                     items: [data]
                 }
-            ]);
+            ], false);
     }, []);
     return grouping.thenby ? groups.map(function (g) { return (__assign(__assign({}, g), { items: groupBy(g.items, grouping.thenby) })); }) : groups;
 }
