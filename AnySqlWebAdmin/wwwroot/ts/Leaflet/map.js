@@ -1389,7 +1389,8 @@ function initMap() {
                 color: 'red',
                 weight: 3,
                 opacity: 0.5,
-                smoothFactor: 1
+                smoothFactor: 1,
+                edit_with_drag: true
             });
             firstpolyline.addTo(map);
         }
@@ -1634,7 +1635,7 @@ function initMap() {
                     map.on("click", function (e) {
                         console.log('map.on("click",', e.latlng);
                     });
-                    flugLinie();
+                    straightLine();
                     return [2];
             }
         });

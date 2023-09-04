@@ -2716,11 +2716,12 @@ async function initMap()
 
         let pointList = [pointA, pointB];
 
-        let firstpolyline = new L.Polyline(pointList, {
+        let firstpolyline = new L.Polyline(pointList, <any>{
             color: 'red',
             weight: 3,
             opacity: 0.5,
             smoothFactor: 1
+            , edit_with_drag: true
         });
         firstpolyline.addTo(map);
     }
@@ -2810,7 +2811,8 @@ async function initMap()
     }
 
 
-    flugLinie();
+    // flugLinie();
+    straightLine();
     
 
 } // End Function initMap 
