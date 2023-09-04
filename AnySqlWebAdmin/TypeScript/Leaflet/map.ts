@@ -2716,6 +2716,8 @@ async function initMap()
 
         let pointList = [pointA, pointB];
 
+
+
         let firstpolyline = new L.Polyline(pointList, <any>{
             color: 'red',
             weight: 3,
@@ -2723,6 +2725,13 @@ async function initMap()
             smoothFactor: 1
             , edit_with_drag: true
         });
+
+        firstpolyline.on('lineModified', function (e: L.LeafletEvent)
+        {
+            console.log('lineModified event triggered on polyline', e.target);
+            console.log("line-coords:", e.target.getLatLngs());
+        });
+
         firstpolyline.addTo(map);
     }
 
@@ -2811,7 +2820,7 @@ async function initMap()
     }
 
 
-    // flugLinie();
+    flugLinie();
     straightLine();
     
 

@@ -1392,6 +1392,10 @@ function initMap() {
                 smoothFactor: 1,
                 edit_with_drag: true
             });
+            firstpolyline.on('lineModified', function (e) {
+                console.log('lineModified event triggered on polyline', e.target);
+                console.log("line-coords:", e.target.getLatLngs());
+            });
             firstpolyline.addTo(map);
         }
         function calcCrow(p1, p2) {
@@ -1635,6 +1639,7 @@ function initMap() {
                     map.on("click", function (e) {
                         console.log('map.on("click",', e.latlng);
                     });
+                    flugLinie();
                     straightLine();
                     return [2];
             }
