@@ -129,10 +129,11 @@ var BlueMine;
             };
             return StringReader;
         }());
-        function ParseSimple(reader, delimiter, qualifier) {
+        function ParseSimple(text, delimiter, qualifier) {
             var ls = [];
             var inQuote = false;
             var record = [];
+            var reader = new StringReader(text);
             var sb = [];
             while (reader.PeekNum() != -1) {
                 var readChar = reader.Read();
@@ -199,14 +200,15 @@ var BlueMine;
             return ls;
         }
         Data.ParseSimple = ParseSimple;
-        function Parse(reader, delimiter, qualifier) {
-            var inQuote, record, sb, readChar;
+        function Parse(text, delimiter, qualifier) {
+            var inQuote, record, sb, reader, readChar;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         inQuote = false;
                         record = [];
                         sb = [];
+                        reader = new StringReader(text);
                         _a.label = 1;
                     case 1:
                         if (!(reader.PeekNum() != -1)) return [3, 8];
@@ -307,17 +309,23 @@ var BlueMine;
             var head = source.next().value;
             return { "head": head, "tail": EnumerateTail(source) };
         }
-        function ParseHeadAndTail(reader, delimiter, qualifier) {
-            return HeadAndTail(Parse(reader, delimiter, qualifier));
+        function ParseHeadAndTail(text, delimiter, qualifier) {
+            return HeadAndTail(Parse(text, delimiter, qualifier));
         }
         Data.ParseHeadAndTail = ParseHeadAndTail;
+        function ParsePSV(text) {
+            var delimiter = "|";
+            var qualifier = '"';
+            text = text.split("<br>").join("\n");
+            return ParseSimple(text, delimiter, qualifier);
+        }
+        Data.ParsePSV = ParsePSV;
         function test() {
             var e_1, _a;
             var foo = "abc\tdef\tghi\nhelloWolrd\t\t\n\"Hello\tWorld\"\ttest1\ttest2\n\"\"\"Hello\tWorld\"\"\"\ttest3\ttest4\n\t\"\"\"Hello\tHell\"\"\"\t";
-            var reader = new StringReader(foo);
             var delimiter = "\t";
             var qualifier = '"';
-            var a = ParseHeadAndTail(reader, delimiter, qualifier);
+            var a = ParseHeadAndTail(foo, delimiter, qualifier);
             for (var i = 0; i < a.head.length; ++i) {
                 console.log(i, a.head[i]);
             }
@@ -336,11 +344,14 @@ var BlueMine;
             }
         }
         Data.test = test;
+        function testPSV() {
+            ParsePSV('PLNC||0|EOR|<br>SUBD|Pines|1|EOR|<br>CITY|Fort Myers|1|EOR|<br>');
+        }
+        Data.testPSV = testPSV;
         function parseExcel(clipboardText) {
-            var reader = new StringReader(clipboardText);
             var delimiter = "\t";
             var qualifier = '"';
-            var result = ParseSimple(reader, delimiter, qualifier);
+            var result = ParseSimple(clipboardText, delimiter, qualifier);
             return result;
         }
         Data.parseExcel = parseExcel;

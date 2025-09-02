@@ -140,11 +140,14 @@ namespace BlueMine.Data
 
 
     //public static List<List<string>> ParseSimple(System.IO.TextReader reader, char delimiter, char qualifier)
-    export function ParseSimple(reader: StringReader, delimiter: string, qualifier: string): string[][]
+    export function ParseSimple(text: string, delimiter: string, qualifier: string): string[][]
     {
         let ls: string[][] = [];
         let inQuote: boolean = false;
         let record: string[] = [];
+
+
+        let reader = new StringReader(text);
 
         let sb: string[] = [];
         while (reader.PeekNum() != -1)
@@ -239,15 +242,16 @@ namespace BlueMine.Data
     }
 
 
-
-
-
-    export function* Parse(reader: StringReader, delimiter: string, qualifier: string) 
+    export function* Parse(text: string, delimiter: string, qualifier: string) 
         : Iterator<string[]>
     {
         let inQuote: boolean = false;
         let record: string[]= [];
         let sb: string[] = [];
+
+
+        let reader = new StringReader(text);
+
 
         while (reader.PeekNum() != -1)
         {
@@ -357,10 +361,22 @@ namespace BlueMine.Data
 
 
 
-    export function ParseHeadAndTail(reader: StringReader, delimiter: string, qualifier: string)
+    export function ParseHeadAndTail(text: string, delimiter: string, qualifier: string)
     {
-        return HeadAndTail(Parse(reader, delimiter, qualifier));
+        return HeadAndTail(Parse(text, delimiter, qualifier));
     }
+
+    
+
+    export function ParsePSV(text: string):string[][]
+    {
+        const delimiter = "|";
+        const qualifier = '"';
+        text = text.split("<br>").join("\n");// Ancient replace
+
+        return ParseSimple(text, delimiter, qualifier);
+    }
+
 
 
     // Comparison of generators ECMA vs. C#: 
@@ -395,14 +411,13 @@ helloWolrd
 
         // foo = `abc	def	ghi`;
 
-        let reader: StringReader = new StringReader(foo);
         let delimiter: string = "\t";
         let qualifier: string = '"';
 
         //let result: string[][] = ParseSimple(reader, delimiter, qualifier);
         // console.log("parsed csv:", result);
 
-        let a = ParseHeadAndTail(reader, delimiter, qualifier);
+        let a = ParseHeadAndTail(foo, delimiter, qualifier);
 
         for (let i = 0; i < a.head.length; ++i)
         {
@@ -421,13 +436,20 @@ helloWolrd
     }
 
 
+    export function testPSV()
+    {
+
+        ParsePSV('PLNC||0|EOR|<br>SUBD|Pines|1|EOR|<br>CITY|Fort Myers|1|EOR|<br>');
+    }
+
+
+
     export function parseExcel(clipboardText: string):string[][]
     {
-        let reader: StringReader = new StringReader(clipboardText);
         let delimiter: string = "\t";
         let qualifier: string = '"';
 
-        let result: string[][] = ParseSimple(reader, delimiter, qualifier);
+        let result: string[][] = ParseSimple(clipboardText, delimiter, qualifier);
         return result;
     }
 
