@@ -30,7 +30,7 @@ namespace AnySqlWebAdmin.Code.Trash
             // csb.Host = System.Environment.MachineName; // doesn't work 
             csb.Port = 5432;
 
-            csb.IntegratedSecurity = true;
+            // csb.IntegratedSecurity = true;
             csb.Username = System.Environment.UserName; // Works when user exists
             // csb.Username = "postgres"; // works as root 
 

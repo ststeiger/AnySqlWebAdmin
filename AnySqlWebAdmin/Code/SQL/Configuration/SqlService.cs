@@ -74,7 +74,7 @@ namespace AnySqlWebAdmin
 
         private static string GetMyCS()
         {
-            var csb = new MySql.Data.MySqlClient.MySqlConnectionStringBuilder();
+            var csb = new MySqlConnector.MySqlConnectionStringBuilder();
             
             if (System.Environment.OSVersion.Platform == System.PlatformID.Unix)
                 csb.Server = System.Environment.MachineName;
@@ -117,8 +117,9 @@ namespace AnySqlWebAdmin
                 csb.Host = System.Environment.MachineName + @"\SQLEXPRESS";
 
             csb.Database = "COR_Basic_Demo_V4";
-            csb.IntegratedSecurity = System.Environment.OSVersion.Platform != System.PlatformID.Unix;
-            if (!csb.IntegratedSecurity)
+            // csb.IntegratedSecurity = System.Environment.OSVersion.Platform != System.PlatformID.Unix;
+            // if (!csb.IntegratedSecurity)
+            if(true)
             {
                 csb.Username = TestPlotly.SecretManager.GetSecret<string>("DefaultDbUser");
                 csb.Password = TestPlotly.SecretManager.GetSecret<string>("DefaultDbPassword");

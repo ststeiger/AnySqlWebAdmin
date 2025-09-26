@@ -1,0 +1,52 @@
+{
+  "compileOnSave": true,
+
+  "compilerOptions": {
+    "target": "ES5", //"target": "es5",
+    "module": "AMD", // define, export, like playground
+    // "module": "commonjs", // require
+    // "module": "es2015", // just like typescript
+    // "module": "system", // System.register
+    //  "module": "umd", // factory, require, exports
+    // "module": "esnext", // like typescript
+    // "module": "none", // Object.defineProperty, require
+    // "module": "commonjs",
+    "lib": [
+      "DOM",
+      "ES5",
+      "ES2016",
+      "ES2015.promise"
+    ],
+
+    "noImplicitAny": true,
+    "noEmitOnError": true,
+    "removeComments": true,
+    "sourceMap": false,
+    // "outDir": "../../wwwroot/ts/SpatialDistance",
+    "outFile": "../../wwwroot/ts/SpatialDistance/main.js",
+    "rootDir": "./",
+    "allowUnreachableCode": true
+    //,"alwaysStrict ": true,
+  },
+  "exclude": [
+    "node_modules",
+    "wwwroot",
+    "**/*.test.ts" 
+  ],
+
+  "include": [
+    "**/*"
+  ],
+  // order: as specified in files, then comes rest of rootDir in "alphabetical" order...
+  "files": [
+    "Radian.ts",
+    "Latitude.ts",
+    "Longitude.ts",
+    "SpeedUnit.ts",
+    "Speed.ts",
+    "DistanceUnit.ts",
+    "Distance.ts",
+    "Ellipsoid.ts",
+    "Position.ts"
+  ]
+}

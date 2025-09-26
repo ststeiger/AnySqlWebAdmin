@@ -4,6 +4,7 @@
       "autoPrefix": "",
       "cssComb": "none",
       "ieCompat": true,
+      "math": null,
       "strictMath": false,
       "strictUnits": false,
       "relativeUrls": true,
@@ -13,13 +14,10 @@
       "sourceMap": false
     },
     "sass": {
-      "includePath": "",
-      "indentType": "space",
-      "indentWidth": 2,
-      "outputStyle": "nested",
-      "Precision": 5,
+      "autoPrefix": "",
+      "loadPaths": "",
+      "style": "expanded",
       "relativeUrls": true,
-      "sourceMapRoot": "",
       "sourceMap": false
     },
     "stylus": {
@@ -31,6 +29,18 @@
     "coffeescript": {
       "bare": false,
       "runtimeMode": "node",
+      "sourceMap": false
+    },
+    "handlebars": {
+      "root": "",
+      "noBOM": false,
+      "name": "",
+      "namespace": "",
+      "knownHelpersOnly": false,
+      "forcePartial": false,
+      "knownHelpers": [],
+      "commonjs": "",
+      "amd": false,
       "sourceMap": false
     }
   },

@@ -1,0 +1,92 @@
+
+Make it easy and fast for 
+- MS-SQL
+- PG-SQL 
+- Oracle-SQL 
+- MySQL/MariaDB
+- Firebird 
+- SQLite 
+- IBM DB2
+- SAP ASA (formerly Sybase) 
+- SAP MaxDB
+- SAP HANA  
+
+to
+
+- Edit a query - view results 
+- Edit data 
+- View Tables, Views, Routines, Users
+- Backup and restore database 
+- Export data 
+- Script Schema
+- Script Insert/Update Data
+- Add primary/foreign key, triggers, and constraints
+- Add new user
+- Add linked server
+- Visualize Schema 
+- Blob-Viewer
+
+
+Secondary goals: 
+- MS-Access 
+- Teradata
+
+
+Tertiary Goals
+Basic tabular support for 
+
+
+- Cassandra
+- SparkSQL 
+- MongoDB
+- Redis 
+- HyperTable 
+- Couchbase 
+- Vertica 
+- Amazon Redshift 
+- Impala 
+
+
+https://db-engines.com/en/ranking
+
+Non-Goals: 
+Visual Query Builder 
+
+Target platforms:
+- Linux
+- Mac 
+- Windows 
+- *Docker 
+
+Technologies:
+- nginx/IIS/self-hosted 
+- .NET-Core/C#
+- SASS 
+- TypeScript 
+- Fetch/WebSockets 
+- Async 
+- JSON/XML
+- NodeJS/EdgeJS
+- D3.js
+- wkHtmlToX
+- Leatlet
+- Wikipedia Maps/OSM 
+- Monaco
+- MathJax
+- github-flavored markdown 
+- Mediawiki Parsoid
+
+
+
+Technologies/Frameworks not to use 
+- WebForms 
+- XmlHttpRequest
+- BootStrap
+- LESS 
+- jQuery/Angular/Ember/ReactJS/VueJS/mootools/Underscore
+- IE11
+- PlainJS 
+- Apache/LightHttp 
+- nHibernate
+- EntityFramework 
+- WebAssembly 

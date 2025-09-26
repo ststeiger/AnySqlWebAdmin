@@ -1,0 +1,56 @@
+{
+  "compileOnSave": true,
+
+  "compilerOptions": {
+    "target": "ES5",
+    // "target": "es6",
+    // "target": "es2015",
+    // "target": "es2016",
+    // "target": "es2017",
+    // "target": "es2018",
+    // "target": "esnext",
+    //"module": "amd", // define, export, like playground
+    // "module": "commonjs", // require
+    "module": "ES2015", // just like typescript
+    // "module": "system", // System.register
+    //  "module": "umd", // factory, require, exports
+    // "module": "esnext", // like typescript
+    // "module": "none", // Object.defineProperty, require
+    // "module": "commonjs",
+    "lib": [
+      "DOM",
+      // "webworker",
+      // "scripthost",
+      // "ES6",
+      "ES2016",
+      "ES2015.Promise",
+      // "ES2015.Core",
+      // "ES2015.Proxy",
+      // "ES2015.Iterable",
+      // "ES2015"
+      // "ES2016"
+      // "ES2017"
+      // "ES2018"
+      // "esnext"
+    ],
+
+    // "importHelpers": true,
+    "noImplicitAny": true,
+    "noEmitOnError": true,
+    "removeComments": true,
+    "sourceMap": false,
+    "outDir": "../../wwwroot/ts/Leaflet",
+    "rootDir": "./",
+    "allowUnreachableCode": true
+    //,"alwaysStrict ": true,
+  },
+  "exclude": [
+    "node_modules",
+    "wwwroot"
+  ],
+
+  "include": [
+    "**/*"
+  ]
+
+}

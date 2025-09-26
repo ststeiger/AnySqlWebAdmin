@@ -7,9 +7,9 @@ namespace TestTransform
     {
         
         
-        public static GeoAPI.Geometries.Coordinate FromWgs84(decimal lat, decimal lon) //, int zoom)
+        public static NetTopologySuite.Geometries.Coordinate FromWgs84(decimal lat, decimal lon) //, int zoom)
         {
-            GeoAPI.Geometries.Coordinate coord = new GeoAPI.Geometries.Coordinate();
+            NetTopologySuite.Geometries.Coordinate coord = new NetTopologySuite.Geometries.Coordinate();
             
             coord.X = ((double)lon + 180.0) / 360.0; // * System.Math.Pow(2, zoom);
             coord.Y =
@@ -48,13 +48,13 @@ namespace TestTransform
         } // End Function ToWgs84 
         
         
-        public static GeoAPI.Geometries.Coordinate FromWgs84(this Wgs84Coordinates coords) //, int zoom)
+        public static NetTopologySuite.Geometries.Coordinate FromWgs84(this Wgs84Coordinates coords) //, int zoom)
         {
             return FromWgs84(coords.Latitude, coords.Longitude); //, int zoom)
         } // End Function FromWgs84
         
         
-        public static Wgs84Coordinates ToWgs84(this GeoAPI.Geometries.Coordinate coord) //, int z)
+        public static Wgs84Coordinates ToWgs84(this NetTopologySuite.Geometries.Coordinate coord) //, int z)
         {
             return ToWgs84(coord.X, coord.Y);
         } // End Function ToWgs84 
@@ -78,14 +78,14 @@ namespace TestTransform
         }
 
 
-            public static GeoAPI.Geometries.Coordinate[] ToNetTopologyCoordinates(this Wgs84Coordinates[] coords) //, int z)
+        public static NetTopologySuite.Geometries.Coordinate[] ToNetTopologyCoordinates(this Wgs84Coordinates[] coords) //, int z)
         {
-            GeoAPI.Geometries.Coordinate[] coordinates = new GeoAPI.Geometries.Coordinate[coords.Length];
+            NetTopologySuite.Geometries.Coordinate[] coordinates = new NetTopologySuite.Geometries.Coordinate[coords.Length];
             
             for (int i = 0; i < coords.Length; ++i)
             {
                 // coordinates[i]= FromWgs84(coords[0]);
-                coordinates[i] = new GeoAPI.Geometries.Coordinate((double)coords[i].Latitude, (double)coords[i].Longitude, 0.0);
+                coordinates[i] = new NetTopologySuite.Geometries.Coordinate((double)coords[i].Latitude, (double)coords[i].Longitude);
             } // Next i 
             
             return coordinates;

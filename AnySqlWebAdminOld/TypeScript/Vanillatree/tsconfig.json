@@ -1,0 +1,39 @@
+{
+  "compileOnSave": true,
+
+  "compilerOptions": {
+    "target": "ES5", //"target": "es5",
+    //"module": "amd", // define, export, like playground
+    // "module": "commonjs", // require
+    "module": "ES2015", // just like typescript
+    // "module": "system", // System.register
+    // "module": "umd", // factory, require, exports
+    // "module": "esnext", // like typescript
+    // "module": "none", // Object.defineProperty, require
+    // "module": "commonjs",
+    "lib": [
+      "DOM",
+      "ES2016",
+      "ES2015.Promise",
+      "ES2015.Proxy"
+    ],
+
+    "noImplicitAny": true,
+    "noEmitOnError": true,
+    "removeComments": true,
+    "sourceMap": false,
+    "outDir": "../../wwwroot/ts/Vanillatree",
+    "rootDir": "./",
+    "allowUnreachableCode": true
+    //,"alwaysStrict ": true,
+  },
+  "exclude": [
+    "node_modules",
+    "wwwroot"
+  ],
+
+  "include": [
+    "**/*"
+  ]
+
+}

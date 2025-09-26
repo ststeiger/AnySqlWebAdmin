@@ -1,9 +1,11 @@
 ﻿body {
-  background-color: #282828; }
+  background-color: rgb(40, 40, 40);
+}
 
 h1 {
-  color: #28aadc; }
+  color: rgb(40, 170, 220);
+}
 
 .container {
-  padding: 2em; }
-
+  padding: 2em;
+}

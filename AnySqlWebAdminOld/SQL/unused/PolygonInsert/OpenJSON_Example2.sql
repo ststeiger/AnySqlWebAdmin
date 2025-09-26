@@ -1,0 +1,130 @@
+
+/*
+
+-- How to get the polygon coordinates:
+
+[46.5087711, 6.4958689]
+
+map.setView([46.5087711, 6.4958689], 18, { animate: true });
+
+map.on("click", function (e:L.LeafletMouseEvent)
+{  
+	console.log(e.latlng);
+});
+*/
+
+
+-- Coordinates from OSM.org 
+-- OSM is COUNTER-clockwise  (OSM wants the polygon points in counterclockwise sequence) 
+DECLARE @json NVarChar(2048) = N'[
+ {"lat": 46.5088158386034,  "lng": 6.495972275733949}
+,{"lat": 46.50878076437425, "lng": 6.495746970176697}
+,{"lat": 46.50876045823126, "lng": 6.495744287967683}
+,{"lat": 46.50865338935172, "lng": 6.4958006143569955}
+,{"lat": 46.50869584772572, "lng": 6.496023237705232}
+]'; 
+
+
+DECLARE @gb_uid uniqueidentifier; 
+SET @gb_uid = 'FBDCC862-0475-4158-9DE2-ADD244FC59F7'; 
+
+
+DELETE FROM T_ZO_Objekt_Wgs84Polygon WHERE ZO_OBJ_WGS84_GB_UID = @gb_uid; 
+
+
+
+INSERT INTO T_ZO_Objekt_Wgs84Polygon 
+(
+	 ZO_OBJ_WGS84_UID
+	,ZO_OBJ_WGS84_GB_UID
+	,ZO_OBJ_WGS84_SO_UID
+	,ZO_OBJ_WGS84_Sort
+	,ZO_OBJ_WGS84_GM_Lat
+	,ZO_OBJ_WGS84_GM_Lng
+)
+SELECT 
+	 NEWID() AS ZO_OBJ_WGS84_UID 
+	,@gb_uid AS ZO_OBJ_WGS84_GB_UID 
+	,NULL AS ZO_OBJ_WGS84_SO_UID 
+	,ROW_NUMBER() OVER(ORDER BY (SELECT NULL)) AS ZO_OBJ_WGS84_Sort 
+	,Coordinates.lat AS ZO_OBJ_WGS84_GM_Lat 
+	,Coordinates.lng AS ZO_OBJ_WGS84_GM_Lng 
+FROM OpenJson(@json) 
+WITH ( lat decimal(23, 20), lng decimal(23, 20) ) AS Coordinates 
+; 
+
+
+
+
+-- SELECT * FROM T_AP_Gebaeude 
+-- WHERE GB_Strasse LIKE '%rue de la gare%'
+
+
+-- SELECT GB_UID, GB_Strasse, GB_PLZ, GB_Ort, GB_GM_Lat, GB_GM_Lng 
+-- FROM T_AP_Gebaeude 
+-- WHERE GB_Strasse LIKE '%rue de la gare%'
+
+-- --  {lat: 46.50873830606656, lng: 6.4958783984184265}
+-- UPDATE T_AP_Gebaeude 
+-- 	SET  GB_GM_Lat = '46.50873830606656'
+-- 		,GB_GM_Lng = '6.4958783984184265' 
+-- WHERE GB_Strasse LIKE '%rue de la gare%'
+
+
+
+
+/*
+-- Coordinates from Google-Maps
+DELETE FROM T_ZO_Objekt_Wgs84Polygon 
+WHERE ZO_OBJ_WGS84_GB_UID = 'FBDCC862-0475-4158-9DE2-ADD244FC59F7' 
+
+
+INSERT INTO T_ZO_Objekt_Wgs84Polygon 
+(
+	 ZO_OBJ_WGS84_UID
+	,ZO_OBJ_WGS84_GB_UID
+	,ZO_OBJ_WGS84_SO_UID
+	,ZO_OBJ_WGS84_Sort
+	,ZO_OBJ_WGS84_GM_Lat
+	,ZO_OBJ_WGS84_GM_Lng
+)
+SELECT 
+	 NEWID() AS ZO_OBJ_WGS84_UID
+	,'FBDCC862-0475-4158-9DE2-ADD244FC59F7' AS ZO_OBJ_WGS84_GB_UID
+	,NULL AS ZO_OBJ_WGS84_SO_UID
+	,1 AS ZO_OBJ_WGS84_Sort
+	,46.508781 AS ZO_OBJ_WGS84_GM_Lat
+	,6.495632 AS ZO_OBJ_WGS84_GM_Lng
+
+UNION ALL 
+
+SELECT 
+	 NEWID() AS ZO_OBJ_WGS84_UID
+	,'FBDCC862-0475-4158-9DE2-ADD244FC59F7' AS ZO_OBJ_WGS84_GB_UID
+	,NULL AS ZO_OBJ_WGS84_SO_UID
+	,2 AS ZO_OBJ_WGS84_Sort
+	,46.508654 AS ZO_OBJ_WGS84_GM_Lat
+	,6.495690 AS ZO_OBJ_WGS84_GM_Lng
+
+	
+UNION ALL 
+
+SELECT 
+	 NEWID() AS ZO_OBJ_WGS84_UID
+	,'FBDCC862-0475-4158-9DE2-ADD244FC59F7' AS ZO_OBJ_WGS84_GB_UID
+	,NULL AS ZO_OBJ_WGS84_SO_UID
+	,3 AS ZO_OBJ_WGS84_Sort
+	,46.508705 AS ZO_OBJ_WGS84_GM_Lat
+	,6.495910 AS ZO_OBJ_WGS84_GM_Lng
+
+
+UNION ALL 
+
+SELECT 
+	 NEWID() AS ZO_OBJ_WGS84_UID
+	,'FBDCC862-0475-4158-9DE2-ADD244FC59F7' AS ZO_OBJ_WGS84_GB_UID
+	,NULL AS ZO_OBJ_WGS84_SO_UID
+	,4 AS ZO_OBJ_WGS84_Sort
+	,46.508823 AS ZO_OBJ_WGS84_GM_Lat
+	,6.495861 AS ZO_OBJ_WGS84_GM_Lng
+*/

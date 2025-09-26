@@ -1,0 +1,47 @@
+{
+  "compileOnSave": true,
+
+  "compilerOptions": {
+    //"target": "es5", //"target": "es5",
+    "target": "ES5", //"target": "ES2015",
+    //"module": "amd", // define, export, like playground
+    // "module": "commonjs", // require
+    "module": "es2015", // just like typescript
+    // "module": "system", // System.register
+    //  "module": "umd", // factory, require, exports
+    // "module": "esnext", // like typescript
+    // "module": "none", // Object.defineProperty, require
+    // "module": "commonjs",
+    "lib": [
+      "DOM",
+      "DOM.Iterable",
+      // "ES5",
+      // "ES6",
+      // "ES7",
+      // "ES2015",
+      "ES2016",
+      // "ES2015.Iterable",
+      // "ES2015.Symbol",
+      "ES2015.Promise",
+      "ES2015.Proxy"
+    ],
+
+    "noImplicitAny": true,
+    "noEmitOnError": true,
+    "removeComments": true,
+    "sourceMap": false,
+    "outDir": "../../wwwroot/ts/DataBinding",
+    "rootDir": "./",
+    "allowUnreachableCode": true
+    //,"alwaysStrict ": true,
+  },
+  "exclude": [
+    "node_modules",
+    "wwwroot"
+  ],
+
+  "include": [
+    "**/*"
+  ]
+
+}

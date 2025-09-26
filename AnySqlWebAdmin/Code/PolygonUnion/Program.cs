@@ -1,7 +1,4 @@
 ﻿
-using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
-using Vectors;
-
 namespace TestTransform
 {
 
@@ -79,28 +76,19 @@ namespace TestTransform
     public static class LOLdistance
     {
         
-        
-        public static double DistanceBetweenPlaces(double lat1
-            , double lon1
-            , double lat2
-            , double lon2)
-        {
-            // new GeoAPI.Geometries.Coordinate((double)coords[i].Latitude, (double)coords[i].Longitude, 0.0);
-            var pointACoordinate = new GeoAPI.Geometries.Coordinate(lat1, lon1, 0.0);
-            var pointBCoordinate = new GeoAPI.Geometries.Coordinate(lat2, lon2, 0.0);
-            
-            return pointACoordinate.Distance(pointBCoordinate);
-        }
 
-        public static double Distance3dBetweenPlaces(double lat1
-            , double lon1
-            , double lat2
-            , double lon2)
+        public static double DistanceBetweenPlaces(double lat1,
+                                           double lon1,
+                                           double lat2,
+                                           double lon2)
         {
-            var pointACoordinate = new GeoAPI.Geometries.Coordinate(lat1, lon1, 0.0);
-            var pointBCoordinate = new GeoAPI.Geometries.Coordinate(lat2, lon2, 0.0);
-            
-            return pointACoordinate.Distance3D(pointBCoordinate);
+            // WARNING: Coordinate takes (X,Y,Z) = (longitude, latitude, Z)
+            // If your inputs are lat/lon, flip them when creating the coordinate.
+            NetTopologySuite.Geometries.Coordinate a = new NetTopologySuite.Geometries.Coordinate(lon1, lat1);
+            NetTopologySuite.Geometries.Coordinate b = new NetTopologySuite.Geometries.Coordinate(lon2, lat2);
+
+            // 2-D Euclidean distance in the same coordinate system (degrees if using raw lat/lon)
+            return a.Distance(b);
         }
 
 
@@ -141,13 +129,13 @@ namespace TestTransform
                 latLonPoints, z, projFrom, projTo
                 , 0, latLonPoints.Length / 2
             );
-            
+
             // assemblying new points array to create polygon
-            GeoAPI.Geometries.Coordinate[] polyPoints = new GeoAPI.Geometries.Coordinate[latLonPoints.Length / 2];
+            NetTopologySuite.Geometries.Coordinate[] polyPoints = new NetTopologySuite.Geometries.Coordinate[latLonPoints.Length / 2];
 
             for (int i = 0; i < latLonPoints.Length / 2; ++i)
             {
-                polyPoints[i] = new GeoAPI.Geometries.Coordinate(latLonPoints[i * 2], latLonPoints[i * 2 + 1]);
+                polyPoints[i] = new NetTopologySuite.Geometries.Coordinate(latLonPoints[i * 2], latLonPoints[i * 2 + 1]);
             } // Next i 
 
             // Assembling linear ring to create polygon 
@@ -158,10 +146,10 @@ namespace TestTransform
             line.SRID = 4326;
 
 
-            GeoAPI.Geometries.Coordinate[] unprojPoints = new GeoAPI.Geometries.Coordinate[]
+            NetTopologySuite.Geometries.Coordinate[] unprojPoints = new NetTopologySuite.Geometries.Coordinate[]
             {
-                new GeoAPI.Geometries.Coordinate((double)a.Latitude, (double)a.Longitude, 0),
-                new GeoAPI.Geometries.Coordinate((double)b.Latitude, (double)b.Longitude, 0)
+                new NetTopologySuite.Geometries.Coordinate((double)a.Latitude, (double)a.Longitude),
+                new NetTopologySuite.Geometries.Coordinate((double)b.Latitude, (double)b.Longitude)
             };
             var unprojline = new NetTopologySuite.Geometries.LineString(unprojPoints);
             unprojline.SRID = 4326;
@@ -208,7 +196,6 @@ namespace TestTransform
             double lon2 = (double)sg.Longitude;
 
             double d = LOLdistance.DistanceBetweenPlaces(lat1, lon1, lat2, lon2);
-            double d3d = LOLdistance.Distance3dBetweenPlaces(lat1, lon1, lat2, lon2);
 
             double fastd = FastDistance.DistanceBetweenPlaces(lat1, lon1, lat2, lon2);
             double dp = DistanceAlgorithm.DistanceBetweenPlaces(lat1, lon1, lat2, lon2);
@@ -225,7 +212,7 @@ namespace TestTransform
 
             // SELECT @fab.STDistance(@sg), @sg.STDistance(@fab)-- 31813.1626618977
 
-            System.Console.WriteLine("", d, d3d, fastd, dp, decDistance, pd, sd);
+            System.Console.WriteLine("", d, fastd, dp, decDistance, pd, sd);
         }
 
     }
@@ -475,6 +462,9 @@ namespace TestTransform
                 , 0, latLonPoints.Length / 2
             );
 
+
+
+#if OLD_NETTOPOLOGYSUITE_VERION
             // assemblying new points array to create polygon
             GeoAPI.Geometries.Coordinate[] polyPoints = new GeoAPI.Geometries.Coordinate[latLonPoints.Length / 2];
 
@@ -490,11 +480,41 @@ namespace TestTransform
             if (!lr.IsValid)
                 throw new System.IO.InvalidDataException("Coordinates are invalid.");
 
+
+            
             GeoAPI.Geometries.IPolygon poly = new NetTopologySuite.Geometries.Polygon(lr);
             if (!poly.IsValid)
                 throw new System.IO.InvalidDataException("Polygon is invalid.");
+#else
+            // Build NetTopologySuite coordinates (XY = projected meters)
+            NetTopologySuite.Geometries.Coordinate[] polyPoints = new NetTopologySuite.Geometries.Coordinate[latLonPoints.Length / 2];
 
-            
+            for (int i = 0; i < latLonPoints.Length / 2; ++i)
+            {
+                polyPoints[i] = new NetTopologySuite.Geometries.Coordinate(latLonPoints[i * 2], latLonPoints[i * 2 + 1]);
+            } // Next i 
+
+            // Close the ring if first ≠ last (NTS requires closure for area)
+            if (!polyPoints[0].Equals2D(polyPoints[polyPoints.Length - 1]))
+            {
+                System.Array.Resize(ref polyPoints, polyPoints.Length + 1);
+                polyPoints[^1] = polyPoints[0];
+            }
+
+            // Create polygon and compute area
+            NetTopologySuite.Geometries.GeometryFactory gf = NetTopologySuite.Geometries.GeometryFactory.Default;
+            NetTopologySuite.Geometries.LinearRing shell = gf.CreateLinearRing(polyPoints);
+
+            if (!shell.IsValid)
+                throw new System.InvalidOperationException("Coordinates form an invalid LinearRing.");
+
+
+            NetTopologySuite.Geometries.Polygon poly = gf.CreatePolygon(shell);
+
+            if (!poly.IsValid)
+                throw new System.InvalidOperationException("Polygon is invalid.");
+#endif
+
 
             return poly.Area;
         } // End Function CalculateArea 
@@ -519,15 +539,30 @@ namespace TestTransform
 
             DotSpatial.Projections.Reproject.ReprojectPoints(pointsArray, z, projFrom, projTo, 0, pointsArray.Length / 2);
 
+
             // assemblying new points array to create polygon
-            var points = new System.Collections.Generic.List<GeoAPI.Geometries.Coordinate>(pointsArray.Length / 2);
+            var points = new System.Collections.Generic.List<NetTopologySuite.Geometries.Coordinate>(pointsArray.Length / 2);
             for (int i = 0; i < pointsArray.Length / 2; i++)
-                points.Add(new GeoAPI.Geometries.Coordinate(pointsArray[i * 2], pointsArray[i * 2 + 1]));
+                points.Add(new NetTopologySuite.Geometries.Coordinate(pointsArray[i * 2], pointsArray[i * 2 + 1]));
 
             NetTopologySuite.Geometries.LinearRing lr =
                 new NetTopologySuite.Geometries.LinearRing(points.ToArray());
 
-            GeoAPI.Geometries.IPolygon poly = new NetTopologySuite.Geometries.Polygon(lr);
+            // Close the ring if first ≠ last (NTS requires closure for area)
+            if (!points[0].Equals2D(points[points.Count - 1]))
+            {
+                points[^1] = points[0];
+            }
+
+            // Create polygon and compute area
+            NetTopologySuite.Geometries.GeometryFactory gf = NetTopologySuite.Geometries.GeometryFactory.Default;
+            NetTopologySuite.Geometries.LinearRing shell = gf.CreateLinearRing(points.ToArray());
+
+            if (!shell.IsValid)
+                throw new System.InvalidOperationException("Coordinates form an invalid LinearRing.");
+
+
+            NetTopologySuite.Geometries.Polygon poly = gf.CreatePolygon(shell);
             return poly.Area;
         }
 
@@ -548,15 +583,20 @@ namespace TestTransform
 
             NetTopologySuite.Geometries.GeometryFactory geomFactory = new NetTopologySuite.Geometries.GeometryFactory();
 
-            GeoAPI.Geometries.IPolygon poly1 = geomFactory.CreatePolygon(coords1.ToNetTopologyCoordinates());
-            GeoAPI.Geometries.IPolygon poly2 = geomFactory.CreatePolygon(coords2.ToNetTopologyCoordinates());
-            GeoAPI.Geometries.IPolygon poly3 = geomFactory.CreatePolygon(coords3.ToNetTopologyCoordinates());
-            GeoAPI.Geometries.IPolygon poly4 = geomFactory.CreatePolygon(coords4.ToNetTopologyCoordinates());
+            NetTopologySuite.Geometries.Geometry poly1 = geomFactory.CreatePolygon(coords1.ToNetTopologyCoordinates());
+            NetTopologySuite.Geometries.Geometry poly2 = geomFactory.CreatePolygon(coords2.ToNetTopologyCoordinates());
+            NetTopologySuite.Geometries.Geometry poly3 = geomFactory.CreatePolygon(coords3.ToNetTopologyCoordinates());
+            NetTopologySuite.Geometries.Geometry poly4 = geomFactory.CreatePolygon(coords4.ToNetTopologyCoordinates());
+
+            // GeoAPI.Geometries.IPolygon poly1 = geomFactory.CreatePolygon(coords1.ToNetTopologyCoordinates());
+            // GeoAPI.Geometries.IPolygon poly2 = geomFactory.CreatePolygon(coords2.ToNetTopologyCoordinates());
+            // GeoAPI.Geometries.IPolygon poly3 = geomFactory.CreatePolygon(coords3.ToNetTopologyCoordinates());
+            // GeoAPI.Geometries.IPolygon poly4 = geomFactory.CreatePolygon(coords4.ToNetTopologyCoordinates());
 
 
 
-            System.Collections.Generic.List<GeoAPI.Geometries.IGeometry> lsPolygons =
-                new System.Collections.Generic.List<GeoAPI.Geometries.IGeometry>();
+            System.Collections.Generic.List<NetTopologySuite.Geometries.Geometry> lsPolygons =
+                new System.Collections.Generic.List<NetTopologySuite.Geometries.Geometry>();
 
             lsPolygons.Add(poly1);
             lsPolygons.Add(poly2);
@@ -564,10 +604,15 @@ namespace TestTransform
             lsPolygons.Add(poly4);
 
 
-            GeoAPI.Geometries.IGeometry ig = NetTopologySuite.Operation.Union.CascadedPolygonUnion.Union(lsPolygons);
+            NetTopologySuite.Geometries.GeometryCollection polygonCollection = geomFactory.CreateGeometryCollection(lsPolygons.ToArray());
+
+
+            NetTopologySuite.Geometries.Geometry ig = NetTopologySuite.Operation.Union.CascadedPolygonUnion.Union(lsPolygons);
             System.Console.WriteLine(ig.GetType().FullName);
 
-            GeoAPI.Geometries.IPolygon unionPolygon = (GeoAPI.Geometries.IPolygon)ig;
+
+
+            NetTopologySuite.Geometries.Polygon unionPolygon = (NetTopologySuite.Geometries.Polygon)ig;
             System.Console.WriteLine(poly3);
             System.Console.WriteLine(unionPolygon.Shell.Coordinates);
 
@@ -666,15 +711,9 @@ SELECT
 
             NetTopologySuite.Geometries.GeometryFactory geomFactory = new NetTopologySuite.Geometries.GeometryFactory();
 
-            GeoAPI.Geometries.IPolygon poly1 = geomFactory.CreatePolygon(coords1.ToNetTopologyCoordinates());
-            GeoAPI.Geometries.IPolygon poly2 = geomFactory.CreatePolygon(coords2.ToNetTopologyCoordinates());
 
-
-
-            /*
-            GeoAPI.Geometries.IPolygon poly1 = (GeoAPI.Geometries.IPolygon)wr.Read(s1);
-            GeoAPI.Geometries.IPolygon poly2 = (GeoAPI.Geometries.IPolygon)wr.Read(s2);
-            */
+            NetTopologySuite.Geometries.Geometry poly1 = geomFactory.CreatePolygon(coords1.ToNetTopologyCoordinates());
+            NetTopologySuite.Geometries.Geometry poly2 = geomFactory.CreatePolygon(coords2.ToNetTopologyCoordinates());
 
             poly1.SRID = 4326;
             poly2.SRID = 4326;
@@ -689,7 +728,7 @@ SELECT
             System.Console.WriteLine(poly2.Area);
 
 
-            GeoAPI.Geometries.IPolygon poly3quick = (GeoAPI.Geometries.IPolygon)poly1.Union(poly2);
+            NetTopologySuite.Geometries.Polygon poly3quick = (NetTopologySuite.Geometries.Polygon)poly1.Union(poly2);
             System.Console.WriteLine(poly3quick.IsValid);
 
             // https://gis.stackexchange.com/questions/209797/how-to-get-geometry-points-using-geo-api
@@ -697,17 +736,17 @@ SELECT
             System.Console.Write(poly2.IsValid);
 
 
-            System.Collections.Generic.List<GeoAPI.Geometries.IGeometry> lsPolygons =
-                new System.Collections.Generic.List<GeoAPI.Geometries.IGeometry>();
+            System.Collections.Generic.List<NetTopologySuite.Geometries.Geometry> lsPolygons =
+                new System.Collections.Generic.List<NetTopologySuite.Geometries.Geometry>();
 
             lsPolygons.Add(poly1);
             lsPolygons.Add(poly2);
 
 
-            GeoAPI.Geometries.IGeometry ig = NetTopologySuite.Operation.Union.CascadedPolygonUnion.Union(lsPolygons);
+            NetTopologySuite.Geometries.Geometry ig = NetTopologySuite.Operation.Union.CascadedPolygonUnion.Union(lsPolygons);
             System.Console.WriteLine(ig.GetType().FullName);
 
-            GeoAPI.Geometries.IPolygon poly3 = (GeoAPI.Geometries.IPolygon)ig;
+            NetTopologySuite.Geometries.Polygon poly3 = (NetTopologySuite.Geometries.Polygon)ig;
             System.Console.WriteLine(poly3);
 
             // POLYGON ((7.5997595 47.5507183, 7.5999034 47.5506347, 7.6001195 47.550805, 7.6003356 47.5509754

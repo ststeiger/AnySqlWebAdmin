@@ -1,0 +1,55 @@
+
+Use the Visual Studio extension called 
+Web Compiler (by Mads Kristensen) 
+to automatically watch and compile SCSS/SASS/LESS files 
+according to compilerconfig.json. 
+
+JetBrains Rider does nt support Visual Studio Extensions. 
+Gulp is a solid modern replacement for compilerconfig.json. 
+You can set up a pipeline that reads your SCSS files, 
+compiles them to CSS, and even handles minification, sourcemaps, or autoprefixing.
+
+Here’s a clean example to mimic your current setup:
+
+1. Install dependencies
+
+npm init -y
+npm install --save-dev gulp gulp-sass sass gulp-sourcemaps gulp-clean-css
+
+
+2. Crate gulpfile.js
+
+const gulp = require('gulp');
+const sass = require('gulp-sass')(require('sass'));
+const sourcemaps = require('gulp-sourcemaps');
+const cleanCSS = require('gulp-clean-css');
+
+// Map input SCSS to output CSS, similar to compilerconfig.json
+const scssFiles = [
+  { input: 'SASS/datalist_polyfill.scss', output: 'wwwroot/css/datalist_polyfill.css' },
+  { input: 'SASS/Test.scss', output: 'wwwroot/css/Test.css' }
+];
+
+// Task to compile SCSS
+function compileSass(done) {
+  scssFiles.forEach(file => {
+    gulp.src(file.input)
+      .pipe(sourcemaps.init())
+      .pipe(sass().on('error', sass.logError))
+      .pipe(cleanCSS())
+      .pipe(sourcemaps.write('.'))
+      .pipe(gulp.dest(file.output.replace(/[^\/]+\.css$/, ''))); // extract folder path
+  });
+  done();
+}
+
+// Watch task
+function watchSass() {
+  gulp.watch('SASS/**/*.scss', compileSass);
+}
+
+exports.default = gulp.series(compileSass, watchSass);
+
+3. Run Gulp
+
+npx gulp

@@ -1,0 +1,45 @@
+{
+  "compileOnSave": true,
+
+  "compilerOptions": {
+    // "target": "ES5", //"target": "es5",
+    "target": "ES5", //"target": "es5",
+    "downlevelIteration": true, // https://stackoverflow.com/questions/49218765/typescript-and-iterator-type-iterableiteratort-is-not-an-array-type
+    //"module": "amd", // define, export, like playground
+    // "module": "commonjs", // require
+    "module": "ES2015", // just like typescript
+    // "module": "system", // System.register
+    //  "module": "umd", // factory, require, exports
+    // "module": "esnext", // like typescript
+    // "module": "none", // Object.defineProperty, require
+    // "module": "commonjs",
+    "lib": [
+      "DOM",
+      // "DOM.Iterable",
+      "ES2016"
+      // "ES2015.Promise"
+      // "ES2015.Iterable"
+      // "ES2015.Generator"
+      // "ES2015.Symbol"
+      //,"ES2015.Proxy"
+    ],
+
+    "noImplicitAny": true,
+    "noEmitOnError": true,
+    "removeComments": true,
+    "sourceMap": false,
+    "outDir": "../../wwwroot/ts/Tools",
+    "rootDir": "./",
+    "allowUnreachableCode": true
+    //,"alwaysStrict ": true,
+  },
+  "exclude": [
+    "node_modules",
+    "wwwroot"
+  ],
+
+  "include": [
+    "**/*"
+  ]
+
+}

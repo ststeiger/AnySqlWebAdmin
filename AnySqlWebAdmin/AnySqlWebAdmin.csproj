@@ -1,67 +1,70 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
   <PropertyGroup>
-    <TargetFramework>netcoreapp2.0</TargetFramework>
-    <TypeScriptToolsVersion>5.0</TypeScriptToolsVersion>
+    <TargetFramework>net9.0</TargetFramework>
+    <Nullable>disable</Nullable>
+    <ImplicitUsings>disable</ImplicitUsings>
   </PropertyGroup>
-  
-  
-  <ItemGroup>
-    <Compile Remove="Code\LDS.cs" />
-    <Compile Remove="Code\Math\cVector_3d.cs" />
-    <Compile Remove="Code\SqlServiceJsonHelperAssociative.cs" />
+
+	<PropertyGroup>
+		<StaticWebAssetsEnabled>false</StaticWebAssetsEnabled>
+	</PropertyGroup>
+
+	<PropertyGroup>
+		<!-- Use the latest MSBuild-supported compiler -->
+		<TypeScriptToolsVersion>Latest</TypeScriptToolsVersion>
+	</PropertyGroup>
+	
+	
+	<PropertyGroup>
+		<!-- Produktversion -->
+		<Version>$([System.DateTime]::Now.ToString("yyyy.MM.dd.HHmm"))</Version>
+		<AssemblyVersion>$([System.DateTime]::Now.ToString("yyyy.MM.dd.HHmm"))</AssemblyVersion>
+
+		<!-- do not include git hash
+		<IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
+		-->
+
+
+		<!-- Dateiversion -->
+		<FileVersion>$([System.DateTime]::Now.ToString("yyyy.MM.dd.HHmm"))</FileVersion>
+		<!--
+		<AssemblyInformationalVersion>lolipop</AssemblyInformationalVersion>
+		-->
+		<AssemblyInformationalVersion>$([System.DateTime]::Now.ToString("yyyy.MM.dd.HHmmss"))+git.$(GitHash)</AssemblyInformationalVersion>
+		<Copyright>Test 123$(GitHash)</Copyright>
+	</PropertyGroup>
+
+
+
+
+	<ItemGroup>
+	  <Content Remove="compilerconfig.json" />
+	</ItemGroup>
+
+	<ItemGroup>
+    <PackageReference Include="CassandraCSharpDriver" Version="3.22.0" />
+    <PackageReference Include="Microsoft.TypeScript.MSBuild" Version="5.9.2">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="MySqlConnector" Version="2.4.0" />
+    <PackageReference Include="NetTopologySuite" Version="2.6.0" />
+    <PackageReference Include="Npgsql" Version="9.0.3" />
   </ItemGroup>
-  
-  
-  <ItemGroup>
-    <Content Remove="wwwroot\ts\SpatialDistance\test.ts" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Remove="TypeScript\fetch.ts" />
-    <None Remove="TypeScript\urlModifier.ts" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="wwwroot\fontawesome\" />
-  </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="CassandraCSharpDriver" Version="3.7.0" />
-    <PackageReference Include="Microsoft.AspNetCore.All" Version="2.0.9" />
-    <PackageReference Include="Microsoft.AspNetCore.HttpsPolicy" Version="2.1.1" />
-    <PackageReference Include="Microsoft.SqlServer.Types" Version="14.0.1016.290" />
-    <PackageReference Include="MySqlConnector" Version="0.48.1" />
-    <PackageReference Include="NetTopologySuite" Version="1.15.1" />
-    <PackageReference Include="Npgsql" Version="4.0.4" />
-  </ItemGroup>
-  <ItemGroup>
-    <DotNetCliToolReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Tools" Version="2.0.0" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="wwwroot\leaflet-draw\images\spritesheet.svg" />
-    <None Include="wwwroot\leaflet-draw\leaflet.draw-src.js" />
-    <None Include="wwwroot\leaflet-draw\leaflet.draw-src.map" />
-    <None Include="wwwroot\leaflet-draw\leaflet.draw.js" />
-  </ItemGroup>
+
   <ItemGroup>
     <ProjectReference Include="..\Dapper\Dapper.csproj" />
     <ProjectReference Include="..\DotSpatial.Positioning\DotSpatial.Positioning.csproj" />
     <ProjectReference Include="..\DotSpatial.Projections\DotSpatial.Projections.csproj" />
   </ItemGroup>
+
   <ItemGroup>
-    <TypeScriptCompile Include="TypeScript\Leaflet\externalTypes\leaflet-draw.d.ts" />
-    <TypeScriptCompile Include="TypeScript\Tools\MyRequire.ts" />
+    <Folder Include="TypeScript\" />
   </ItemGroup>
-  <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
-    <TypeScriptTarget>ES5</TypeScriptTarget>
-    <TypeScriptJSXEmit>None</TypeScriptJSXEmit>
-    <TypeScriptModuleKind />
-    <TypeScriptCompileOnSaveEnabled>True</TypeScriptCompileOnSaveEnabled>
-    <TypeScriptNoImplicitAny>False</TypeScriptNoImplicitAny>
-    <TypeScriptRemoveComments>False</TypeScriptRemoveComments>
-    <TypeScriptOutFile />
-    <TypeScriptOutDir />
-    <TypeScriptGeneratesDeclarations>False</TypeScriptGeneratesDeclarations>
-    <TypeScriptNoEmitOnError>True</TypeScriptNoEmitOnError>
-    <TypeScriptSourceMap>True</TypeScriptSourceMap>
-    <TypeScriptMapRoot />
-    <TypeScriptSourceRoot />
-  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="compilerconfig.json" />
+  </ItemGroup>
+
 </Project>

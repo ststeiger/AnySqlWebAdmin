@@ -1,0 +1,10 @@
+﻿[
+  {
+    "outputFile": "wwwroot/css/datalist_polyfill.css",
+    "inputFile": "SASS/datalist_polyfill.scss"
+  },
+  {
+    "outputFile": "wwwroot/css/Test.css",
+    "inputFile": "SASS/Test.scss"
+  }
+]
