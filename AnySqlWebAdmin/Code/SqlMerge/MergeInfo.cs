@@ -271,7 +271,7 @@ SET IDENTITY_INSERT {table_schema}.{table_name} ON;
                 xml.Append($@"
 
 
-MERGE INTO {table_schema}.{table_name} AS A 
+MERGE INTO {table_schema}.{table_name} WITH (HOLDLOCK) AS A 
 USING CTE ON {joinCondition} 
 ");
 
