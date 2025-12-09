@@ -1490,7 +1490,7 @@ function initMap() {
                             accessToken: 'no-token',
                             updateInterval: IEdetection().crap ? 5 : 20,
                             attribution: '<a target="blank" href="https://github.com/ststeiger/VectorTileServer ">Steiger&apos;s public vector tile server</a> | <a target="blank" href="https://openmaptiles.org ">OpenMapTiles</a> | Map data &copy; <a target="blank" href="http://openstreetmap.org/copyright">OpenStreetMap contributors</a>',
-                            style: "https://corpool.cor-asp.ch/VectorTileServer/styles/bright/style.json"
+                            style: "https://vectortileserver.cor-asp.ch/styles/bright/style.json"
                         }).addTo(map);
                         map.gl = gl;
                     }
@@ -1572,6 +1572,7 @@ function initMap() {
                         e.layer.bindPopup('A popup!');
                         console.log(e.layerType);
                         var feat = e.layer.toGeoJSON();
+                        debugger;
                         if (feat.geometry && feat.geometry.coordinates && feat.geometry.coordinates.length > 0) {
                             var polygonCoords = feat.geometry.coordinates[0].map(function (c) { return [c[1], c[0]]; });
                             console.log("polygonCoords", polygonCoords);

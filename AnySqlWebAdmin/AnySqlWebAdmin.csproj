@@ -36,7 +36,9 @@
 	</PropertyGroup>
 
 
-
+	<PropertyGroup>
+		<StaticWebAssetsEnabled>true</StaticWebAssetsEnabled>
+	</PropertyGroup>
 
 	<ItemGroup>
 	  <Content Remove="compilerconfig.json" />

@@ -1,9 +1,9 @@
 
 namespace AnySqlWebAdmin;
 
-using Microsoft.Extensions.Hosting; // IsDevelopment
 using Microsoft.AspNetCore.Builder; // Use*
 using Microsoft.Extensions.DependencyInjection; // Add*
+using Microsoft.Extensions.Hosting; // IsDevelopment
 
 
 public class Program
@@ -13,6 +13,16 @@ public class Program
     public static async System.Threading.Tasks.Task<int> Main(string[] args)
     {
         Microsoft.AspNetCore.Builder.WebApplicationBuilder builder = Microsoft.AspNetCore.Builder.WebApplication.CreateBuilder(args);
+
+        builder.Services.Configure<Microsoft.AspNetCore.Server.Kestrel.Core.KestrelServerOptions>(options =>
+        {
+            options.AllowSynchronousIO = true;
+        });
+
+        builder.Services.Configure<Microsoft.AspNetCore.Builder.IISServerOptions>(options =>
+        {
+            options.AllowSynchronousIO = true;
+        });
 
         // Add services to the container.
         builder.Services.AddRazorPages();

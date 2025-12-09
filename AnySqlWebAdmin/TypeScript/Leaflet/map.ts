@@ -587,7 +587,7 @@ function navigateTo(uuid: string)
 
 
 // https://gis.stackexchange.com/a/816/3997
-// https://jsfiddle.net/xwaocc00/
+// https://jsfiddle.netfwaocc00/
 function polygonAreaOld(poly2: Number[]): string 
 {
     let area = 0.0;
@@ -2401,7 +2401,7 @@ async function initMap()
                 // updateInterval: IEdetection().crap ? 5 : 32, // per 200 ms
                 updateInterval: IEdetection().crap ? 5 : 20, // per 50 ms
                 attribution: '<a target="blank" href="https://github.com/ststeiger/VectorTileServer ">Steiger&apos;s public vector tile server</a> | <a target="blank" href="https://openmaptiles.org ">OpenMapTiles</a> | Map data &copy; <a target="blank" href="http://openstreetmap.org/copyright">OpenStreetMap contributors</a>',
-                style: "https://corpool.cor-asp.ch/VectorTileServer/styles/bright/style.json"
+                style: "https://vectortileserver.cor-asp.ch/styles/bright/style.json"
             }
         ).addTo(map);
 
@@ -2538,6 +2538,9 @@ async function initMap()
         // e.layer.toGeoJSON().geometry.coordinates
 
         let feat = e.layer.toGeoJSON();
+        // JSON.stringify( feat.geometry.coordinates[0], null, 2) 
+
+        debugger;
 
         if (feat.geometry && feat.geometry.coordinates && feat.geometry.coordinates.length > 0)
         {
