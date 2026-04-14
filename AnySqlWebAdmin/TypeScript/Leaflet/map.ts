@@ -837,7 +837,8 @@ async function addWerbetafel(lat: number, lng: number)
         // let marker = L.marker([latitude, longitude], { icon: werbetafel_icon }).addTo(map);
         let marker = L.marker([latitude, longitude], {
             icon: werbetafel_icon
-            , draggable: true
+            ,draggable: true 
+            ,bubblingMouseEvents: true 
         }).addTo(map);
 
         marker.on("click", onMarkerClick.bind(this, uid)); // uid is now called uuid
@@ -1281,6 +1282,11 @@ interface IGbMarkerTable
     polyString: string;
 }
 
+function getPolygonUid(polygon: L.Polygon): string
+{
+    return (polygon.options as any).uuid;
+}
+
 
 async function loadMarkers()
 {
@@ -1398,7 +1404,7 @@ async function loadMarkers()
 
         // https://jsfiddle.net/guspersson/393ehmsq/
         // let marker = L.marker([latitude, longitude]).addTo(map);
-        let marker = L.marker([latitude, longitude], { icon: greenIcon, draggable: withDrag }).addTo(map);
+        let marker = L.marker([latitude, longitude], { icon: greenIcon, draggable: withDrag, bubblingMouseEvents: true }).addTo(map);
         let tooltipContent = createBuildingContentDiv(uid, null, label);
 
 
@@ -1479,11 +1485,88 @@ async function loadMarkers()
 
         poly = toCounterClockWise(poly); // OSM is COUNTER-clockwise !
 
-        let polygon = L.polygon(poly);
+        let polygon = L.polygon(poly, { uuid: uid } as any);
         let polygonStamp = createBuildingContentDiv(null, null, label);
         addTextLabel(map, poly, polygonStamp);
         createVertexLabels(map, poly);
-        
+
+
+
+        let isDragging = false;
+        let lastMousePos: L.LatLng;
+
+
+        polygon.on('mousedown', function (e: L.LeafletMouseEvent)
+        {
+            let uid = getPolygonUid(e.target as L.Polygon);
+            console.log("drag start on:", uid);
+
+            L.DomEvent.stopPropagation(e.originalEvent);   // ← stops bubble to map pan handler
+            //L.DomEvent.preventDefault(e.originalEvent); // ← remove this, it breaks hit detection
+
+            // alert("hello");
+            isDragging = true;
+            lastMousePos = e.latlng;
+            map.dragging.disable(); // Stop map from moving while dragging polygon
+
+            if (map.gl) map.gl._update();
+
+        });
+
+        map.on('mousemove', function (e: L.LeafletMouseEvent)
+        {
+            if (!isDragging) return;
+
+            let newMousePos = e.latlng;
+            let latDiff = newMousePos.lat - lastMousePos.lat;
+            let lngDiff = newMousePos.lng - lastMousePos.lng;
+
+            // Shift all points of the polygon
+            let newLatLngs = <L.LatLng[]>polygon.getLatLngs().map(
+                function(ring: any) 
+                {
+                    if (Array.isArray(ring))
+                    {
+                        return ring.map(
+                            function (latlng: L.LatLng) 
+                            {
+                                return new L.LatLng(latlng.lat + latDiff, latlng.lng + lngDiff);
+                            }
+                        );
+                    }
+
+                    return new L.LatLng(ring.lat + latDiff, ring.lng + lngDiff);
+                }
+            );
+            
+            polygon.setLatLngs(newLatLngs);
+            lastMousePos = newMousePos;
+
+            if (map.gl) map.gl._update();
+            // L.DomEvent.preventDefault(e as any);
+        });
+
+        map.on('mouseup', function (e: L.LeafletMouseEvent)
+        {
+            L.DomEvent.stopPropagation(e.originalEvent);   // ← stops bubble to map pan handler
+            // L.DomEvent.preventDefault(e as any);
+
+            if (isDragging)
+            {
+                let uid = getPolygonUid(e.target as L.Polygon);
+                console.log("drag endend on:", uid);
+
+                isDragging = false;
+                map.dragging.enable();
+                // Here: Save your new coordinates to the DB
+                // console.log("New Position Saved:", polygon.getLatLngs());
+            }
+
+            if (map.gl) map.gl._update();
+        });
+
+
+
 
 
         /*
@@ -1509,6 +1592,7 @@ async function loadMarkers()
 
         // let popupString = "Fl&auml;che: " + thousandSeparator(polygonArea(poly)) + " m<sup>2</sup>";
         polygon.addTo(map)
+        polygon.bringToFront();
             //.bindPopup(popupString)
             //.bindPopup(dd)
             //.openPopup()
@@ -2510,6 +2594,7 @@ async function initMap()
 
     let drawControl = new L.Control.Draw(options);
     map.addControl(drawControl);
+
 
 
     map.on('draw:created', function (e: L.DrawEvents.Created)

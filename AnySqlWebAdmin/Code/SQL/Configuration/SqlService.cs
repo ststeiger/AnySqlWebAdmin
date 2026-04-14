@@ -13,7 +13,7 @@ namespace AnySqlWebAdmin
 
         private static string GetMsCs()
         {
-            System.Data.SqlClient.SqlConnectionStringBuilder csb = new System.Data.SqlClient.SqlConnectionStringBuilder();
+            Microsoft.Data.SqlClient.SqlConnectionStringBuilder csb = new Microsoft.Data.SqlClient.SqlConnectionStringBuilder();
 
             if (System.Environment.OSVersion.Platform == System.PlatformID.Unix)
                 csb.DataSource = System.Environment.MachineName + ",2019";
@@ -45,9 +45,9 @@ namespace AnySqlWebAdmin
             csb.MultipleActiveResultSets = false;
             csb.WorkstationID = System.Environment.MachineName;
 
-            
-            
-            
+
+            csb.Encrypt = false;
+
             // https://github.com/dotnet/runtime/issues/14945
             // SQL server alias recognized with CLR runtime but not CoreCLR
             // The SQL server alias is defined on each client machine and it points to a SQL server instance. 
@@ -150,7 +150,7 @@ namespace AnySqlWebAdmin
             // s_Factory = DbProviderFactories.GetFactory(typeof(MySql.Data.MySqlClient.MySqlClientFactory));
             // s_Factory = DbProviderFactories.GetFactory(typeof(System.Data.SqlClient.SqlClientFactory));
 
-            s_Factory = System.Data.SqlClient.SqlClientFactory.Instance;
+            s_Factory = Microsoft.Data.SqlClient.SqlClientFactory.Instance;
 
             s_ConnectionString = GetMsCs();
         }

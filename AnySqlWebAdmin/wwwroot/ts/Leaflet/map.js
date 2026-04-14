@@ -454,7 +454,8 @@ function addWerbetafel(lat, lng) {
                         werbetafel_icon = createWerbetafelIcon();
                         marker = L.marker([latitude, longitude], {
                             icon: werbetafel_icon,
-                            draggable: true
+                            draggable: true,
+                            bubblingMouseEvents: true
                         }).addTo(map);
                         marker.on("click", onMarkerClick.bind(this, uid));
                         marker.on("contextmenu", onMarkerContextMenu.bind(this, uid));
@@ -781,6 +782,9 @@ function createVertexLabels(map, poly) {
         var textMarker = L.marker(poly[i], { icon: textIcon }).addTo(map);
     }
 }
+function getPolygonUid(polygon) {
+    return polygon.options.uuid;
+}
 function loadMarkers() {
     return __awaiter(this, void 0, void 0, function () {
         var markerUrl, result, table, index_uid, index_code, index_label, index_latitude, index_longitude, index_category, index_color, index_poly, allCoords, markerHtmlStyles, options, _loop_1, this_1, i, initialBounds;
@@ -837,7 +841,7 @@ function loadMarkers() {
                             html: houseImage.replace("{@col1}", color).replace("{@col2}", color)
                         });
                         var withDrag = true;
-                        var marker = L.marker([latitude, longitude], { icon: greenIcon, draggable: withDrag }).addTo(map);
+                        var marker = L.marker([latitude, longitude], { icon: greenIcon, draggable: withDrag, bubblingMouseEvents: true }).addTo(map);
                         var tooltipContent = createBuildingContentDiv(uid, null, label);
                         var tt = L.tooltip({
                             permanent: true,
@@ -870,10 +874,52 @@ function loadMarkers() {
                         if (poly == null)
                             return "continue";
                         poly = toCounterClockWise(poly);
-                        var polygon = L.polygon(poly);
+                        var polygon = L.polygon(poly, { uuid: uid });
                         var polygonStamp = createBuildingContentDiv(null, null, label);
                         addTextLabel(map, poly, polygonStamp);
                         createVertexLabels(map, poly);
+                        var isDragging = false;
+                        var lastMousePos;
+                        polygon.on('mousedown', function (e) {
+                            var uid = getPolygonUid(e.target);
+                            console.log("drag start on:", uid);
+                            L.DomEvent.stopPropagation(e.originalEvent);
+                            isDragging = true;
+                            lastMousePos = e.latlng;
+                            map.dragging.disable();
+                            if (map.gl)
+                                map.gl._update();
+                        });
+                        map.on('mousemove', function (e) {
+                            if (!isDragging)
+                                return;
+                            var newMousePos = e.latlng;
+                            var latDiff = newMousePos.lat - lastMousePos.lat;
+                            var lngDiff = newMousePos.lng - lastMousePos.lng;
+                            var newLatLngs = polygon.getLatLngs().map(function (ring) {
+                                if (Array.isArray(ring)) {
+                                    return ring.map(function (latlng) {
+                                        return new L.LatLng(latlng.lat + latDiff, latlng.lng + lngDiff);
+                                    });
+                                }
+                                return new L.LatLng(ring.lat + latDiff, ring.lng + lngDiff);
+                            });
+                            polygon.setLatLngs(newLatLngs);
+                            lastMousePos = newMousePos;
+                            if (map.gl)
+                                map.gl._update();
+                        });
+                        map.on('mouseup', function (e) {
+                            L.DomEvent.stopPropagation(e.originalEvent);
+                            if (isDragging) {
+                                var uid_1 = getPolygonUid(e.target);
+                                console.log("drag endend on:", uid_1);
+                                isDragging = false;
+                                map.dragging.enable();
+                            }
+                            if (map.gl)
+                                map.gl._update();
+                        });
                         var dd = document.createElement("div");
                         var spn = document.createElement("span");
                         spn.appendChild(document.createTextNode("Fläche" + ": "));
@@ -884,6 +930,8 @@ function loadMarkers() {
                         spn.appendChild(sup2);
                         dd.appendChild(spn);
                         polygon.addTo(map);
+                        polygon.bringToFront();
+                        ;
                         polygon.on("click", function (uuid, polygon, e) {
                             console.log('polygon.on("click",', e, uuid, polygon);
                             console.log("polygon latlngs", polygon.getLatLngs());
@@ -942,7 +990,7 @@ function createBuildingContentDiv(uid, category, label) {
 }
 function zoomIn(uid) {
     return __awaiter(this, void 0, void 0, function () {
-        var boundsUrl, result, table, index_objt, index_uid, index_latitude, index_longitude, index_minLat, index_minLng, index_maxLat, index_maxLng, i, code, uid_1, latitude, longitude, minLat, minLng, maxLat, maxLng, zoomBounds;
+        var boundsUrl, result, table, index_objt, index_uid, index_latitude, index_longitude, index_minLat, index_minLng, index_maxLat, index_maxLng, i, code, uid_2, latitude, longitude, minLat, minLng, maxLat, maxLng, zoomBounds;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
@@ -964,7 +1012,7 @@ function zoomIn(uid) {
                     index_maxLng = table.columns["OBJ_Max_Lng"].index;
                     for (i = 0; i < table.rows.length; ++i) {
                         code = table.rows[i][index_objt];
-                        uid_1 = table.rows[i][index_uid];
+                        uid_2 = table.rows[i][index_uid];
                         latitude = table.rows[i][index_latitude];
                         longitude = table.rows[i][index_longitude];
                         minLat = table.rows[i][index_minLat];

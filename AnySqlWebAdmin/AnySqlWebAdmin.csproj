@@ -34,18 +34,14 @@
 		<AssemblyInformationalVersion>$([System.DateTime]::Now.ToString("yyyy.MM.dd.HHmmss"))+git.$(GitHash)</AssemblyInformationalVersion>
 		<Copyright>Test 123$(GitHash)</Copyright>
 	</PropertyGroup>
-
-
-	<PropertyGroup>
-		<StaticWebAssetsEnabled>true</StaticWebAssetsEnabled>
-	</PropertyGroup>
-
+	
 	<ItemGroup>
 	  <Content Remove="compilerconfig.json" />
 	</ItemGroup>
 
 	<ItemGroup>
     <PackageReference Include="CassandraCSharpDriver" Version="3.22.0" />
+    <PackageReference Include="Microsoft.Data.SqlClient" Version="7.0.0" />
     <PackageReference Include="Microsoft.TypeScript.MSBuild" Version="5.9.2">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
